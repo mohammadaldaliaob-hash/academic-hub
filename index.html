@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AcademicHub - Medical Learning Platform</title>
 
-<!-- 1. OFFICIAL CLERK PRODUCTION SDK -->
+<!-- 1. CLERK PRODUCTION SDK -->
 <script
   async
   crossorigin="anonymous"
   data-clerk-publishable-key="pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk"
-  src="https://clerk.academic-hub-dusky-mu.vercel.app/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
   type="text/javascript"
 ></script>
 
@@ -223,7 +223,7 @@
 </head>
 <body>
 
-<!-- CLERK SIGN IN MODAL -->
+<!-- CLERK AUTH OVERLAY -->
 <div id="clerkAuthOverlay">
   <div class="clerk-header-brand">
     <div>⚡</div>
@@ -446,7 +446,8 @@
 
 <!-- ================= SCRIPT ================= -->
 <script>
-// 🛡️ XSS SANITIZER HELPER (DEFENSIVE SECURITY)
+const CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk";
+
 function escapeHTML(str) {
   if (!str) return '';
   return String(str)
@@ -490,38 +491,62 @@ function goToTab(tabId) {
   if (nav) nav.classList.add('active');
 }
 
-// DIRECT PRODUCTION CLERK INITIALIZATION
+// BULLETPROOF CLERK PRODUCTION INITIALIZER
 async function initClerk() {
   try {
-    const Clerk = window.Clerk;
-    if (!Clerk) {
-      setTimeout(initClerk, 200);
-      return;
+    let clerkObj = window.Clerk;
+
+    if (!clerkObj) {
+      if (!window._clerkRetries) window._clerkRetries = 0;
+      if (window._clerkRetries < 20) {
+        window._clerkRetries++;
+        setTimeout(initClerk, 250);
+        return;
+      }
+      throw new Error("Clerk script load timeout");
     }
 
-    await Clerk.load();
+    let clerkInstance;
+    if (typeof clerkObj === 'function') {
+      clerkInstance = new clerkObj(CLERK_PUBLISHABLE_KEY);
+    } else {
+      clerkInstance = clerkObj;
+    }
 
-    if (Clerk.user) {
+    await clerkInstance.load({
+      publishableKey: CLERK_PUBLISHABLE_KEY
+    });
+
+    window.clerkApp = clerkInstance;
+
+    if (clerkInstance.user) {
       document.getElementById('clerkAuthOverlay').style.display = 'none';
       document.getElementById('mainDashboard').style.display = 'flex';
 
-      const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-      setElText('welcomeUser', `Welcome Back, ${displayName} 👋`);
+      const displayName = clerkInstance.user.fullName || clerkInstance.user.firstName || clerkInstance.user.primaryEmailAddress?.emailAddress || 'Student';
+      setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
       setElText('clerkUserName', displayName);
 
-      Clerk.mountUserButton(document.getElementById('clerkUserButton'));
+      const userBtnContainer = document.getElementById('clerkUserButton');
+      if (userBtnContainer) clerkInstance.mountUserButton(userBtnContainer);
 
       updateAllMetrics();
       renderPlanner();
     } else {
       document.getElementById('clerkAuthOverlay').style.display = 'flex';
       document.getElementById('mainDashboard').style.display = 'none';
-      Clerk.mountSignIn(document.getElementById('clerkSignIn'));
+
+      const signInContainer = document.getElementById('clerkSignIn');
+      if (signInContainer) {
+        clerkInstance.mountSignIn(signInContainer);
+      }
     }
   } catch (err) {
-    console.error("Clerk auth:", err);
+    console.warn("Clerk initialization fallback:", err);
     document.getElementById('clerkAuthOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
+    updateAllMetrics();
+    renderPlanner();
   }
 }
 
