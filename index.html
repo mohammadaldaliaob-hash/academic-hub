@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AcademicHub - Medical & Study Platform</title>
 
-<!-- 1. CLERK AUTHENTICATION SDK -->
+<!-- 1. OFFICIAL DIRECT CLERK AUTHENTICATION SDK -->
 <script
   async
   crossorigin="anonymous"
   data-clerk-publishable-key="pk_test_c3VwZXJiLXN3YW4tNzIzMi5jbGVyay5hY2NvdW50cy5kZXYk"
-  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  src="https://superb-swan-7232.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
   type="text/javascript"
 ></script>
 
@@ -479,31 +479,43 @@ function goToTab(tabId) {
   if (nav) nav.classList.add('active');
 }
 
-// CLERK INITIALIZATION (NATIVE ON VERCEL)
-window.addEventListener('load', async function () {
-  const Clerk = window.Clerk;
-  if (!Clerk) return;
+// DIRECT CLERK INITIALIZATION WITH FAIL-SAFE
+async function initClerk() {
+  try {
+    const Clerk = window.Clerk;
+    if (!Clerk) {
+      setTimeout(initClerk, 300);
+      return;
+    }
 
-  await Clerk.load();
+    await Clerk.load();
 
-  if (Clerk.user) {
+    if (Clerk.user) {
+      document.getElementById('clerkAuthOverlay').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'flex';
+
+      const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
+      setElText('welcomeUser', `Welcome Back, ${displayName} 👋`);
+      setElText('clerkUserName', displayName);
+
+      Clerk.mountUserButton(document.getElementById('clerkUserButton'));
+
+      updateAllMetrics();
+      renderPlanner();
+    } else {
+      document.getElementById('clerkAuthOverlay').style.display = 'flex';
+      document.getElementById('mainDashboard').style.display = 'none';
+      Clerk.mountSignIn(document.getElementById('clerkSignIn'));
+    }
+  } catch (err) {
+    console.error("Clerk load error:", err);
+    // Unlocks so screen is NEVER stuck on grey
     document.getElementById('clerkAuthOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
-
-    const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    setElText('welcomeUser', `Welcome Back, ${displayName} 👋`);
-    setElText('clerkUserName', displayName);
-
-    Clerk.mountUserButton(document.getElementById('clerkUserButton'));
-
-    updateAllMetrics();
-    renderPlanner();
-  } else {
-    document.getElementById('clerkAuthOverlay').style.display = 'flex';
-    document.getElementById('mainDashboard').style.display = 'none';
-    Clerk.mountSignIn(document.getElementById('clerkSignIn'));
   }
-});
+}
+
+window.addEventListener('load', initClerk);
 
 function getTodayStr() {
   const d = new Date();
