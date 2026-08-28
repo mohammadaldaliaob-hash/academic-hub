@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AcademicHub - Medical Learning Platform</title>
 
-<!-- PRECONNECT FOR INSTANT SPEED -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="preconnect" href="https://clerk.academic-hub-dusky-mu.vercel.app">
-
-<!-- CLERK SDK -->
+<!-- 1. OFFICIAL CLERK PRODUCTION SDK -->
 <script
   async
   crossorigin="anonymous"
@@ -30,6 +26,7 @@
     --border: #e5e7eb;
     --border-hover: #d1d5db;
     --success: #16a34a;
+    --danger: #ef4444;
     --radius-lg: 16px;
     --radius-md: 10px;
     --radius-full: 9999px;
@@ -38,8 +35,8 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* INSTANT AUTH OVERLAY */
-  #clerkAuthOverlay {
+  /* DUAL SECURITY FULL-SCREEN OVERLAY */
+  #authOverlay {
     position: fixed;
     inset: 0;
     background: radial-gradient(circle at top, #1e293b, #0f172a);
@@ -51,30 +48,56 @@
     padding: 20px;
   }
 
-  .login-card {
+  .auth-card {
     background: #ffffff;
     border-radius: var(--radius-lg);
     padding: 36px 32px;
     width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    max-width: 440px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
     text-align: center;
   }
-  .clerk-header-brand {
-    display: flex;
+
+  .brand-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 12px;
     color: var(--foreground);
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
   }
-  .clerk-header-brand div {
-    width: 42px; height: 42px; background: var(--primary); border-radius: 12px;
+  .brand-badge-icon {
+    width: 40px; height: 40px; background: var(--primary); border-radius: 12px;
     display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;
   }
-  .login-sub { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
+  .auth-sub { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
+
+  /* PASSCODE INPUT */
+  .passcode-input {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    outline: none;
+    margin-bottom: 12px;
+    transition: 0.15s;
+  }
+  .passcode-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
+  .error-msg { font-size: 13px; color: var(--danger); font-weight: 500; margin-bottom: 12px; display: none; }
+
+  /* CLERK EMBED */
+  #realClerkContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 320px;
+  }
 
   .dashboard-wrapper {
     display: flex;
@@ -134,7 +157,7 @@
   .nav-item:hover { background-color: #f3f4f6; color: var(--foreground); }
   .nav-item.active { background-color: var(--primary-tint); color: var(--primary); font-weight: 600; }
 
-  /* Clerk User Menu in Sidebar */
+  /* Clerk Profile in Sidebar */
   .sidebar-user-section {
     padding-top: 18px;
     border-top: 1px solid var(--border);
@@ -238,26 +261,36 @@
 </head>
 <body>
 
-<!-- AUTH OVERLAY -->
-<div id="clerkAuthOverlay">
-  <div class="login-card">
-    <div class="clerk-header-brand">
-      <div>⚡</div>
+<!-- DUAL SECURITY OVERLAY -->
+<div id="authOverlay">
+
+  <!-- STAGE 1: MED2026 PASSCODE -->
+  <div class="auth-card" id="passcodeCard">
+    <div class="brand-badge">
+      <div class="brand-badge-icon">⚡</div>
       <span>AcademicHub</span>
     </div>
-    <p class="login-sub">Sign in to access your curriculum, question bank & daily streak.</p>
+    <p class="auth-sub">Enter your student access passcode to unlock the portal.</p>
     
-    <div id="clerkSignIn">
-      <button class="btn btn-primary" onclick="triggerClerkLogin()" style="margin-bottom: 12px;">
-        <span>🔒</span> Sign in with Google / Email
-      </button>
-      <button class="btn btn-outline" onclick="unlockDashboardDirectly()">
-        Continue to Dashboard →
-      </button>
-    </div>
+    <input type="password" id="passcodeInput" class="passcode-input" placeholder="ACCESS PASSCODE" maxlength="15" onkeypress="if(event.key==='Enter') verifyPasscode()">
+    <div id="passcodeError" class="error-msg">Incorrect Passcode. Access Denied.</div>
+    <button class="btn btn-primary" onclick="verifyPasscode()">Unlock Portal →</button>
   </div>
+
+  <!-- STAGE 2: OFFICIAL CLERK GOOGLE AUTH -->
+  <div class="auth-card" id="clerkCard" style="display:none; max-width: 480px;">
+    <div class="brand-badge">
+      <div class="brand-badge-icon">🔒</div>
+      <span>Student Verification</span>
+    </div>
+    <p class="auth-sub">Sign in with your Google account to verify your student identity.</p>
+    
+    <div id="realClerkContainer"></div>
+  </div>
+
 </div>
 
+<!-- MAIN DASHBOARD -->
 <div class="dashboard-wrapper" id="mainDashboard" style="display:none;">
 
   <!-- SIDEBAR -->
@@ -473,8 +506,120 @@
 <!-- ================= SCRIPT ================= -->
 <script>
 const CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk";
-let globalClerk = null;
+const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b49614e0536c85b07c0";
 
+let isPasscodeUnlocked = (localStorage.getItem('hub_passcode_ok') === 'true');
+
+async function hashText(str) {
+  try {
+    const buffer = new TextEncoder().encode(str.trim().toUpperCase());
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch(e) {
+    return str.trim().toUpperCase() === "MED2026" ? TARGET_PASSCODE_HASH : "invalid";
+  }
+}
+
+// 1. VERIFY MED2026
+async function verifyPasscode() {
+  const input = document.getElementById('passcodeInput');
+  const errorEl = document.getElementById('passcodeError');
+  if (!input) return;
+
+  const entered = input.value;
+  const hashed = await hashText(entered);
+
+  if (hashed === TARGET_PASSCODE_HASH) {
+    if (errorEl) errorEl.style.display = 'none';
+    isPasscodeUnlocked = true;
+    localStorage.setItem('hub_passcode_ok', 'true');
+    checkFullAccess();
+  } else {
+    if (errorEl) {
+      errorEl.style.display = 'block';
+      errorEl.textContent = 'Incorrect Passcode. Access Denied.';
+    }
+  }
+}
+
+// 2. CHECK FULL ACCESS
+function checkFullAccess() {
+  const Clerk = window.Clerk;
+
+  if (!isPasscodeUnlocked) {
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('passcodeCard').style.display = 'block';
+    document.getElementById('clerkCard').style.display = 'none';
+    document.getElementById('mainDashboard').style.display = 'none';
+    return;
+  }
+
+  // Passcode verified! Now check Clerk:
+  if (Clerk && Clerk.user) {
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('mainDashboard').style.display = 'flex';
+
+    const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
+    setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
+    setElText('clerkUserName', displayName);
+
+    const userBtnContainer = document.getElementById('clerkUserButton');
+    if (userBtnContainer && userBtnContainer.children.length === 0) {
+      Clerk.mountUserButton(userBtnContainer);
+    }
+
+    updateAllMetrics();
+    renderPlanner();
+  } else {
+    // Show Clerk Google Sign-In Box
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('passcodeCard').style.display = 'none';
+    document.getElementById('clerkCard').style.display = 'block';
+    document.getElementById('mainDashboard').style.display = 'none';
+
+    const container = document.getElementById('realClerkContainer');
+    if (container && Clerk && Clerk.mountSignIn && container.children.length === 0) {
+      Clerk.mountSignIn(container);
+    }
+  }
+}
+
+// INITIALIZE CLERK
+async function initClerk() {
+  try {
+    const Clerk = window.Clerk;
+    if (!Clerk) {
+      setTimeout(initClerk, 200);
+      return;
+    }
+
+    await Clerk.load({ publishableKey: CLERK_PUBLISHABLE_KEY });
+
+    if (Clerk.addListener) {
+      Clerk.addListener(function(state) {
+        if (state && state.user) {
+          checkFullAccess();
+        }
+      });
+    }
+
+    checkFullAccess();
+  } catch (err) {
+    console.error("Clerk error:", err);
+    checkFullAccess();
+  }
+}
+
+window.addEventListener('load', initClerk);
+
+setInterval(function() {
+  const Clerk = window.Clerk;
+  if (Clerk && Clerk.user && document.getElementById('mainDashboard').style.display === 'none' && isPasscodeUnlocked) {
+    checkFullAccess();
+  }
+}, 500);
+
+// XSS SANITIZATION
 function escapeHTML(str) {
   if (!str) return '';
   return String(str)
@@ -518,55 +663,6 @@ function goToTab(tabId) {
   if (nav) nav.classList.add('active');
 }
 
-function unlockDashboardDirectly() {
-  document.getElementById('clerkAuthOverlay').style.display = 'none';
-  document.getElementById('mainDashboard').style.display = 'flex';
-  updateAllMetrics();
-  renderPlanner();
-}
-
-function triggerClerkLogin() {
-  if (globalClerk && globalClerk.openSignIn) {
-    globalClerk.openSignIn();
-  } else {
-    unlockDashboardDirectly();
-  }
-}
-
-// ULTRA FAST INSTANT INITIALIZER
-async function initClerk() {
-  try {
-    let clerkObj = window.Clerk;
-    if (!clerkObj) return;
-
-    let clerkInstance = typeof clerkObj === 'function' ? new clerkObj(CLERK_PUBLISHABLE_KEY) : clerkObj;
-    await clerkInstance.load({ publishableKey: CLERK_PUBLISHABLE_KEY });
-    globalClerk = clerkInstance;
-
-    if (clerkInstance.user) {
-      document.getElementById('clerkAuthOverlay').style.display = 'none';
-      document.getElementById('mainDashboard').style.display = 'flex';
-
-      const displayName = clerkInstance.user.fullName || clerkInstance.user.firstName || clerkInstance.user.primaryEmailAddress?.emailAddress || 'Student';
-      setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
-      setElText('clerkUserName', displayName);
-
-      const userBtnContainer = document.getElementById('clerkUserButton');
-      if (userBtnContainer) clerkInstance.mountUserButton(userBtnContainer);
-
-      updateAllMetrics();
-      renderPlanner();
-    }
-  } catch (err) {
-    console.warn("Clerk load:", err);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  initClerk();
-  setTimeout(initClerk, 500);
-});
-
 function getTodayStr() {
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -580,196 +676,4 @@ function getYesterdayStr() {
 let quizData = safeGet('axon_quiz_locked_v1', {
   quizzes: {
     'q1': { solved: false, score: 10, total: 10, date: null },
-    'q2': { solved: false, score: 15, total: 15, date: null }
-  },
-  streak: 0,
-  lastDate: null
-});
-
-function startAndAutoSaveQuiz(qId, totalQuestions) {
-  const today = getTodayStr();
-  const yesterday = getYesterdayStr();
-
-  quizData.quizzes[qId] = {
-    solved: true,
-    score: totalQuestions,
-    total: totalQuestions,
-    date: today
-  };
-
-  if (quizData.lastDate !== today) {
-    if (quizData.lastDate === yesterday) {
-      quizData.streak += 1;
-    } else {
-      quizData.streak = 1;
-    }
-    quizData.lastDate = today;
-  }
-
-  safeSet('axon_quiz_locked_v1', quizData);
-  updateAllMetrics();
-}
-
-function restartQuiz(qId) {
-  quizData.quizzes[qId].solved = false;
-  safeSet('axon_quiz_locked_v1', quizData);
-  updateAllMetrics();
-}
-
-function updateAllMetrics() {
-  const totalQuizzes = Object.keys(quizData.quizzes).length;
-  let solvedCount = 0;
-  let totalScoreSum = 0;
-  let totalPossibleSum = 0;
-
-  for (let qId in quizData.quizzes) {
-    const q = quizData.quizzes[qId];
-    const card = document.getElementById('card-' + qId);
-    const badge = document.getElementById('badge-' + qId);
-    const scoreText = document.getElementById('score-text-' + qId);
-    const btnLaunch = document.getElementById('btn-launch-' + qId);
-    const btnRestart = document.getElementById('btn-restart-' + qId);
-
-    if (q && q.solved) {
-      solvedCount++;
-      totalScoreSum += q.score;
-      totalPossibleSum += q.total;
-
-      const pct = Math.round((q.score / q.total) * 100);
-      if (card) card.classList.add('solved');
-      if (badge) {
-        badge.className = 'status-badge status-done';
-        badge.textContent = `✓ Completed (${q.score}/${q.total})`;
-      }
-      if (scoreText) scoreText.textContent = `Logged on ${q.date}`;
-      if (btnLaunch) btnLaunch.style.display = 'none';
-      if (btnRestart) btnRestart.style.display = 'block';
-    } else {
-      if (card) card.classList.remove('solved');
-      if (badge) {
-        badge.className = 'status-badge status-pending';
-        badge.textContent = 'Not Solved';
-      }
-      if (scoreText) scoreText.textContent = '';
-      if (btnLaunch) btnLaunch.style.display = 'block';
-      if (btnRestart) btnRestart.style.display = 'none';
-    }
-  }
-
-  const avgPct = totalPossibleSum > 0 ? Math.round((totalScoreSum / totalPossibleSum) * 100) : null;
-  const masteryPct = Math.round((solvedCount / totalQuizzes) * 100);
-
-  setElText('statStreak', `${quizData.streak} Days 🔥`);
-  setElText('statQuizzes', `${solvedCount} / ${totalQuizzes} Solved`);
-  setElText('statAvgScore', avgPct !== null ? `${avgPct}%` : `-- %`);
-
-  setElText('analyticsStreak', `${quizData.streak} Days 🔥`);
-  setElText('analyticsAvg', avgPct !== null ? `${avgPct}%` : `-- %`);
-  setElText('analyticsMastery', `${masteryPct}%`);
-}
-
-let currentDay = 'mon';
-const initialTasks = {
-  mon: [{ id: 1, goal: "Unit 1: Fundamentals", time: "04:00 PM", subject: "Theory", done: false }],
-  tue: [{ id: 2, goal: "Unit 2: Problem Practice", time: "04:00 PM", subject: "Practice", done: false }],
-  wed: [{ id: 3, goal: "Review mistakes from Quiz 01", time: "05:00 PM", subject: "Revision", done: false }],
-  thu: [{ id: 4, goal: "Unit 3: Case Studies", time: "04:00 PM", subject: "Quiz", done: false }],
-  fri: [{ id: 5, goal: "Weekly Formula memorization", time: "03:30 PM", subject: "Recall", done: false }],
-  sat: [{ id: 6, goal: "Full chapter revision", time: "11:00 AM", subject: "Review", done: false }],
-  sun: [{ id: 7, goal: "Plan next week schedule", time: "06:00 PM", subject: "Planning", done: false }]
-};
-
-function renderPlanner() {
-  const container = document.getElementById('taskContainer');
-  if (!container) return;
-  container.innerHTML = '';
-  const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-
-  tasks.forEach(function (t) {
-    const item = document.createElement('div');
-    item.className = 'task-item ' + (t.done ? 'completed' : '');
-    
-    const safeGoal = escapeHTML(t.goal);
-    const safeTime = escapeHTML(t.time);
-
-    item.innerHTML = `
-      <div class="task-left" onclick="toggleTask(${Number(t.id)})">
-        <div class="checkbox">${t.done ? '✓' : ''}</div>
-        <div>
-          ${safeTime ? `<span class="task-time-tag">${safeTime}</span>` : ''}
-          <div class="task-label">${safeGoal}</div>
-        </div>
-      </div>
-      <button class="btn-del" onclick="deleteTask(${Number(t.id)})">✕</button>
-    `;
-    container.appendChild(item);
-  });
-
-  updatePlannerProgress(tasks);
-  loadNote();
-}
-
-function addNewTask() {
-  const name = document.getElementById('taskName');
-  const time = document.getElementById('taskTime');
-  const sub = document.getElementById('taskSub');
-  if (!name || !name.value.trim()) return;
-
-  const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks.push({ 
-    id: Date.now(), 
-    goal: name.value.trim(), 
-    time: time.value.trim(), 
-    subject: sub.value.trim(), 
-    done: false 
-  });
-  safeSet('hub_tasks_' + currentDay, tasks);
-  name.value = ''; time.value = ''; sub.value = '';
-  renderPlanner();
-}
-
-function toggleTask(id) {
-  let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks = tasks.map(function (t) { return t.id === id ? Object.assign({}, t, { done: !t.done }) : t; });
-  safeSet('hub_tasks_' + currentDay, tasks);
-  renderPlanner();
-}
-
-function deleteTask(id) {
-  let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks = tasks.filter(function (t) { return t.id !== id; });
-  safeSet('hub_tasks_' + currentDay, tasks);
-  renderPlanner();
-}
-
-function setDay(day, btn) {
-  currentDay = day;
-  document.querySelectorAll('.day-tab').forEach(function (b) { b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  const labels = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' };
-  setElText('noteDayLabel', labels[day] || day);
-  renderPlanner();
-}
-
-function updatePlannerProgress(tasks) {
-  const total = tasks.length;
-  const done = tasks.filter(function (t) { return t.done; }).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  const bar = document.getElementById('progBar');
-  if (bar) bar.style.width = pct + '%';
-  setElText('progPct', pct + '% Completed');
-  setElText('progRatio', done + '/' + total + ' tasks');
-}
-
-function saveNote() {
-  const input = document.getElementById('noteInput');
-  if (input) safeSet('hub_notes_' + currentDay, input.value);
-}
-
-function loadNote() {
-  const input = document.getElementById('noteInput');
-  if (input) input.value = safeGet('hub_notes_' + currentDay, '');
-}
-</script>
-</body>
-</html>
+    'q2': { solved: false, score:
