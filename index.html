@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AcademicHub - Medical Learning Platform</title>
 
-<!-- 1. OFFICIAL CLERK PRODUCTION SDK -->
+<!-- 1. CLERK SDK -->
 <script
   async
   crossorigin="anonymous"
-  data-clerk-publishable-key="pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk"
-  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+  data-clerk-publishable-key="pk_test_c3VwZXJiLXN3YW4tNzIzMi5jbGVyay5hY2NvdW50cy5kZXYk"
+  src="https://superb-swan-7232.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
   type="text/javascript"
 ></script>
 
@@ -277,7 +277,7 @@
     <button class="btn btn-primary" onclick="verifyPasscode()">Unlock Portal →</button>
   </div>
 
-  <!-- STAGE 2: OFFICIAL CLERK GOOGLE AUTH -->
+  <!-- STAGE 2: CLERK GOOGLE AUTH -->
   <div class="auth-card" id="clerkCard" style="display:none; max-width: 480px;">
     <div class="brand-badge">
       <div class="brand-badge-icon">🔒</div>
@@ -505,7 +505,6 @@
 
 <!-- ================= SCRIPT ================= -->
 <script>
-const CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk";
 const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b49614e0536c85b07c0";
 
 let isPasscodeUnlocked = (localStorage.getItem('hub_passcode_ok') === 'true');
@@ -571,7 +570,7 @@ function checkFullAccess() {
     updateAllMetrics();
     renderPlanner();
   } else {
-    // Show Clerk Google Sign-In Box
+    // Show Clerk Sign In
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('passcodeCard').style.display = 'none';
     document.getElementById('clerkCard').style.display = 'block';
@@ -593,7 +592,7 @@ async function initClerk() {
       return;
     }
 
-    await Clerk.load({ publishableKey: CLERK_PUBLISHABLE_KEY });
+    await Clerk.load();
 
     if (Clerk.addListener) {
       Clerk.addListener(function(state) {
@@ -605,7 +604,7 @@ async function initClerk() {
 
     checkFullAccess();
   } catch (err) {
-    console.error("Clerk error:", err);
+    console.error("Clerk init:", err);
     checkFullAccess();
   }
 }
@@ -676,4 +675,196 @@ function getYesterdayStr() {
 let quizData = safeGet('axon_quiz_locked_v1', {
   quizzes: {
     'q1': { solved: false, score: 10, total: 10, date: null },
-    'q2': { solved: false, score:
+    'q2': { solved: false, score: 15, total: 15, date: null }
+  },
+  streak: 0,
+  lastDate: null
+});
+
+function startAndAutoSaveQuiz(qId, totalQuestions) {
+  const today = getTodayStr();
+  const yesterday = getYesterdayStr();
+
+  quizData.quizzes[qId] = {
+    solved: true,
+    score: totalQuestions,
+    total: totalQuestions,
+    date: today
+  };
+
+  if (quizData.lastDate !== today) {
+    if (quizData.lastDate === yesterday) {
+      quizData.streak += 1;
+    } else {
+      quizData.streak = 1;
+    }
+    quizData.lastDate = today;
+  }
+
+  safeSet('axon_quiz_locked_v1', quizData);
+  updateAllMetrics();
+}
+
+function restartQuiz(qId) {
+  quizData.quizzes[qId].solved = false;
+  safeSet('axon_quiz_locked_v1', quizData);
+  updateAllMetrics();
+}
+
+function updateAllMetrics() {
+  const totalQuizzes = Object.keys(quizData.quizzes).length;
+  let solvedCount = 0;
+  let totalScoreSum = 0;
+  let totalPossibleSum = 0;
+
+  for (let qId in quizData.quizzes) {
+    const q = quizData.quizzes[qId];
+    const card = document.getElementById('card-' + qId);
+    const badge = document.getElementById('badge-' + qId);
+    const scoreText = document.getElementById('score-text-' + qId);
+    const btnLaunch = document.getElementById('btn-launch-' + qId);
+    const btnRestart = document.getElementById('btn-restart-' + qId);
+
+    if (q && q.solved) {
+      solvedCount++;
+      totalScoreSum += q.score;
+      totalPossibleSum += q.total;
+
+      const pct = Math.round((q.score / q.total) * 100);
+      if (card) card.classList.add('solved');
+      if (badge) {
+        badge.className = 'status-badge status-done';
+        badge.textContent = `✓ Completed (${q.score}/${q.total})`;
+      }
+      if (scoreText) scoreText.textContent = `Logged on ${q.date}`;
+      if (btnLaunch) btnLaunch.style.display = 'none';
+      if (btnRestart) btnRestart.style.display = 'block';
+    } else {
+      if (card) card.classList.remove('solved');
+      if (badge) {
+        badge.className = 'status-badge status-pending';
+        badge.textContent = 'Not Solved';
+      }
+      if (scoreText) scoreText.textContent = '';
+      if (btnLaunch) btnLaunch.style.display = 'block';
+      if (btnRestart) btnRestart.style.display = 'none';
+    }
+  }
+
+  const avgPct = totalPossibleSum > 0 ? Math.round((totalScoreSum / totalPossibleSum) * 100) : null;
+  const masteryPct = Math.round((solvedCount / totalQuizzes) * 100);
+
+  setElText('statStreak', `${quizData.streak} Days 🔥`);
+  setElText('statQuizzes', `${solvedCount} / ${totalQuizzes} Solved`);
+  setElText('statAvgScore', avgPct !== null ? `${avgPct}%` : `-- %`);
+
+  setElText('analyticsStreak', `${quizData.streak} Days 🔥`);
+  setElText('analyticsAvg', avgPct !== null ? `${avgPct}%` : `-- %`);
+  setElText('analyticsMastery', `${masteryPct}%`);
+}
+
+let currentDay = 'mon';
+const initialTasks = {
+  mon: [{ id: 1, goal: "Unit 1: Fundamentals", time: "04:00 PM", subject: "Theory", done: false }],
+  tue: [{ id: 2, goal: "Unit 2: Problem Practice", time: "04:00 PM", subject: "Practice", done: false }],
+  wed: [{ id: 3, goal: "Review mistakes from Quiz 01", time: "05:00 PM", subject: "Revision", done: false }],
+  thu: [{ id: 4, goal: "Unit 3: Case Studies", time: "04:00 PM", subject: "Quiz", done: false }],
+  fri: [{ id: 5, goal: "Weekly Formula memorization", time: "03:30 PM", subject: "Recall", done: false }],
+  sat: [{ id: 6, goal: "Full chapter revision", time: "11:00 AM", subject: "Review", done: false }],
+  sun: [{ id: 7, goal: "Plan next week schedule", time: "06:00 PM", subject: "Planning", done: false }]
+};
+
+function renderPlanner() {
+  const container = document.getElementById('taskContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
+
+  tasks.forEach(function (t) {
+    const item = document.createElement('div');
+    item.className = 'task-item ' + (t.done ? 'completed' : '');
+    
+    const safeGoal = escapeHTML(t.goal);
+    const safeTime = escapeHTML(t.time);
+
+    item.innerHTML = `
+      <div class="task-left" onclick="toggleTask(${Number(t.id)})">
+        <div class="checkbox">${t.done ? '✓' : ''}</div>
+        <div>
+          ${safeTime ? `<span class="task-time-tag">${safeTime}</span>` : ''}
+          <div class="task-label">${safeGoal}</div>
+        </div>
+      </div>
+      <button class="btn-del" onclick="deleteTask(${Number(t.id)})">✕</button>
+    `;
+    container.appendChild(item);
+  });
+
+  updatePlannerProgress(tasks);
+  loadNote();
+}
+
+function addNewTask() {
+  const name = document.getElementById('taskName');
+  const time = document.getElementById('taskTime');
+  const sub = document.getElementById('taskSub');
+  if (!name || !name.value.trim()) return;
+
+  const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
+  tasks.push({ 
+    id: Date.now(), 
+    goal: name.value.trim(), 
+    time: time.value.trim(), 
+    subject: sub.value.trim(), 
+    done: false 
+  });
+  safeSet('hub_tasks_' + currentDay, tasks);
+  name.value = ''; time.value = ''; sub.value = '';
+  renderPlanner();
+}
+
+function toggleTask(id) {
+  let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
+  tasks = tasks.map(function (t) { return t.id === id ? Object.assign({}, t, { done: !t.done }) : t; });
+  safeSet('hub_tasks_' + currentDay, tasks);
+  renderPlanner();
+}
+
+function deleteTask(id) {
+  let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
+  tasks = tasks.filter(function (t) { return t.id !== id; });
+  safeSet('hub_tasks_' + currentDay, tasks);
+  renderPlanner();
+}
+
+function setDay(day, btn) {
+  currentDay = day;
+  document.querySelectorAll('.day-tab').forEach(function (b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  const labels = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' };
+  setElText('noteDayLabel', labels[day] || day);
+  renderPlanner();
+}
+
+function updatePlannerProgress(tasks) {
+  const total = tasks.length;
+  const done = tasks.filter(function (t) { return t.done; }).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById('progBar');
+  if (bar) bar.style.width = pct + '%';
+  setElText('progPct', pct + '% Completed');
+  setElText('progRatio', done + '/' + total + ' tasks');
+}
+
+function saveNote() {
+  const input = document.getElementById('noteInput');
+  if (input) safeSet('hub_notes_' + currentDay, input.value);
+}
+
+function loadNote() {
+  const input = document.getElementById('noteInput');
+  if (input) input.value = safeGet('hub_notes_' + currentDay, '');
+}
+</script>
+</body>
+</html>
