@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AcademicHub - Medical Learning Platform</title>
 
-<!-- PRECONNECT FOR INSTANT SPEED -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="preconnect" href="https://clerk.academic-hub-dusky-mu.vercel.app">
-
-<!-- REAL CLERK SDK -->
+<!-- 1. OFFICIAL CLERK SDK -->
 <script
   async
   crossorigin="anonymous"
@@ -30,7 +26,6 @@
     --border: #e5e7eb;
     --border-hover: #d1d5db;
     --success: #16a34a;
-    --danger: #ef4444;
     --radius-lg: 16px;
     --radius-md: 10px;
     --radius-full: 9999px;
@@ -39,7 +34,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* FULL-SCREEN DUAL SECURITY OVERLAY */
+  /* FULL-SCREEN CLERK AUTH OVERLAY */
   #authOverlay {
     position: fixed;
     inset: 0;
@@ -52,56 +47,25 @@
     padding: 20px;
   }
 
-  .auth-card {
-    background: #ffffff;
-    border-radius: var(--radius-lg);
-    padding: 36px 32px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-    text-align: center;
-  }
-
-  .brand-badge {
-    display: inline-flex;
+  .brand-header {
+    display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    color: var(--foreground);
-    font-size: 22px;
+    gap: 12px;
+    margin-bottom: 24px;
+    color: white;
+    font-size: 24px;
     font-weight: 700;
   }
-  .brand-badge-icon {
-    width: 40px; height: 40px; background: var(--primary); border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;
+  .brand-header-icon {
+    width: 44px; height: 44px; background: var(--primary); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; color: white; font-size: 22px;
   }
-  .auth-sub { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
 
-  /* PASSCODE BOX */
-  .passcode-input {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: var(--radius-md);
-    border: 1.5px solid var(--border);
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    outline: none;
-    margin-bottom: 12px;
-    transition: 0.15s;
-  }
-  .passcode-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
-  .error-msg { font-size: 13px; color: var(--danger); font-weight: 500; margin-bottom: 12px; display: none; }
-
-  /* CLERK EMBED CONTAINER */
-  #realClerkContainer {
+  #clerkSignInBox {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    min-height: 280px;
+    min-height: 350px;
   }
 
   .dashboard-wrapper {
@@ -266,33 +230,13 @@
 </head>
 <body>
 
-<!-- DUAL SECURITY OVERLAY -->
+<!-- CLERK AUTH OVERLAY -->
 <div id="authOverlay">
-
-  <!-- STAGE 1: MED2026 PASSCODE -->
-  <div class="auth-card" id="passcodeCard">
-    <div class="brand-badge">
-      <div class="brand-badge-icon">⚡</div>
-      <span>AcademicHub</span>
-    </div>
-    <p class="auth-sub">Enter your student access passcode to unlock the portal.</p>
-    
-    <input type="password" id="passcodeInput" class="passcode-input" placeholder="ACCESS PASSCODE" maxlength="15" onkeypress="if(event.key==='Enter') verifyPasscode()">
-    <div id="passcodeError" class="error-msg">Incorrect Passcode. Access Denied.</div>
-    <button class="btn btn-primary" onclick="verifyPasscode()">Unlock Portal →</button>
+  <div class="brand-header">
+    <div class="brand-header-icon">⚡</div>
+    <span>AcademicHub</span>
   </div>
-
-  <!-- STAGE 2: REAL CLERK GOOGLE AUTH -->
-  <div class="auth-card" id="clerkCard" style="display:none; max-width: 480px;">
-    <div class="brand-badge">
-      <div class="brand-badge-icon">🔒</div>
-      <span>Student Verification</span>
-    </div>
-    <p class="auth-sub">Sign in with your Google account to verify your student identity.</p>
-    
-    <div id="realClerkContainer"></div>
-  </div>
-
+  <div id="clerkSignInBox"></div>
 </div>
 
 <!-- MAIN DASHBOARD -->
@@ -511,123 +455,50 @@
 <!-- ================= SCRIPT ================= -->
 <script>
 const CLERK_KEY = "pk_live_Y2xlcmsuYWNhZGVtaWMtaHViLWR1c2t5LW11LnZlcmNlbC5hcHAk";
-const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b49614e0536c85b07c0";
 
-let globalClerk = null;
-let isPasscodeUnlocked = (localStorage.getItem('hub_passcode_ok') === 'true');
-
-async function hashText(str) {
-  try {
-    const buffer = new TextEncoder().encode(str.trim().toUpperCase());
-    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-  } catch(e) {
-    return str.trim().toUpperCase() === "MED2026" ? TARGET_PASSCODE_HASH : "invalid";
-  }
-}
-
-// 1. VERIFY MED2026
-async function verifyPasscode() {
-  const input = document.getElementById('passcodeInput');
-  const errorEl = document.getElementById('passcodeError');
-  if (!input) return;
-
-  const entered = input.value;
-  const hashed = await hashText(entered);
-
-  if (hashed === TARGET_PASSCODE_HASH) {
-    if (errorEl) errorEl.style.display = 'none';
-    isPasscodeUnlocked = true;
-    localStorage.setItem('hub_passcode_ok', 'true');
-    checkFullAccess();
-  } else {
-    if (errorEl) {
-      errorEl.style.display = 'block';
-      errorEl.textContent = 'Incorrect Passcode. Access Denied.';
-    }
-  }
-}
-
-// 2. CHECK FULL ACCESS
-function checkFullAccess() {
-  if (!isPasscodeUnlocked) {
-    document.getElementById('authOverlay').style.display = 'flex';
-    document.getElementById('passcodeCard').style.display = 'block';
-    document.getElementById('clerkCard').style.display = 'none';
-    document.getElementById('mainDashboard').style.display = 'none';
-    return;
-  }
-
-  // Passcode verified! Now check Clerk User:
-  if (globalClerk && globalClerk.user) {
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('mainDashboard').style.display = 'flex';
-
-    const displayName = globalClerk.user.fullName || globalClerk.user.firstName || globalClerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
-    setElText('clerkUserName', displayName);
-
-    const userBtnContainer = document.getElementById('clerkUserButton');
-    if (userBtnContainer && globalClerk.mountUserButton && !userBtnContainer.hasChildNodes()) {
-      globalClerk.mountUserButton(userBtnContainer);
-    }
-
-    updateAllMetrics();
-    renderPlanner();
-  } else {
-    // Show Real Clerk Sign In Box
-    document.getElementById('authOverlay').style.display = 'flex';
-    document.getElementById('passcodeCard').style.display = 'none';
-    document.getElementById('clerkCard').style.display = 'block';
-    document.getElementById('mainDashboard').style.display = 'none';
-
-    const container = document.getElementById('realClerkContainer');
-    if (container && globalClerk && globalClerk.mountSignIn && container.children.length === 0) {
-      globalClerk.mountSignIn(container, {
-        afterSignInUrl: window.location.href,
-        afterSignUpUrl: window.location.href
-      });
-    }
-  }
-}
-
-// INITIALIZE CLERK
+// PURE CLERK AUTH INITIALIZATION
 async function initClerk() {
   try {
-    let clerkObj = window.Clerk;
-    if (!clerkObj) {
-      setTimeout(initClerk, 250);
+    const Clerk = window.Clerk;
+    if (!Clerk) {
+      setTimeout(initClerk, 200);
       return;
     }
 
-    let clerkInstance = typeof clerkObj === 'function' ? new clerkObj(CLERK_KEY) : clerkObj;
-    await clerkInstance.load({ publishableKey: CLERK_KEY });
-    globalClerk = clerkInstance;
+    await Clerk.load();
 
-    // Listen to real-time authentication events
-    if (clerkInstance.addListener) {
-      clerkInstance.addListener(function(state) {
-        if (state && state.user) {
-          checkFullAccess();
-        }
-      });
+    if (Clerk.user) {
+      // User is verified & logged in!
+      document.getElementById('authOverlay').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'flex';
+
+      const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
+      setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
+      setElText('clerkUserName', displayName);
+
+      const userBtnContainer = document.getElementById('clerkUserButton');
+      if (userBtnContainer && userBtnContainer.children.length === 0) {
+        Clerk.mountUserButton(userBtnContainer);
+      }
+
+      updateAllMetrics();
+      renderPlanner();
+    } else {
+      // User not logged in: Mount Real Clerk Sign In Box
+      document.getElementById('authOverlay').style.display = 'flex';
+      document.getElementById('mainDashboard').style.display = 'none';
+
+      const container = document.getElementById('clerkSignInBox');
+      if (container && container.children.length === 0) {
+        Clerk.mountSignIn(container);
+      }
     }
-
-    checkFullAccess();
   } catch (err) {
-    console.warn("Clerk load error:", err);
-    checkFullAccess();
+    console.error("Clerk error:", err);
   }
 }
 
 window.addEventListener('load', initClerk);
-
-// PERIODIC SESSION WATCHER
-setInterval(function() {
-  if (globalClerk && globalClerk.user && document.getElementById('mainDashboard').style.display === 'none' && isPasscodeUnlocked) {
-    checkFullAccess();
-  }
-}, 500);
 
 // XSS SANITIZATION
 function escapeHTML(str) {
