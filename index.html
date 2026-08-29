@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AcademicHub - Medical Learning Platform</title>
+<title>AcademicHub - Medical Platform with Dr. Mohammad</title>
 
 <!-- 1. CLERK SDK -->
 <script
@@ -33,7 +33,6 @@
     --radius-full: 9999px;
   }
 
-  /* DARK THEME PALETTE */
   [data-theme="dark"] {
     --foreground: #f1f5f9;
     --muted-foreground: #94a3b8;
@@ -48,7 +47,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.2s ease, border-color 0.2s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* DUAL SECURITY FULL-SCREEN OVERLAY */
+  /* FULL-SCREEN DUAL SECURITY OVERLAY */
   #authOverlay {
     position: fixed;
     inset: 0;
@@ -149,12 +148,25 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-hover));
     color: white; border-radius: var(--radius-lg); padding: 22px 24px; margin-bottom: 24px;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+    position: relative;
   }
   .announcement-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
   .announcement-desc { font-size: 13px; opacity: 0.9; }
   .countdown-box { background: rgba(0, 0, 0, 0.25); padding: 10px 18px; border-radius: var(--radius-md); text-align: center; }
   .countdown-digits { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
   .countdown-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+  .btn-edit-countdown {
+    background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white; padding: 5px 10px; border-radius: var(--radius-md); font-size: 11px;
+    cursor: pointer; font-weight: 600; margin-top: 6px;
+  }
+  .btn-edit-countdown:hover { background: rgba(255, 255, 255, 0.3); }
+
+  /* ADMIN COUNTDOWN SETTINGS MODAL */
+  #adminCountdownModal {
+    display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
+    z-index: 999999; justify-content: center; align-items: center; padding: 20px;
+  }
 
   /* STATS GRID */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
@@ -191,7 +203,7 @@
   .flashcard-hint { font-size: 12px; color: var(--muted-foreground); }
   .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 580px; margin: 0 auto; }
 
-  /* VIDEO MASTERCLASSES */
+  /* VIDEO MASTERCLASSES (NINJA NERD) */
   .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
   .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
@@ -278,6 +290,26 @@
 
 </div>
 
+<!-- ADMIN COUNTDOWN SETTINGS MODAL -->
+<div id="adminCountdownModal">
+  <div class="auth-card" style="max-width: 420px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Edit Exam Announcement</h3>
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Announcement Title:</label>
+    <input type="text" id="adminAnnounceTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" value="📢 Board Exam Countdown & Updates">
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Announcement Subtitle:</label>
+    <input type="text" id="adminAnnounceDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" value="Weekly Unit 1 Review & Diagnostic Quiz 01 is now open.">
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Target Exam Date & Time:</label>
+    <input type="datetime-local" id="adminTargetDate" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;">
+    
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveAdminCountdown()">Save & Update ✓</button>
+      <button class="btn btn-outline" onclick="closeAdminModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN DASHBOARD -->
 <div class="dashboard-wrapper" id="mainDashboard" style="display:none;">
 
@@ -303,11 +335,11 @@
       <nav class="nav-menu">
         <div class="nav-item active" onclick="goToTab('overview')"><span>📊</span> Overview</div>
         <div class="nav-item" onclick="goToTab('qbank')"><span>🎯</span> Question Bank</div>
-        <div class="nav-item" onclick="goToTab('videos')"><span>🎥</span> Masterclasses</div>
+        <div class="nav-item" onclick="goToTab('videos')"><span>🎥</span> Ninja Nerd Lectures</div>
         <div class="nav-item" onclick="goToTab('flashcards')"><span>🗂️</span> Flashcards</div>
         <div class="nav-item" onclick="goToTab('cheatsheet')"><span>🔍</span> Medical Directory</div>
         <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
-        <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Dalia</div>
+        <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Mohammad</div>
         <div class="nav-item" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
       </nav>
     </div>
@@ -331,12 +363,13 @@
       <!-- EXAM COUNTDOWN & ANNOUNCEMENT -->
       <div class="announcement-card">
         <div>
-          <h3 class="announcement-title">📢 Board Exam Countdown & Updates</h3>
-          <p class="announcement-desc">Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.</p>
+          <h3 class="announcement-title" id="displayAnnounceTitle">📢 Board Exam Countdown & Updates</h3>
+          <p class="announcement-desc" id="displayAnnounceDesc">Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.</p>
+          <button class="btn-edit-countdown" onclick="openAdminModal()">✏️ Edit Exam Date & Message</button>
         </div>
         <div class="countdown-box">
-          <div class="countdown-digits" id="examCountdown">45d 12h</div>
-          <div class="countdown-label">Until Final Assessment</div>
+          <div class="countdown-digits" id="examCountdown">Loading...</div>
+          <div class="countdown-label">Until Target Assessment</div>
         </div>
       </div>
 
@@ -362,7 +395,7 @@
 
       <div class="stat-card" style="background: var(--card-bg); border-left: 4px solid var(--primary);">
         <h3 style="font-size: 15px; margin-bottom: 4px;">🚀 Ready to Practice?</h3>
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px;">Start your assessment in the Question Bank or review active recall flashcards!</p>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px;">Start your assessment in the Question Bank or watch high-yield Ninja Nerd lectures!</p>
         <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="goToTab('qbank')">Open Question Bank →</button>
       </div>
     </div>
@@ -407,39 +440,56 @@
       </div>
     </div>
 
-    <!-- 3. VIDEO MASTERCLASSES -->
+    <!-- 3. VIDEO MASTERCLASSES (NINJA NERD) -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Video Masterclasses & Recorded Lectures</h2>
-        <p class="panel-subtitle">High-yield clinical lectures taught by Dr. Dalia.</p>
+        <h2 class="panel-title">Ninja Nerd Medical Masterclasses</h2>
+        <p class="panel-subtitle">High-yield clinical lectures curated by Dr. Mohammad.</p>
       </div>
 
       <div class="video-grid">
+        <!-- NINJA NERD VIDEO 1 -->
         <div class="video-card">
           <div class="video-embed-box">
-            <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/pC7sC_Fqf1Q" allowfullscreen></iframe>
           </div>
           <div class="video-body">
             <div>
-              <span class="video-tag">Module 1 • 25 Mins</span>
-              <h4 class="video-title">Pathology & Cellular Adaptation</h4>
-              <p class="video-desc">Comprehensive breakdown of necrosis vs apoptosis and cellular injury mechanisms.</p>
+              <span class="video-tag">Pathology • Ninja Nerd</span>
+              <h4 class="video-title">Cellular Injury, Necrosis & Apoptosis</h4>
+              <p class="video-desc">Comprehensive breakdown of reversible vs irreversible cell injury and necrosis subtypes.</p>
             </div>
             <button class="btn btn-outline" id="vid-btn-1" onclick="toggleVideoWatched(1)">Mark as Completed ✓</button>
           </div>
         </div>
 
+        <!-- NINJA NERD VIDEO 2 -->
         <div class="video-card">
           <div class="video-embed-box">
-            <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/k4Jb1VfI1hM" allowfullscreen></iframe>
           </div>
           <div class="video-body">
             <div>
-              <span class="video-tag">Module 2 • 35 Mins</span>
-              <h4 class="video-title">Pharmacology: Autonomic Nervous System</h4>
-              <p class="video-desc">Adrenergic vs Cholinergic receptors, agonist/antagonist drugs & clinical indications.</p>
+              <span class="video-tag">Pharmacology • Ninja Nerd</span>
+              <h4 class="video-title">Autonomic Nervous System: Sympathetic vs Parasympathetic</h4>
+              <p class="video-desc">Alpha & Beta receptors, cholinergic pathways, and drug mechanisms of action.</p>
             </div>
             <button class="btn btn-outline" id="vid-btn-2" onclick="toggleVideoWatched(2)">Mark as Completed ✓</button>
+          </div>
+        </div>
+
+        <!-- NINJA NERD VIDEO 3 -->
+        <div class="video-card">
+          <div class="video-embed-box">
+            <iframe src="https://www.youtube-nocookie.com/embed/IS9TD9fHFv0" allowfullscreen></iframe>
+          </div>
+          <div class="video-body">
+            <div>
+              <span class="video-tag">Cardiology • Ninja Nerd</span>
+              <h4 class="video-title">Cardiac Cycle & Heart Sounds</h4>
+              <p class="video-desc">Step-by-step review of systole, diastole, Wiggers diagram, and murmur pathology.</p>
+            </div>
+            <button class="btn btn-outline" id="vid-btn-3" onclick="toggleVideoWatched(3)">Mark as Completed ✓</button>
           </div>
         </div>
       </div>
@@ -532,15 +582,15 @@
       <div id="taskContainer"></div>
     </div>
 
-    <!-- 7. DIRECT Q&A WITH DR. DALIA -->
+    <!-- 7. DIRECT Q&A WITH DR. MOHAMMAD -->
     <div id="view-qa" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">💬 Q&A with Dr. Dalia</h2>
+        <h2 class="panel-title">💬 Q&A with Dr. Mohammad</h2>
         <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
       </div>
 
       <div class="qa-box">
-        <h3 style="font-size: 16px; margin-bottom: 8px;">Ask a Question:</h3>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Ask Dr. Mohammad a Question:</h3>
         <textarea id="qaQuestionInput" class="search-input-box" style="height: 90px; resize: vertical;" placeholder="Type your medical inquiry or question here..."></textarea>
         <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="submitStudentQuestion()">Submit Inquiry ✉️</button>
       </div>
@@ -581,7 +631,65 @@ const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b4961
 
 let isPasscodeUnlocked = (sessionStorage.getItem('hub_passcode_ok') === 'true');
 
-// 1. THEME & ACCENT SYSTEM
+// 1. ADMIN COUNTDOWN CONTROLLER
+let targetExamTimestamp = safeGet('hub_exam_target_ts', Date.now() + (45 * 24 * 60 * 60 * 1000));
+
+function updateCountdownTimer() {
+  const now = Date.now();
+  const diff = targetExamTimestamp - now;
+  const digitsEl = document.getElementById('examCountdown');
+
+  if (diff <= 0) {
+    if (digitsEl) digitsEl.textContent = "Exam In Progress!";
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+  if (digitsEl) digitsEl.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
+}
+setInterval(updateCountdownTimer, 1000);
+
+function openAdminModal() {
+  const modal = document.getElementById('adminCountdownModal');
+  const d = new Date(targetExamTimestamp);
+  const isoLocal = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+  document.getElementById('adminTargetDate').value = isoLocal;
+  document.getElementById('adminAnnounceTitle').value = safeGet('hub_ann_title', '📢 Board Exam Countdown & Updates');
+  document.getElementById('adminAnnounceDesc').value = safeGet('hub_ann_desc', 'Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('adminCountdownModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveAdminCountdown() {
+  const dateInput = document.getElementById('adminTargetDate').value;
+  const titleInput = document.getElementById('adminAnnounceTitle').value;
+  const descInput = document.getElementById('adminAnnounceDesc').value;
+
+  if (dateInput) {
+    targetExamTimestamp = new Date(dateInput).getTime();
+    safeSet('hub_exam_target_ts', targetExamTimestamp);
+  }
+  if (titleInput) {
+    safeSet('hub_ann_title', titleInput);
+    setElText('displayAnnounceTitle', titleInput);
+  }
+  if (descInput) {
+    safeSet('hub_ann_desc', descInput);
+    setElText('displayAnnounceDesc', descInput);
+  }
+  closeAdminModal();
+  updateCountdownTimer();
+}
+
+// 2. THEME & ACCENT SYSTEM
 function toggleDarkMode() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -598,7 +706,7 @@ function setAccentColor(primary, hover) {
   safeSet('hub_accent_pref', { primary: primary, hover: hover });
 }
 
-// 2. FLASHCARDS DATA & ENGINE
+// 3. FLASHCARDS DATA & ENGINE
 const flashcardsList = [
   { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
   { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
@@ -630,7 +738,7 @@ function prevCard() {
   renderFlashcard();
 }
 
-// 3. MEDICAL DIRECTORY SEARCH
+// 4. MEDICAL DIRECTORY SEARCH
 function filterMedicalDirectory() {
   const input = document.getElementById('medSearchInput');
   const filter = (input ? input.value : '').toLowerCase();
@@ -641,7 +749,7 @@ function filterMedicalDirectory() {
   });
 }
 
-// 4. Q&A SUBMISSION ENGINE
+// 5. Q&A WITH DR. MOHAMMAD
 function submitStudentQuestion() {
   const input = document.getElementById('qaQuestionInput');
   if (!input || !input.value.trim()) return;
@@ -653,7 +761,7 @@ function submitStudentQuestion() {
   questions.unshift({
     id: Date.now(),
     text: input.value.trim(),
-    reply: "Dr. Dalia has received your question and will reply shortly.",
+    reply: "Dr. Mohammad has received your question and will reply shortly.",
     date: "Today"
   });
 
@@ -680,14 +788,14 @@ function renderQA() {
       </div>
       <div class="qa-msg-body">${escapeHTML(q.text)}</div>
       <div class="qa-reply">
-        <strong>Dr. Dalia:</strong> ${escapeHTML(q.reply)}
+        <strong>Dr. Mohammad:</strong> ${escapeHTML(q.reply)}
       </div>
     `;
     list.appendChild(item);
   });
 }
 
-// 5. SECURITY & PASSCODE
+// 6. SECURITY & PASSCODE
 async function hashText(str) {
   try {
     const buffer = new TextEncoder().encode(str.trim().toUpperCase());
@@ -747,6 +855,10 @@ function checkFullAccess() {
     renderPlanner();
     renderFlashcard();
     renderQA();
+    updateCountdownTimer();
+
+    setElText('displayAnnounceTitle', safeGet('hub_ann_title', '📢 Board Exam Countdown & Updates'));
+    setElText('displayAnnounceDesc', safeGet('hub_ann_desc', 'Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.'));
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('passcodeCard').style.display = 'none';
@@ -802,7 +914,7 @@ function goToTab(tabId) {
   if (nav) nav.classList.add('active');
 }
 
-// RESTORE USER THEME PREFERENCES ON STARTUP
+// RESTORE USER THEME PREFERENCES
 (function() {
   const savedTheme = safeGet('hub_theme_pref', 'light');
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -853,8 +965,8 @@ function updateAllMetrics() {
 // PLANNER ENGINE
 let currentDay = 'mon';
 const initialTasks = {
-  mon: [{ id: 1, goal: "Unit 1: Cellular Pathology", time: "04:00 PM", done: false }],
-  tue: [{ id: 2, goal: "Unit 2: Autonomic Pharmacology", time: "04:00 PM", done: false }]
+  mon: [{ id: 1, goal: "Cellular Pathology: Ninja Nerd Lecture", time: "04:00 PM", done: false }],
+  tue: [{ id: 2, goal: "Autonomic Nervous System Review", time: "04:00 PM", done: false }]
 };
 function renderPlanner() {
   const container = document.getElementById('taskContainer');
