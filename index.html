@@ -139,11 +139,11 @@
   .view-panel.active { display: block; animation: fadeIn 0.15s ease-in; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .panel-header { margin-bottom: 24px; }
+  .panel-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
   .panel-title { font-size: 26px; font-weight: 700; color: var(--foreground); }
   .panel-subtitle { font-size: 14px; color: var(--muted-foreground); margin-top: 4px; }
 
-  /* GAMIFICATION XP BANNER */
+  /* GAMIFICATION RANK CARD */
   .rank-badge-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
     padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
@@ -171,12 +171,11 @@
     color: white; padding: 5px 10px; border-radius: var(--radius-md); font-size: 11px;
     cursor: pointer; font-weight: 600; margin-top: 6px;
   }
-  .btn-edit-countdown:hover { background: rgba(255, 255, 255, 0.3); }
 
-  /* POMODORO & AMBIENT FOCUS ROOM */
+  /* FOCUS ROOM */
   .focus-room-container {
     max-width: 680px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 36px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    border-radius: var(--radius-lg); padding: 36px; text-align: center;
   }
   .timer-display { font-size: 68px; font-weight: 800; letter-spacing: 2px; color: var(--foreground); margin: 20px 0; }
   .timer-mode-buttons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
@@ -193,7 +192,6 @@
     position: relative; width: 100%; height: 260px; background: var(--card-bg);
     border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer;
     transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
   }
   .flashcard.flipped { transform: rotateY(180deg); }
   .flashcard-face {
@@ -224,7 +222,7 @@
 
   /* VIDEO MASTERCLASSES (NINJA NERD) */
   .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-  .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; }
+  .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
   .video-embed-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
   .video-body { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
@@ -232,10 +230,10 @@
   .video-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
   .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px; }
 
-  /* MEDICAL SEARCH DIRECTORY */
+  /* SEARCH DIRECTORY */
   .search-input-box {
-    width: 100%; padding: 14px 18px; border-radius: var(--radius-md); border: 1.5px solid var(--border);
-    background: var(--card-bg); color: var(--foreground); font-size: 15px; outline: none; margin-bottom: 24px;
+    width: 100%; padding: 13px 16px; border-radius: var(--radius-md); border: 1.5px solid var(--border);
+    background: var(--card-bg); color: var(--foreground); font-size: 14px; outline: none; margin-bottom: 20px;
   }
   .search-input-box:focus { border-color: var(--primary); }
   .ref-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
@@ -252,7 +250,7 @@
 
   /* QUESTION BANK & PLANNER */
   .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-  .qbank-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; }
+  .qbank-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
   .qbank-card.solved { border-color: #86efac; }
   .status-badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
   .status-pending { background: #fef3c7; color: #b45309; }
@@ -269,8 +267,9 @@
   .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 12px; }
   .task-item.completed .checkbox { background: var(--primary); border-color: var(--primary); color: white; }
 
-  /* ADMIN MODAL */
-  #adminCountdownModal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
+  /* MODALS */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
+  .btn-del-item { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; }
 
   @media (max-width: 768px) {
     .dashboard-wrapper { flex-direction: column; }
@@ -313,8 +312,38 @@
 
 </div>
 
+<!-- ADMIN ADD QUIZ / FILE MODAL -->
+<div class="modal-overlay" id="adminContentModal">
+  <div class="auth-card" style="max-width: 460px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Add New Quiz or Study File</h3>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Content Type:</label>
+    <select id="newContentType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;">
+      <option value="quiz">🎯 Online Quiz (Google Form / Assessment)</option>
+      <option value="file">📁 Study Notes / PDF Document (Google Drive Link)</option>
+    </select>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
+    <input type="text" id="newContentTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Quiz 03: Renal Pathology">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
+    <input type="text" id="newContentDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. 15 Questions evaluating Glomerular Diseases">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Link URL (Google Form or PDF Drive Link):</label>
+    <input type="url" id="newContentUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="https://forms.google.com/..." value="https://forms.google.com">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Questions / XP Reward:</label>
+    <input type="number" id="newContentQuestions" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" value="15">
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveNewAdminContent()">Publish to Platform 🚀</button>
+      <button class="btn btn-outline" onclick="closeAdminContentModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN COUNTDOWN SETTINGS MODAL -->
-<div id="adminCountdownModal">
+<div class="modal-overlay" id="adminCountdownModal">
   <div class="auth-card" style="max-width: 420px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Edit Exam Announcement</h3>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Announcement Title:</label>
@@ -415,8 +444,10 @@
       </div>
 
       <div class="panel-header">
-        <h2 class="panel-title" id="welcomeUser">Welcome 👋</h2>
-        <p class="panel-subtitle">Here is your daily study streak, curriculum library, and active assessments.</p>
+        <div>
+          <h2 class="panel-title" id="welcomeUser">Welcome 👋</h2>
+          <p class="panel-subtitle">Here is your daily study streak, curriculum library, and active assessments.</p>
+        </div>
       </div>
 
       <div class="stats-grid">
@@ -444,11 +475,13 @@
       </div>
     </div>
 
-    <!-- 2. FOCUS ROOM (POMODORO & AMBIENT AUDIO) -->
+    <!-- 2. FOCUS ROOM -->
     <div id="view-focus" class="view-panel">
       <div class="panel-header" style="text-align: center;">
-        <h2 class="panel-title">⏳ Focus Study Room & Ambient Sounds</h2>
-        <p class="panel-subtitle">Deep work timer with relaxing ambient sounds to maximize memory retention.</p>
+        <div style="width:100%;">
+          <h2 class="panel-title">⏳ Focus Study Room & Ambient Sounds</h2>
+          <p class="panel-subtitle">Deep work timer with relaxing ambient sounds to maximize memory retention.</p>
+        </div>
       </div>
 
       <div class="focus-room-container">
@@ -465,7 +498,6 @@
           <button class="btn btn-outline" style="width: auto; padding: 12px 20px;" onclick="resetPomodoro()">↺ Reset</button>
         </div>
 
-        <!-- AMBIENT AUDIO ENGINE -->
         <div class="sound-selector-box">
           <div style="font-size: 14px; font-weight: 700; color: var(--foreground);">🎧 Ambient Focus Audio:</div>
           <div class="sound-buttons">
@@ -482,51 +514,28 @@
       </div>
     </div>
 
-    <!-- 3. QUESTION BANK -->
+    <!-- 3. QUESTION BANK & ASSESSMENTS -->
     <div id="view-qbank" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Question Bank & Assessments</h2>
-        <p class="panel-subtitle">Click "Start Exam" to launch. (+100 XP awarded upon completion!)</p>
+        <div>
+          <h2 class="panel-title">Question Bank & Assessments</h2>
+          <p class="panel-subtitle">Click "Start Exam" to launch. (+100 XP awarded upon completion!)</p>
+        </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminContentModal('quiz')">⚙️ + Add New Quiz (Admin)</button>
       </div>
 
-      <div class="qbank-grid">
-        <div class="qbank-card" id="card-q1">
-          <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-              <span class="video-tag">Unit 1 • +100 XP</span>
-              <span class="status-badge status-pending" id="badge-q1">Not Solved</span>
-            </div>
-            <h3 style="font-size: 18px; margin-bottom: 8px;">Quiz 01: Core Fundamentals</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Evaluates foundational principles, basic definitions, and terminology.</p>
-          </div>
-          <div>
-            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q1" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q1', 10)">🚀 Start Exam ↗</a>
-            <button class="btn btn-outline" id="btn-restart-q1" style="display:none;" onclick="restartQuiz('q1')">↺ Restart Exam</button>
-          </div>
-        </div>
-
-        <div class="qbank-card" id="card-q2">
-          <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-              <span class="video-tag">Unit 2 • +100 XP</span>
-              <span class="status-badge status-pending" id="badge-q2">Not Solved</span>
-            </div>
-            <h3 style="font-size: 18px; margin-bottom: 8px;">Quiz 02: Advanced Applications</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Diagnostic test challenging analytical problem-solving and formulas.</p>
-          </div>
-          <div>
-            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q2" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q2', 15)">🚀 Start Exam ↗</a>
-            <button class="btn btn-outline" id="btn-restart-q2" style="display:none;" onclick="restartQuiz('q2')">↺ Restart Exam</button>
-          </div>
-        </div>
+      <div class="qbank-grid" id="qbankGridContainer">
+        <!-- RENDERED DYNAMICALLY BY JAVASCRIPT -->
       </div>
     </div>
 
-    <!-- 4. VIDEO MASTERCLASSES (NINJA NERD) -->
+    <!-- 4. VIDEO MASTERCLASSES -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Ninja Nerd Medical Masterclasses</h2>
-        <p class="panel-subtitle">High-yield clinical lectures curated by Dr. Mohammad.</p>
+        <div>
+          <h2 class="panel-title">Ninja Nerd Medical Masterclasses</h2>
+          <p class="panel-subtitle">High-yield clinical lectures curated by Dr. Mohammad.</p>
+        </div>
       </div>
 
       <div class="video-grid">
@@ -574,11 +583,13 @@
       </div>
     </div>
 
-    <!-- 5. FLASHCARDS (ACTIVE RECALL) -->
+    <!-- 5. FLASHCARDS -->
     <div id="view-flashcards" class="view-panel">
       <div class="panel-header" style="text-align: center;">
-        <h2 class="panel-title">High-Yield Flashcard Deck</h2>
-        <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
+        <div style="width:100%;">
+          <h2 class="panel-title">High-Yield Flashcard Deck</h2>
+          <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
+        </div>
       </div>
 
       <div class="flashcard-wrapper">
@@ -602,11 +613,13 @@
       </div>
     </div>
 
-    <!-- 6. MEDICAL DIRECTORY & CHEAT-SHEET -->
+    <!-- 6. MEDICAL DIRECTORY -->
     <div id="view-cheatsheet" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Searchable Medical Reference Directory</h2>
-        <p class="panel-subtitle">Instant clinical values, lab reference ranges, and diagnostic criteria.</p>
+        <div>
+          <h2 class="panel-title">Searchable Medical Reference Directory</h2>
+          <p class="panel-subtitle">Instant clinical values, lab reference ranges, and diagnostic criteria.</p>
+        </div>
       </div>
 
       <input type="text" id="medSearchInput" class="search-input-box" placeholder="🔍 Search any lab value, formula, or drug (e.g. Potassium, GFR, Sodium)..." oninput="filterMedicalDirectory()">
@@ -631,11 +644,13 @@
       </table>
     </div>
 
-    <!-- 7. STUDY ROADMAP (PLANNER) -->
+    <!-- 7. STUDY ROADMAP -->
     <div id="view-planner" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Weekly Study Roadmap</h2>
-        <p class="panel-subtitle">Schedule your daily sessions and tick off completed tasks. (+25 XP per task!)</p>
+        <div>
+          <h2 class="panel-title">Weekly Study Roadmap</h2>
+          <p class="panel-subtitle">Schedule your daily sessions and tick off completed tasks. (+25 XP per task!)</p>
+        </div>
       </div>
 
       <div class="progress-bar-bg">
@@ -664,8 +679,10 @@
     <!-- 8. DIRECT Q&A WITH DR. MOHAMMAD -->
     <div id="view-qa" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">💬 Q&A with Dr. Mohammad</h2>
-        <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
+        <div>
+          <h2 class="panel-title">💬 Q&A with Dr. Mohammad</h2>
+          <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
+        </div>
       </div>
 
       <div class="qa-box">
@@ -681,8 +698,10 @@
     <!-- 9. ANALYTICS -->
     <div id="view-analytics" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Performance Analytics</h2>
-        <p class="panel-subtitle">Live metrics based on your quiz completions and daily streak.</p>
+        <div>
+          <h2 class="panel-title">Performance Analytics</h2>
+          <p class="panel-subtitle">Live metrics based on your quiz completions and daily streak.</p>
+        </div>
       </div>
 
       <div class="stats-grid">
@@ -710,7 +729,110 @@ const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b4961
 
 let isPasscodeUnlocked = (sessionStorage.getItem('hub_passcode_ok') === 'true');
 
-// 1. GAMIFICATION ENGINE (XP & MEDICAL RANKS)
+// 1. IN-APP ADMIN CONTENT CREATOR (ADD QUIZZES & FILES FROM UI)
+const defaultQuizzes = [
+  { id: 'q1', title: 'Quiz 01: Core Fundamentals', desc: 'Evaluates foundational principles, basic definitions, and terminology.', tag: 'Unit 1 • +100 XP', url: 'https://forms.google.com', questions: 10, solved: false },
+  { id: 'q2', title: 'Quiz 02: Advanced Applications', desc: 'Diagnostic test challenging analytical problem-solving and formulas.', tag: 'Unit 2 • +100 XP', url: 'https://forms.google.com', questions: 15, solved: false }
+];
+
+let customQuizzes = safeGet('hub_quizzes_custom_v2', defaultQuizzes);
+
+function renderQuizzes() {
+  const container = document.getElementById('qbankGridContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let solvedCount = 0;
+
+  customQuizzes.forEach(function(q) {
+    if (q.solved) solvedCount++;
+
+    const card = document.createElement('div');
+    card.className = 'qbank-card ' + (q.solved ? 'solved' : '');
+    card.id = 'card-' + q.id;
+
+    card.innerHTML = `
+      <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+          <span class="video-tag">${escapeHTML(q.tag || 'Assessment')}</span>
+          <span class="status-badge ${q.solved ? 'status-done' : 'status-pending'}" id="badge-${q.id}">${q.solved ? '✓ Completed' : 'Not Solved'}</span>
+        </div>
+        <h3 style="font-size: 18px; margin-bottom: 8px;">${escapeHTML(q.title)}</h3>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(q.desc)}</p>
+      </div>
+      <div>
+        <a href="${escapeHTML(q.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="btn-launch-${q.id}" style="${q.solved ? 'display:none;' : ''}" onclick="startAndAutoSaveQuiz('${q.id}', ${Number(q.questions || 10)})">
+          🚀 Start Exam ↗
+        </a>
+        <button class="btn btn-outline" id="btn-restart-${q.id}" style="${q.solved ? '' : 'display:none;'}" onclick="restartQuiz('${q.id}')">
+          ↺ Restart Exam
+        </button>
+      </div>
+      <button class="btn-del-item" title="Delete Quiz (Admin)" onclick="deleteAdminQuiz('${q.id}')">✕</button>
+    `;
+    container.appendChild(card);
+  });
+
+  setElText('statQuizzes', `${solvedCount} / ${customQuizzes.length}`);
+  setElText('analyticsMastery', customQuizzes.length ? Math.round((solvedCount / customQuizzes.length) * 100) + '%' : '0%');
+}
+
+function openAdminContentModal(type) {
+  const modal = document.getElementById('adminContentModal');
+  if (modal) modal.style.display = 'flex';
+}
+function closeAdminContentModal() {
+  const modal = document.getElementById('adminContentModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveNewAdminContent() {
+  const title = document.getElementById('newContentTitle').value.trim();
+  const desc = document.getElementById('newContentDesc').value.trim();
+  const url = document.getElementById('newContentUrl').value.trim();
+  const qCount = parseInt(document.getElementById('newContentQuestions').value) || 10;
+  const type = document.getElementById('newContentType').value;
+
+  if (!title) { alert('Please enter a title!'); return; }
+
+  const newId = 'quiz_' + Date.now();
+  customQuizzes.push({
+    id: newId,
+    title: title,
+    desc: desc || (type === 'quiz' ? 'Online Medical Assessment' : 'Medical Study Resource'),
+    tag: type === 'quiz' ? `Assessment • +100 XP` : `PDF File • +50 XP`,
+    url: url || 'https://forms.google.com',
+    questions: qCount,
+    solved: false
+  });
+
+  safeSet('hub_quizzes_custom_v2', customQuizzes);
+  closeAdminContentModal();
+  renderQuizzes();
+  alert('🎉 New Content Published Live to Platform!');
+}
+
+function deleteAdminQuiz(id) {
+  if (!confirm('Are you sure you want to delete this quiz/file?')) return;
+  customQuizzes = customQuizzes.filter(q => q.id !== id);
+  safeSet('hub_quizzes_custom_v2', customQuizzes);
+  renderQuizzes();
+}
+
+function startAndAutoSaveQuiz(qId, total) {
+  customQuizzes = customQuizzes.map(q => q.id === qId ? Object.assign({}, q, { solved: true }) : q);
+  safeSet('hub_quizzes_custom_v2', customQuizzes);
+  addXP(100);
+  renderQuizzes();
+}
+
+function restartQuiz(qId) {
+  customQuizzes = customQuizzes.map(q => q.id === qId ? Object.assign({}, q, { solved: false }) : q);
+  safeSet('hub_quizzes_custom_v2', customQuizzes);
+  renderQuizzes();
+}
+
+// 2. GAMIFICATION (XP & MEDICAL RANKS)
 let userXP = safeGet('hub_user_xp', 50);
 
 const medicalRanks = [
@@ -751,14 +873,14 @@ function renderRank() {
     const bar = document.getElementById('rankBar');
     if (bar) bar.style.width = pct + '%';
   } else {
-    setElText('rankXpDisplay', `${userXP} XP (Maximum Rank Achieved!)`);
+    setElText('rankXpDisplay', `${userXP} XP (Max Rank!)`);
     setElText('rankRatio', '100% Mastered');
     const bar = document.getElementById('rankBar');
     if (bar) bar.style.width = '100%';
   }
 }
 
-// 2. POMODORO TIMER & AMBIENT AUDIO ENGINE
+// 3. POMODORO & AMBIENT AUDIO ENGINE
 let pomodoroTimer = null;
 let pomodoroSecondsLeft = 25 * 60;
 let isPomodoroRunning = false;
@@ -817,7 +939,6 @@ function resetPomodoro() {
   setPomodoroMode(currentPomodoroMode);
 }
 
-// WEB AUDIO SYNTHESIZERS (ZERO EXTERNAL FILES)
 let audioCtx = null;
 let ambientNodes = [];
 
@@ -833,8 +954,8 @@ function playChime() {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3); // A5
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
     osc.connect(gain); gain.connect(ctx.destination);
@@ -875,7 +996,6 @@ function setAmbientSound(type) {
 
   if (type === 'rain') {
     document.getElementById('btnSoundRain').classList.add('active');
-    // Pink noise buffer
     const bufferSize = ctx.sampleRate * 2;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -896,7 +1016,7 @@ function setAmbientSound(type) {
     const osc1 = ctx.createOscillator();
     const osc2 = ctx.createOscillator();
     osc1.frequency.value = 200;
-    osc2.frequency.value = 240; // 40Hz binaural beat
+    osc2.frequency.value = 240;
     osc1.connect(gain); osc2.connect(gain);
     osc1.start(); osc2.start();
     ambientNodes.push(osc1, osc2);
@@ -910,7 +1030,7 @@ function setAmbientSound(type) {
   }
 }
 
-// 3. ADMIN COUNTDOWN CONTROLLER
+// 4. ADMIN COUNTDOWN CONTROLLER
 let targetExamTimestamp = safeGet('hub_exam_target_ts', Date.now() + (45 * 24 * 60 * 60 * 1000));
 
 function updateCountdownTimer() {
@@ -968,7 +1088,7 @@ function saveAdminCountdown() {
   updateCountdownTimer();
 }
 
-// 4. THEME & ACCENT SYSTEM
+// 5. THEME & ACCENT SYSTEM
 function toggleDarkMode() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -985,7 +1105,7 @@ function setAccentColor(primary, hover) {
   safeSet('hub_accent_pref', { primary: primary, hover: hover });
 }
 
-// 5. FLASHCARDS DATA & ENGINE (+15 XP)
+// 6. FLASHCARDS DATA & ENGINE (+15 XP)
 const flashcardsList = [
   { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
   { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
@@ -1018,7 +1138,7 @@ function prevCard() {
   renderFlashcard();
 }
 
-// 6. MEDICAL DIRECTORY SEARCH
+// 7. MEDICAL DIRECTORY SEARCH
 function filterMedicalDirectory() {
   const input = document.getElementById('medSearchInput');
   const filter = (input ? input.value : '').toLowerCase();
@@ -1029,7 +1149,7 @@ function filterMedicalDirectory() {
   });
 }
 
-// 7. Q&A WITH DR. MOHAMMAD
+// 8. Q&A WITH DR. MOHAMMAD
 function submitStudentQuestion() {
   const input = document.getElementById('qaQuestionInput');
   if (!input || !input.value.trim()) return;
@@ -1075,7 +1195,7 @@ function renderQA() {
   });
 }
 
-// 8. SECURITY & PASSCODE
+// 9. SECURITY & PASSCODE
 async function hashText(str) {
   try {
     const buffer = new TextEncoder().encode(str.trim().toUpperCase());
@@ -1131,7 +1251,7 @@ function checkFullAccess() {
       Clerk.mountUserButton(userBtnContainer);
     }
 
-    updateAllMetrics();
+    renderQuizzes();
     renderPlanner();
     renderFlashcard();
     renderQA();
@@ -1202,47 +1322,6 @@ function goToTab(tabId) {
   const savedAccent = safeGet('hub_accent_pref', null);
   if (savedAccent) setAccentColor(savedAccent.primary, savedAccent.hover);
 })();
-
-// QUIZ ENGINE (+100 XP)
-let quizData = safeGet('axon_quiz_locked_v1', {
-  quizzes: { 'q1': { solved: false, score: 10, total: 10 }, 'q2': { solved: false, score: 15, total: 15 } },
-  streak: 0
-});
-function startAndAutoSaveQuiz(qId, total) {
-  quizData.quizzes[qId] = { solved: true, score: total, total: total };
-  quizData.streak += 1;
-  addXP(100);
-  safeSet('axon_quiz_locked_v1', quizData);
-  updateAllMetrics();
-}
-function restartQuiz(qId) {
-  quizData.quizzes[qId].solved = false;
-  safeSet('axon_quiz_locked_v1', quizData);
-  updateAllMetrics();
-}
-function updateAllMetrics() {
-  let solved = 0, total = Object.keys(quizData.quizzes).length;
-  for (let q in quizData.quizzes) {
-    const item = quizData.quizzes[q];
-    const badge = document.getElementById('badge-' + q);
-    const launch = document.getElementById('btn-launch-' + q);
-    const restart = document.getElementById('btn-restart-' + q);
-    if (item && item.solved) {
-      solved++;
-      if (badge) { badge.className = 'status-badge status-done'; badge.textContent = '✓ Completed'; }
-      if (launch) launch.style.display = 'none';
-      if (restart) restart.style.display = 'block';
-    } else {
-      if (badge) { badge.className = 'status-badge status-pending'; badge.textContent = 'Not Solved'; }
-      if (launch) launch.style.display = 'block';
-      if (restart) restart.style.display = 'none';
-    }
-  }
-  setElText('statStreak', `${quizData.streak} Days 🔥`);
-  setElText('statQuizzes', `${solved} / ${total}`);
-  setElText('analyticsStreak', `${quizData.streak} Days 🔥`);
-  setElText('analyticsMastery', Math.round((solved / total) * 100) + '%');
-}
 
 // PLANNER ENGINE (+25 XP)
 let currentDay = 'mon';
