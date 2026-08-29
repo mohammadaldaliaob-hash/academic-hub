@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,11 +20,12 @@
     --primary-hover: #1447e6;
     --primary-tint: rgba(21, 93, 252, 0.08);
     --foreground: #101828;
-    --muted-foreground: #6a7282;
+    --muted-foreground: #64748b;
     --background: #f8fafc;
+    --card-bg: #ffffff;
     --sidebar-bg: #ffffff;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
+    --border: #e2e8f0;
+    --border-hover: #cbd5e1;
     --success: #16a34a;
     --danger: #ef4444;
     --radius-lg: 16px;
@@ -32,14 +33,26 @@
     --radius-full: 9999px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  /* DARK THEME PALETTE */
+  [data-theme="dark"] {
+    --foreground: #f1f5f9;
+    --muted-foreground: #94a3b8;
+    --background: #090d16;
+    --card-bg: #111827;
+    --sidebar-bg: #0f172a;
+    --border: #1e293b;
+    --border-hover: #334155;
+    --primary-tint: rgba(21, 93, 252, 0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.2s ease, border-color 0.2s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
   /* DUAL SECURITY FULL-SCREEN OVERLAY */
   #authOverlay {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at top, #1e293b, #0f172a);
+    background: radial-gradient(circle at top, #1e293b, #090d16);
     z-index: 99999;
     display: flex;
     flex-direction: column;
@@ -49,12 +62,13 @@
   }
 
   .auth-card {
-    background: #ffffff;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 36px 32px;
     width: 100%;
     max-width: 440px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
     text-align: center;
   }
 
@@ -73,182 +87,156 @@
   }
   .auth-sub { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
 
-  /* PASSCODE INPUT */
   .passcode-input {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: var(--radius-md);
-    border: 1.5px solid var(--border);
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    outline: none;
-    margin-bottom: 12px;
-    transition: 0.15s;
+    width: 100%; padding: 13px 16px; border-radius: var(--radius-md);
+    border: 1.5px solid var(--border); background: var(--background); color: var(--foreground);
+    font-size: 15px; font-weight: 600; text-align: center; letter-spacing: 2px; text-transform: uppercase;
+    outline: none; margin-bottom: 12px;
   }
-  .passcode-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
+  .passcode-input:focus { border-color: var(--primary); }
   .error-msg { font-size: 13px; color: var(--danger); font-weight: 500; margin-bottom: 12px; display: none; }
 
-  /* CLERK EMBED */
-  #realClerkContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 320px;
-  }
+  #realClerkContainer { display: flex; justify-content: center; align-items: center; min-height: 320px; }
 
-  .dashboard-wrapper {
-    display: flex;
-    flex: 1;
-    min-height: 100vh;
-    background: #ffffff;
-  }
+  .dashboard-wrapper { display: flex; flex: 1; min-height: 100vh; background: var(--background); }
 
-  /* Sidebar */
+  /* SIDEBAR */
   .sidebar {
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid var(--border);
-    padding: 24px 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-shrink: 0;
+    width: 270px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border);
+    padding: 24px 18px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
   }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 8px 24px 8px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-  .brand-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--primary);
-    color: white;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
-  }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 20px 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .brand-icon { width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
   .brand-title { font-size: 17px; font-weight: 700; color: var(--foreground); }
 
-  .nav-menu { display: flex; flex-direction: column; gap: 6px; }
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: var(--radius-md);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--muted-foreground);
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.15s ease;
+  /* THEME & COLOR CONTROLS */
+  .customizer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 8px 12px; margin-bottom: 16px;
   }
-  .nav-item:hover { background-color: #f3f4f6; color: var(--foreground); }
+  .color-dots { display: flex; gap: 6px; }
+  .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+  .color-dot.active { border-color: var(--foreground); }
+  .theme-toggle-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--foreground); }
+
+  .nav-menu { display: flex; flex-direction: column; gap: 5px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; color: var(--muted-foreground); cursor: pointer; user-select: none;
+  }
+  .nav-item:hover { background-color: var(--border); color: var(--foreground); }
   .nav-item.active { background-color: var(--primary-tint); color: var(--primary); font-weight: 600; }
 
-  /* Clerk Profile in Sidebar */
-  .sidebar-user-section {
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .sidebar-user-section { padding-top: 16px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
   .sidebar-user-meta { display: flex; flex-direction: column; overflow: hidden; }
   .sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sidebar-user-tag { font-size: 11px; color: #22c55e; font-weight: 500; }
 
-  /* Main Content */
-  .main-content { flex: 1; padding: 36px 40px; background: #fafafa; overflow-y: auto; }
+  /* MAIN CONTENT */
+  .main-content { flex: 1; padding: 36px 40px; background: var(--background); overflow-y: auto; }
   .view-panel { display: none; }
-  .view-panel.active { display: block; }
+  .view-panel.active { display: block; animation: fadeIn 0.15s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .panel-header { margin-bottom: 28px; }
+  .panel-header { margin-bottom: 24px; }
   .panel-title { font-size: 26px; font-weight: 700; color: var(--foreground); }
   .panel-subtitle { font-size: 14px; color: var(--muted-foreground); margin-top: 4px; }
 
-  /* Stats Grid */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px; }
-  .stat-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: #ffffff; }
+  /* COUNTDOWN & ANNOUNCEMENT BANNER */
+  .announcement-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: white; border-radius: var(--radius-lg); padding: 22px 24px; margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .announcement-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .announcement-desc { font-size: 13px; opacity: 0.9; }
+  .countdown-box { background: rgba(0, 0, 0, 0.25); padding: 10px 18px; border-radius: var(--radius-md); text-align: center; }
+  .countdown-digits { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+  .countdown-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+
+  /* STATS GRID */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
+  .stat-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card-bg); }
   .stat-label { font-size: 13px; color: var(--muted-foreground); font-weight: 500; }
   .stat-value { font-size: 26px; font-weight: 700; color: var(--foreground); margin-top: 6px; }
 
-  /* Question Bank */
-  .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-  .qbank-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: 0.2s;
-  }
-  .qbank-card.solved { border-color: #86efac; background: #fafffc; }
-  .qbank-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-  .qbank-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--primary-tint); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .status-badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
-  .status-pending { background: #fef3c7; color: #b45309; }
-  .status-done { background: #dcfce7; color: #15803d; }
-  .qbank-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .qbank-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.5; margin-bottom: 18px; }
-  .qbank-meta { display: flex; gap: 14px; font-size: 12px; color: var(--muted-foreground); padding: 12px 0; border-top: 1px solid var(--border); margin-bottom: 16px; }
-
   .btn {
     display: inline-flex; justify-content: center; align-items: center; gap: 8px;
-    width: 100%; padding: 12px 16px; border-radius: var(--radius-md); text-decoration: none;
-    font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: 0.15s;
+    width: 100%; padding: 11px 16px; border-radius: var(--radius-md); text-decoration: none;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.15s;
   }
   .btn-primary { background: var(--primary); color: white; }
   .btn-primary:hover { background: var(--primary-hover); }
-  .btn-outline { background: white; border: 1px solid var(--border); color: var(--muted-foreground); }
-  .btn-outline:hover { background: #f3f4f6; color: var(--foreground); }
+  .btn-outline { background: var(--card-bg); border: 1px solid var(--border); color: var(--foreground); }
+  .btn-outline:hover { background: var(--border); }
 
-  /* Library Grid */
-  .lib-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-  .lib-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: #ffffff; }
-  .lib-badge { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-tint); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
-  .lib-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .lib-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.5; margin-bottom: 18px; }
+  /* FLASHCARDS 3D ENGINE */
+  .flashcard-wrapper { max-width: 580px; margin: 0 auto 30px auto; perspective: 1000px; }
+  .flashcard {
+    position: relative; width: 100%; height: 260px; background: var(--card-bg);
+    border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer;
+    transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .flashcard-face {
+    position: absolute; inset: 0; backface-visibility: hidden; padding: 32px;
+    display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;
+  }
+  .flashcard-back { transform: rotateY(180deg); background: var(--card-bg); border-radius: var(--radius-lg); }
+  .flashcard-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); background: var(--primary-tint); padding: 4px 10px; border-radius: var(--radius-full); }
+  .flashcard-text { font-size: 18px; font-weight: 600; line-height: 1.5; color: var(--foreground); }
+  .flashcard-hint { font-size: 12px; color: var(--muted-foreground); }
+  .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 580px; margin: 0 auto; }
 
-  /* Planner */
-  .progress-wrap { margin-bottom: 24px; }
-  .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-  .progress-bar-bg { background: #e2e8f0; height: 8px; border-radius: var(--radius-full); overflow: hidden; }
+  /* VIDEO MASTERCLASSES */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; }
+  .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
+  .video-embed-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  .video-body { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+  .video-tag { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-tint); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
+  .video-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
+  .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px; }
+
+  /* MEDICAL SEARCH DIRECTORY */
+  .search-input-box {
+    width: 100%; padding: 14px 18px; border-radius: var(--radius-md); border: 1.5px solid var(--border);
+    background: var(--card-bg); color: var(--foreground); font-size: 15px; outline: none; margin-bottom: 24px;
+  }
+  .search-input-box:focus { border-color: var(--primary); }
+  .ref-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
+  .ref-table th, .ref-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .ref-table th { background: var(--background); font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; font-size: 11px; }
+
+  /* Q&A SECTION */
+  .qa-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+  .qa-thread { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+  .qa-msg { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--background); }
+  .qa-msg-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); margin-bottom: 8px; font-weight: 600; }
+  .qa-msg-body { font-size: 14px; color: var(--foreground); line-height: 1.5; }
+  .qa-reply { margin-top: 10px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--primary-tint); border-left: 3px solid var(--primary); font-size: 13px; }
+
+  /* QUESTION BANK & PLANNER */
+  .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .qbank-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; }
+  .qbank-card.solved { border-color: #86efac; }
+  .status-badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+  .status-pending { background: #fef3c7; color: #b45309; }
+  .status-done { background: #dcfce7; color: #15803d; }
+
+  .progress-bar-bg { background: var(--border); height: 8px; border-radius: var(--radius-full); overflow: hidden; margin-bottom: 20px; }
   .progress-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.3s ease; }
   .day-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .day-tab { padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; background: #ffffff; border: 1px solid var(--border); color: var(--muted-foreground); cursor: pointer; }
-  .day-tab.active { background: var(--foreground); color: #ffffff; border-color: var(--foreground); }
-  .add-box { display: flex; gap: 10px; flex-wrap: wrap; background: #ffffff; border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-lg); margin-bottom: 18px; }
-  .input-field { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; outline: none; }
-  .input-main { flex: 2; min-width: 150px; }
-  .input-sub { flex: 1; min-width: 100px; }
-  .task-list { display: flex; flex-direction: column; gap: 10px; }
-  .task-item { display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; }
-  .task-item.completed { background: #f8fafc; opacity: 0.6; }
-  .task-item.completed .task-label { text-decoration: line-through; color: var(--muted-foreground); }
-  .task-left { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
+  .day-tab { padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; background: var(--card-bg); border: 1px solid var(--border); color: var(--muted-foreground); cursor: pointer; }
+  .day-tab.active { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 8px; }
+  .task-item.completed { opacity: 0.6; }
+  .task-item.completed .task-label { text-decoration: line-through; }
   .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 12px; }
   .task-item.completed .checkbox { background: var(--primary); border-color: var(--primary); color: white; }
-  .task-time-tag { font-size: 11px; font-weight: 600; color: var(--primary); }
-  .task-label { font-size: 14px; font-weight: 500; }
-  .btn-del { background: none; border: none; color: #94a3b8; font-size: 15px; cursor: pointer; }
-  .btn-del:hover { color: #ef4444; }
-  .notes-box { margin-top: 24px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
-  .notes-header { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-  .notes-area { width: 100%; height: 70px; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; font-size: 13px; outline: none; resize: vertical; }
 
   @media (max-width: 768px) {
     .dashboard-wrapper { flex-direction: column; }
@@ -265,7 +253,7 @@
 <div id="authOverlay">
 
   <!-- STAGE 1: MED2026 PASSCODE -->
-  <div class="auth-card" id="passcodeCard">
+  <div class="auth-card" id="passcodeCard" style="display:none;">
     <div class="brand-badge">
       <div class="brand-badge-icon">⚡</div>
       <span>AcademicHub</span>
@@ -301,16 +289,30 @@
         <span class="brand-title">AcademicHub</span>
       </div>
 
+      <!-- THEME & ACCENT PICKER -->
+      <div class="customizer-bar">
+        <div class="color-dots">
+          <div class="color-dot active" style="background:#155dfc;" onclick="setAccentColor('#155dfc', '#1447e6')"></div>
+          <div class="color-dot" style="background:#10b981;" onclick="setAccentColor('#10b981', '#059669')"></div>
+          <div class="color-dot" style="background:#8b5cf6;" onclick="setAccentColor('#8b5cf6', '#7c3aed')"></div>
+          <div class="color-dot" style="background:#f59e0b;" onclick="setAccentColor('#f59e0b', '#d97706')"></div>
+        </div>
+        <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
+      </div>
+
       <nav class="nav-menu">
         <div class="nav-item active" onclick="goToTab('overview')"><span>📊</span> Overview</div>
         <div class="nav-item" onclick="goToTab('qbank')"><span>🎯</span> Question Bank</div>
-        <div class="nav-item" onclick="goToTab('library')"><span>📚</span> Library</div>
-        <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Weekly Planner</div>
+        <div class="nav-item" onclick="goToTab('videos')"><span>🎥</span> Masterclasses</div>
+        <div class="nav-item" onclick="goToTab('flashcards')"><span>🗂️</span> Flashcards</div>
+        <div class="nav-item" onclick="goToTab('cheatsheet')"><span>🔍</span> Medical Directory</div>
+        <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
+        <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Dalia</div>
         <div class="nav-item" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
       </nav>
     </div>
 
-    <!-- Official Clerk User Profile & Sign Out -->
+    <!-- Official Clerk Profile -->
     <div class="sidebar-user-section">
       <div id="clerkUserButton"></div>
       <div class="sidebar-user-meta">
@@ -325,6 +327,19 @@
 
     <!-- 1. OVERVIEW -->
     <div id="view-overview" class="view-panel active">
+      
+      <!-- EXAM COUNTDOWN & ANNOUNCEMENT -->
+      <div class="announcement-card">
+        <div>
+          <h3 class="announcement-title">📢 Board Exam Countdown & Updates</h3>
+          <p class="announcement-desc">Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.</p>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-digits" id="examCountdown">45d 12h</div>
+          <div class="countdown-label">Until Final Assessment</div>
+        </div>
+      </div>
+
       <div class="panel-header">
         <h2 class="panel-title" id="welcomeUser">Welcome 👋</h2>
         <p class="panel-subtitle">Here is your daily study streak, curriculum library, and active assessments.</p>
@@ -340,14 +355,14 @@
           <div class="stat-value" id="statQuizzes">0 / 2</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Average Score</div>
-          <div class="stat-value" id="statAvgScore" style="color: var(--primary);">-- %</div>
+          <div class="stat-label">Flashcard Mastery</div>
+          <div class="stat-value" id="statFlashcards" style="color: var(--primary);">0%</div>
         </div>
       </div>
 
-      <div class="stat-card" style="background: #ffffff; border-left: 4px solid var(--primary);">
+      <div class="stat-card" style="background: var(--card-bg); border-left: 4px solid var(--primary);">
         <h3 style="font-size: 15px; margin-bottom: 4px;">🚀 Ready to Practice?</h3>
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px;">Start your assessment in the Question Bank to auto-log your completion and maintain your streak!</p>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px;">Start your assessment in the Question Bank or review active recall flashcards!</p>
         <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="goToTab('qbank')">Open Question Bank →</button>
       </div>
     </div>
@@ -360,96 +375,142 @@
       </div>
 
       <div class="qbank-grid">
-        <!-- QUIZ 1 -->
         <div class="qbank-card" id="card-q1">
           <div>
-            <div class="qbank-header-row">
-              <div class="qbank-icon">📝</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+              <span class="video-tag">Unit 1</span>
               <span class="status-badge status-pending" id="badge-q1">Not Solved</span>
             </div>
-            <h3 class="qbank-title">Quiz 01: Core Fundamentals</h3>
-            <p class="qbank-desc">Evaluates foundational principles, basic definitions, and terminology.</p>
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Quiz 01: Core Fundamentals</h3>
+            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Evaluates foundational principles, basic definitions, and terminology.</p>
           </div>
           <div>
-            <div class="qbank-meta">
-              <span>📝 10 Questions</span>
-              <span>⏱️ 15 Mins</span>
-              <span id="score-text-q1" style="font-weight: 600; color: var(--primary);"></span>
-            </div>
-            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q1" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q1', 10)">
-              🚀 Start Exam ↗
-            </a>
-            <button class="btn btn-outline" id="btn-restart-q1" style="display:none;" onclick="restartQuiz('q1')">
-              ↺ Restart Exam
-            </button>
+            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q1" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q1', 10)">🚀 Start Exam ↗</a>
+            <button class="btn btn-outline" id="btn-restart-q1" style="display:none;" onclick="restartQuiz('q1')">↺ Restart Exam</button>
           </div>
         </div>
 
-        <!-- QUIZ 2 -->
         <div class="qbank-card" id="card-q2">
           <div>
-            <div class="qbank-header-row">
-              <div class="qbank-icon">⚡</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+              <span class="video-tag">Unit 2</span>
               <span class="status-badge status-pending" id="badge-q2">Not Solved</span>
             </div>
-            <h3 class="qbank-title">Quiz 02: Advanced Applications</h3>
-            <p class="qbank-desc">Diagnostic test challenging analytical problem-solving and formulas.</p>
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Quiz 02: Advanced Applications</h3>
+            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Diagnostic test challenging analytical problem-solving and formulas.</p>
           </div>
           <div>
-            <div class="qbank-meta">
-              <span>📝 15 Questions</span>
-              <span>⏱️ 20 Mins</span>
-              <span id="score-text-q2" style="font-weight: 600; color: var(--primary);"></span>
-            </div>
-            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q2" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q2', 15)">
-              🚀 Start Exam ↗
-            </a>
-            <button class="btn btn-outline" id="btn-restart-q2" style="display:none;" onclick="restartQuiz('q2')">
-              ↺ Restart Exam
-            </button>
+            <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" id="btn-launch-q2" class="btn btn-primary" onclick="startAndAutoSaveQuiz('q2', 15)">🚀 Start Exam ↗</a>
+            <button class="btn btn-outline" id="btn-restart-q2" style="display:none;" onclick="restartQuiz('q2')">↺ Restart Exam</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 3. LIBRARY -->
-    <div id="view-library" class="view-panel">
+    <!-- 3. VIDEO MASTERCLASSES -->
+    <div id="view-videos" class="view-panel">
       <div class="panel-header">
-        <h2 class="panel-title">Curriculum Library</h2>
-        <p class="panel-subtitle">Structured module summaries and formula reference sheets.</p>
+        <h2 class="panel-title">Video Masterclasses & Recorded Lectures</h2>
+        <p class="panel-subtitle">High-yield clinical lectures taught by Dr. Dalia.</p>
       </div>
 
-      <div class="lib-grid">
-        <div class="lib-card">
-          <span class="lib-badge">Module 1</span>
-          <h3 class="lib-title">Unit 1: Fundamentals</h3>
-          <p class="lib-desc">Core concepts, foundational terminology, and system definitions.</p>
-          <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 10px;" onclick="startAndAutoSaveQuiz('q1', 10)">🎯 Start Unit 1 Quiz</a>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-embed-box">
+            <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+          </div>
+          <div class="video-body">
+            <div>
+              <span class="video-tag">Module 1 • 25 Mins</span>
+              <h4 class="video-title">Pathology & Cellular Adaptation</h4>
+              <p class="video-desc">Comprehensive breakdown of necrosis vs apoptosis and cellular injury mechanisms.</p>
+            </div>
+            <button class="btn btn-outline" id="vid-btn-1" onclick="toggleVideoWatched(1)">Mark as Completed ✓</button>
+          </div>
         </div>
-        <div class="lib-card">
-          <span class="lib-badge">Module 2</span>
-          <h3 class="lib-title">Unit 2: Problem Solving</h3>
-          <p class="lib-desc">Application equations, sample calculations, and breakdowns.</p>
-          <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 10px;" onclick="startAndAutoSaveQuiz('q2', 15)">🎯 Start Unit 2 Quiz</a>
+
+        <div class="video-card">
+          <div class="video-embed-box">
+            <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+          </div>
+          <div class="video-body">
+            <div>
+              <span class="video-tag">Module 2 • 35 Mins</span>
+              <h4 class="video-title">Pharmacology: Autonomic Nervous System</h4>
+              <p class="video-desc">Adrenergic vs Cholinergic receptors, agonist/antagonist drugs & clinical indications.</p>
+            </div>
+            <button class="btn btn-outline" id="vid-btn-2" onclick="toggleVideoWatched(2)">Mark as Completed ✓</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 4. PLANNER -->
+    <!-- 4. FLASHCARDS (ACTIVE RECALL) -->
+    <div id="view-flashcards" class="view-panel">
+      <div class="panel-header" style="text-align: center;">
+        <h2 class="panel-title">High-Yield Flashcard Deck</h2>
+        <p class="panel-subtitle">Click the card to flip and test your active recall!</p>
+      </div>
+
+      <div class="flashcard-wrapper">
+        <div class="flashcard" id="activeFlashcard" onclick="flipFlashcard()">
+          <div class="flashcard-face flashcard-front">
+            <span class="flashcard-badge" id="fcCategory">Pharmacology</span>
+            <div class="flashcard-text" id="fcQuestion">Loading Flashcard...</div>
+            <span class="flashcard-hint">👆 Click anywhere to reveal answer</span>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <span class="flashcard-badge" style="background:#dcfce7; color:#15803d;">Key Answer</span>
+            <div class="flashcard-text" id="fcAnswer">Answer...</div>
+            <span class="flashcard-hint">👆 Click to flip back</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard-controls">
+        <button class="btn btn-outline" style="width: auto; padding: 12px 24px;" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-primary" style="width: auto; padding: 12px 28px;" onclick="nextCard()">Next Card →</button>
+      </div>
+    </div>
+
+    <!-- 5. MEDICAL DIRECTORY & CHEAT-SHEET -->
+    <div id="view-cheatsheet" class="view-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Searchable Medical Reference Directory</h2>
+        <p class="panel-subtitle">Instant clinical values, lab reference ranges, and diagnostic criteria.</p>
+      </div>
+
+      <input type="text" id="medSearchInput" class="search-input-box" placeholder="🔍 Search any lab value, formula, or drug (e.g. Potassium, GFR, Sodium)..." oninput="filterMedicalDirectory()">
+
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Parameter / Drug</th>
+            <th>Normal Range / Standard</th>
+            <th>Category</th>
+            <th>Clinical Pearl</th>
+          </tr>
+        </thead>
+        <tbody id="medDirectoryBody">
+          <tr><td>Serum Potassium (K+)</td><td>3.5 - 5.0 mEq/L</td><td>Electrolytes</td><td>Key for cardiac membrane potential & ECG changes.</td></tr>
+          <tr><td>Serum Sodium (Na+)</td><td>135 - 145 mEq/L</td><td>Electrolytes</td><td>Major determinant of extracellular fluid volume.</td></tr>
+          <tr><td>Serum Creatinine</td><td>0.7 - 1.3 mg/dL</td><td>Renal</td><td>Indicator of Glomerular Filtration Rate (GFR).</td></tr>
+          <tr><td>Fasting Blood Glucose</td><td>70 - 99 mg/dL</td><td>Metabolic</td><td>&ge; 126 mg/dL indicates Diabetes Mellitus.</td></tr>
+          <tr><td>Hemoglobin (Hb) - Male</td><td>13.8 - 17.2 g/dL</td><td>Hematology</td><td>Anemia evaluated with MCV & Ferritin.</td></tr>
+          <tr><td>Mean Arterial Pressure (MAP)</td><td>70 - 100 mmHg</td><td>Cardiovascular</td><td>Formula: DBP + 1/3 (SBP - DBP).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6. STUDY ROADMAP (PLANNER) -->
     <div id="view-planner" class="view-panel">
       <div class="panel-header">
         <h2 class="panel-title">Weekly Study Roadmap</h2>
         <p class="panel-subtitle">Schedule your daily sessions and tick off completed tasks.</p>
       </div>
 
-      <div class="progress-wrap">
-        <div class="progress-labels">
-          <span id="progPct">0% Completed</span>
-          <span id="progRatio" style="color: var(--muted-foreground); font-weight: 400;">0/0 tasks</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progBar"></div>
-        </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progBar"></div>
       </div>
 
       <div class="day-tabs">
@@ -462,22 +523,33 @@
         <button class="day-tab" onclick="setDay('sun', this)">Sun</button>
       </div>
 
-      <div class="add-box">
-        <input type="text" id="taskName" class="input-field input-main" placeholder="What are you studying?">
-        <input type="text" id="taskTime" class="input-field input-sub" placeholder="Time (4:00 PM)">
-        <input type="text" id="taskSub" class="input-field input-sub" placeholder="Subject">
-        <button class="btn btn-primary" style="width: auto; padding: 9px 16px;" onclick="addNewTask()">+ Add</button>
+      <div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+        <input type="text" id="taskName" class="search-input-box" style="flex:2; margin:0;" placeholder="What are you studying?">
+        <input type="text" id="taskTime" class="search-input-box" style="flex:1; margin:0;" placeholder="Time (e.g. 4:00 PM)">
+        <button class="btn btn-primary" style="width: auto; padding: 12px 24px;" onclick="addNewTask()">+ Add Task</button>
       </div>
 
-      <div class="task-list" id="taskContainer"></div>
-
-      <div class="notes-box">
-        <div class="notes-header">📝 Daily Notes (<span id="noteDayLabel">Monday</span>)</div>
-        <textarea id="noteInput" class="notes-area" placeholder="Type key reminders or formulas..." oninput="saveNote()"></textarea>
-      </div>
+      <div id="taskContainer"></div>
     </div>
 
-    <!-- 5. ANALYTICS -->
+    <!-- 7. DIRECT Q&A WITH DR. DALIA -->
+    <div id="view-qa" class="view-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">💬 Q&A with Dr. Dalia</h2>
+        <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
+      </div>
+
+      <div class="qa-box">
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Ask a Question:</h3>
+        <textarea id="qaQuestionInput" class="search-input-box" style="height: 90px; resize: vertical;" placeholder="Type your medical inquiry or question here..."></textarea>
+        <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="submitStudentQuestion()">Submit Inquiry ✉️</button>
+      </div>
+
+      <h3 style="font-size: 18px; margin-bottom: 14px;">Your Inquiry Thread:</h3>
+      <div class="qa-thread" id="qaThreadList"></div>
+    </div>
+
+    <!-- 8. ANALYTICS -->
     <div id="view-analytics" class="view-panel">
       <div class="panel-header">
         <h2 class="panel-title">Performance Analytics</h2>
@@ -494,7 +566,7 @@
           <div class="stat-value" id="analyticsAvg" style="color: var(--primary);">-- %</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Curriculum Completion</div>
+          <div class="stat-label">Mastery Rate</div>
           <div class="stat-value" id="analyticsMastery">0%</div>
         </div>
       </div>
@@ -503,12 +575,119 @@
   </main>
 </div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- ================= SCRIPT ENGINE ================= -->
 <script>
 const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b49614e0536c85b07c0";
 
-let isPasscodeUnlocked = (localStorage.getItem('hub_passcode_ok') === 'true');
+let isPasscodeUnlocked = (sessionStorage.getItem('hub_passcode_ok') === 'true');
 
+// 1. THEME & ACCENT SYSTEM
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  safeSet('hub_theme_pref', next);
+  const btn = document.querySelector('.theme-toggle-btn');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+function setAccentColor(primary, hover) {
+  document.documentElement.style.setProperty('--primary', primary);
+  document.documentElement.style.setProperty('--primary-hover', hover);
+  document.documentElement.style.setProperty('--primary-tint', primary + '20');
+  safeSet('hub_accent_pref', { primary: primary, hover: hover });
+}
+
+// 2. FLASHCARDS DATA & ENGINE
+const flashcardsList = [
+  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
+  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
+  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." },
+  { cat: "Microbiology", q: "Which Gram-positive, spore-forming rod produces a toxin that inhibits GABA & Glycine release?", a: "Clostridium tetani (causes spastic paralysis / lockjaw)." },
+  { cat: "Biochemistry", q: "What is the rate-limiting enzyme of Glycolysis?", a: "Phosphofructokinase-1 (PFK-1)." }
+];
+let currentCardIndex = 0;
+
+function renderFlashcard() {
+  const card = flashcardsList[currentCardIndex];
+  const fc = document.getElementById('activeFlashcard');
+  if (fc) fc.classList.remove('flipped');
+  setElText('fcCategory', card.cat);
+  setElText('fcQuestion', card.q);
+  setElText('fcAnswer', card.a);
+  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / flashcardsList.length) * 100) + '%');
+}
+function flipFlashcard() {
+  const fc = document.getElementById('activeFlashcard');
+  if (fc) fc.classList.toggle('flipped');
+}
+function nextCard() {
+  currentCardIndex = (currentCardIndex + 1) % flashcardsList.length;
+  renderFlashcard();
+}
+function prevCard() {
+  currentCardIndex = (currentCardIndex - 1 + flashcardsList.length) % flashcardsList.length;
+  renderFlashcard();
+}
+
+// 3. MEDICAL DIRECTORY SEARCH
+function filterMedicalDirectory() {
+  const input = document.getElementById('medSearchInput');
+  const filter = (input ? input.value : '').toLowerCase();
+  const rows = document.querySelectorAll('#medDirectoryBody tr');
+  rows.forEach(function(row) {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(filter) ? '' : 'none';
+  });
+}
+
+// 4. Q&A SUBMISSION ENGINE
+function submitStudentQuestion() {
+  const input = document.getElementById('qaQuestionInput');
+  if (!input || !input.value.trim()) return;
+
+  const questions = safeGet('hub_qa_list', [
+    { id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated (e.g. Anaphylaxis), while Type 2 is antibody-mediated cytotoxic (e.g. Goodpasture, Rh hemolytic disease).", date: "Aug 28" }
+  ]);
+
+  questions.unshift({
+    id: Date.now(),
+    text: input.value.trim(),
+    reply: "Dr. Dalia has received your question and will reply shortly.",
+    date: "Today"
+  });
+
+  safeSet('hub_qa_list', questions);
+  input.value = '';
+  renderQA();
+}
+
+function renderQA() {
+  const list = document.getElementById('qaThreadList');
+  if (!list) return;
+  list.innerHTML = '';
+  const questions = safeGet('hub_qa_list', [
+    { id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated (e.g. Anaphylaxis), while Type 2 is antibody-mediated cytotoxic (e.g. Goodpasture, Rh hemolytic disease).", date: "Aug 28" }
+  ]);
+
+  questions.forEach(function(q) {
+    const item = document.createElement('div');
+    item.className = 'qa-msg';
+    item.innerHTML = `
+      <div class="qa-msg-header">
+        <span>👨‍⚕️ Student Inquiry</span>
+        <span>${escapeHTML(q.date)}</span>
+      </div>
+      <div class="qa-msg-body">${escapeHTML(q.text)}</div>
+      <div class="qa-reply">
+        <strong>Dr. Dalia:</strong> ${escapeHTML(q.reply)}
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// 5. SECURITY & PASSCODE
 async function hashText(str) {
   try {
     const buffer = new TextEncoder().encode(str.trim().toUpperCase());
@@ -519,7 +698,6 @@ async function hashText(str) {
   }
 }
 
-// 1. VERIFY MED2026
 async function verifyPasscode() {
   const input = document.getElementById('passcodeInput');
   const errorEl = document.getElementById('passcodeError');
@@ -531,7 +709,7 @@ async function verifyPasscode() {
   if (hashed === TARGET_PASSCODE_HASH) {
     if (errorEl) errorEl.style.display = 'none';
     isPasscodeUnlocked = true;
-    localStorage.setItem('hub_passcode_ok', 'true');
+    sessionStorage.setItem('hub_passcode_ok', 'true');
     checkFullAccess();
   } else {
     if (errorEl) {
@@ -541,7 +719,6 @@ async function verifyPasscode() {
   }
 }
 
-// 2. CHECK FULL ACCESS
 function checkFullAccess() {
   const Clerk = window.Clerk;
 
@@ -553,7 +730,6 @@ function checkFullAccess() {
     return;
   }
 
-  // Passcode verified! Now check Clerk:
   if (Clerk && Clerk.user) {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
@@ -569,8 +745,9 @@ function checkFullAccess() {
 
     updateAllMetrics();
     renderPlanner();
+    renderFlashcard();
+    renderQA();
   } else {
-    // Show Clerk Sign In
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('passcodeCard').style.display = 'none';
     document.getElementById('clerkCard').style.display = 'block';
@@ -583,287 +760,152 @@ function checkFullAccess() {
   }
 }
 
-// INITIALIZE CLERK
+checkFullAccess();
+
 async function initClerk() {
   try {
     const Clerk = window.Clerk;
-    if (!Clerk) {
-      setTimeout(initClerk, 200);
-      return;
-    }
+    if (!Clerk) { setTimeout(initClerk, 200); return; }
 
     await Clerk.load();
-
-    if (Clerk.addListener) {
-      Clerk.addListener(function(state) {
-        if (state && state.user) {
-          checkFullAccess();
-        }
-      });
-    }
-
+    if (Clerk.addListener) Clerk.addListener(function(state) { if (state && state.user) checkFullAccess(); });
     checkFullAccess();
   } catch (err) {
-    console.error("Clerk init:", err);
+    console.error("Clerk error:", err);
     checkFullAccess();
   }
 }
-
 window.addEventListener('load', initClerk);
 
-setInterval(function() {
-  const Clerk = window.Clerk;
-  if (Clerk && Clerk.user && document.getElementById('mainDashboard').style.display === 'none' && isPasscodeUnlocked) {
-    checkFullAccess();
-  }
-}, 500);
-
-// XSS SANITIZATION
+// UTILITY FUNCTIONS
 function escapeHTML(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
-
 function setElText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
 }
-
 const memoryStore = {};
 function safeGet(key, defaultVal) {
-  try {
-    const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : defaultVal;
-  } catch(e) {
-    return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal;
-  }
+  try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : defaultVal; } catch(e) { return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal; }
 }
 function safeSet(key, val) {
-  try {
-    localStorage.setItem(key, JSON.stringify(val));
-  } catch(e) {
-    memoryStore[key] = val;
-  }
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { memoryStore[key] = val; }
 }
-
 function goToTab(tabId) {
   document.querySelectorAll('.view-panel').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-
   const panel = document.getElementById('view-' + tabId);
   if (panel) panel.classList.add('active');
-
   const nav = document.querySelector('.nav-item[onclick*="' + tabId + '"]');
   if (nav) nav.classList.add('active');
 }
 
-function getTodayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-function getYesterdayStr() {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
+// RESTORE USER THEME PREFERENCES ON STARTUP
+(function() {
+  const savedTheme = safeGet('hub_theme_pref', 'light');
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const savedAccent = safeGet('hub_accent_pref', null);
+  if (savedAccent) setAccentColor(savedAccent.primary, savedAccent.hover);
+})();
 
+// QUIZ ENGINE
 let quizData = safeGet('axon_quiz_locked_v1', {
-  quizzes: {
-    'q1': { solved: false, score: 10, total: 10, date: null },
-    'q2': { solved: false, score: 15, total: 15, date: null }
-  },
-  streak: 0,
-  lastDate: null
+  quizzes: { 'q1': { solved: false, score: 10, total: 10 }, 'q2': { solved: false, score: 15, total: 15 } },
+  streak: 0
 });
-
-function startAndAutoSaveQuiz(qId, totalQuestions) {
-  const today = getTodayStr();
-  const yesterday = getYesterdayStr();
-
-  quizData.quizzes[qId] = {
-    solved: true,
-    score: totalQuestions,
-    total: totalQuestions,
-    date: today
-  };
-
-  if (quizData.lastDate !== today) {
-    if (quizData.lastDate === yesterday) {
-      quizData.streak += 1;
-    } else {
-      quizData.streak = 1;
-    }
-    quizData.lastDate = today;
-  }
-
+function startAndAutoSaveQuiz(qId, total) {
+  quizData.quizzes[qId] = { solved: true, score: total, total: total };
+  quizData.streak += 1;
   safeSet('axon_quiz_locked_v1', quizData);
   updateAllMetrics();
 }
-
 function restartQuiz(qId) {
   quizData.quizzes[qId].solved = false;
   safeSet('axon_quiz_locked_v1', quizData);
   updateAllMetrics();
 }
-
 function updateAllMetrics() {
-  const totalQuizzes = Object.keys(quizData.quizzes).length;
-  let solvedCount = 0;
-  let totalScoreSum = 0;
-  let totalPossibleSum = 0;
-
-  for (let qId in quizData.quizzes) {
-    const q = quizData.quizzes[qId];
-    const card = document.getElementById('card-' + qId);
-    const badge = document.getElementById('badge-' + qId);
-    const scoreText = document.getElementById('score-text-' + qId);
-    const btnLaunch = document.getElementById('btn-launch-' + qId);
-    const btnRestart = document.getElementById('btn-restart-' + qId);
-
-    if (q && q.solved) {
-      solvedCount++;
-      totalScoreSum += q.score;
-      totalPossibleSum += q.total;
-
-      const pct = Math.round((q.score / q.total) * 100);
-      if (card) card.classList.add('solved');
-      if (badge) {
-        badge.className = 'status-badge status-done';
-        badge.textContent = `✓ Completed (${q.score}/${q.total})`;
-      }
-      if (scoreText) scoreText.textContent = `Logged on ${q.date}`;
-      if (btnLaunch) btnLaunch.style.display = 'none';
-      if (btnRestart) btnRestart.style.display = 'block';
+  let solved = 0, total = Object.keys(quizData.quizzes).length;
+  for (let q in quizData.quizzes) {
+    const item = quizData.quizzes[q];
+    const badge = document.getElementById('badge-' + q);
+    const launch = document.getElementById('btn-launch-' + q);
+    const restart = document.getElementById('btn-restart-' + q);
+    if (item && item.solved) {
+      solved++;
+      if (badge) { badge.className = 'status-badge status-done'; badge.textContent = '✓ Completed'; }
+      if (launch) launch.style.display = 'none';
+      if (restart) restart.style.display = 'block';
     } else {
-      if (card) card.classList.remove('solved');
-      if (badge) {
-        badge.className = 'status-badge status-pending';
-        badge.textContent = 'Not Solved';
-      }
-      if (scoreText) scoreText.textContent = '';
-      if (btnLaunch) btnLaunch.style.display = 'block';
-      if (btnRestart) btnRestart.style.display = 'none';
+      if (badge) { badge.className = 'status-badge status-pending'; badge.textContent = 'Not Solved'; }
+      if (launch) launch.style.display = 'block';
+      if (restart) restart.style.display = 'none';
     }
   }
-
-  const avgPct = totalPossibleSum > 0 ? Math.round((totalScoreSum / totalPossibleSum) * 100) : null;
-  const masteryPct = Math.round((solvedCount / totalQuizzes) * 100);
-
   setElText('statStreak', `${quizData.streak} Days 🔥`);
-  setElText('statQuizzes', `${solvedCount} / ${totalQuizzes} Solved`);
-  setElText('statAvgScore', avgPct !== null ? `${avgPct}%` : `-- %`);
-
+  setElText('statQuizzes', `${solved} / ${total}`);
   setElText('analyticsStreak', `${quizData.streak} Days 🔥`);
-  setElText('analyticsAvg', avgPct !== null ? `${avgPct}%` : `-- %`);
-  setElText('analyticsMastery', `${masteryPct}%`);
+  setElText('analyticsMastery', Math.round((solved / total) * 100) + '%');
 }
 
+// PLANNER ENGINE
 let currentDay = 'mon';
 const initialTasks = {
-  mon: [{ id: 1, goal: "Unit 1: Fundamentals", time: "04:00 PM", subject: "Theory", done: false }],
-  tue: [{ id: 2, goal: "Unit 2: Problem Practice", time: "04:00 PM", subject: "Practice", done: false }],
-  wed: [{ id: 3, goal: "Review mistakes from Quiz 01", time: "05:00 PM", subject: "Revision", done: false }],
-  thu: [{ id: 4, goal: "Unit 3: Case Studies", time: "04:00 PM", subject: "Quiz", done: false }],
-  fri: [{ id: 5, goal: "Weekly Formula memorization", time: "03:30 PM", subject: "Recall", done: false }],
-  sat: [{ id: 6, goal: "Full chapter revision", time: "11:00 AM", subject: "Review", done: false }],
-  sun: [{ id: 7, goal: "Plan next week schedule", time: "06:00 PM", subject: "Planning", done: false }]
+  mon: [{ id: 1, goal: "Unit 1: Cellular Pathology", time: "04:00 PM", done: false }],
+  tue: [{ id: 2, goal: "Unit 2: Autonomic Pharmacology", time: "04:00 PM", done: false }]
 };
-
 function renderPlanner() {
   const container = document.getElementById('taskContainer');
   if (!container) return;
   container.innerHTML = '';
   const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-
   tasks.forEach(function (t) {
     const item = document.createElement('div');
     item.className = 'task-item ' + (t.done ? 'completed' : '');
-    
-    const safeGoal = escapeHTML(t.goal);
-    const safeTime = escapeHTML(t.time);
-
     item.innerHTML = `
-      <div class="task-left" onclick="toggleTask(${Number(t.id)})">
+      <div style="display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="toggleTask(${Number(t.id)})">
         <div class="checkbox">${t.done ? '✓' : ''}</div>
         <div>
-          ${safeTime ? `<span class="task-time-tag">${safeTime}</span>` : ''}
-          <div class="task-label">${safeGoal}</div>
+          ${t.time ? `<span style="font-size:11px; font-weight:600; color:var(--primary);">${escapeHTML(t.time)}</span>` : ''}
+          <div class="task-label" style="font-size:14px;">${escapeHTML(t.goal)}</div>
         </div>
       </div>
-      <button class="btn-del" onclick="deleteTask(${Number(t.id)})">✕</button>
+      <button style="background:none; border:none; color:var(--muted-foreground); cursor:pointer;" onclick="deleteTask(${Number(t.id)})">✕</button>
     `;
     container.appendChild(item);
   });
-
-  updatePlannerProgress(tasks);
-  loadNote();
+  const done = tasks.filter(function(t){ return t.done; }).length;
+  const bar = document.getElementById('progBar');
+  if (bar) bar.style.width = (tasks.length ? Math.round((done / tasks.length) * 100) : 0) + '%';
 }
-
 function addNewTask() {
-  const name = document.getElementById('taskName');
-  const time = document.getElementById('taskTime');
-  const sub = document.getElementById('taskSub');
+  const name = document.getElementById('taskName'), time = document.getElementById('taskTime');
   if (!name || !name.value.trim()) return;
-
   const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks.push({ 
-    id: Date.now(), 
-    goal: name.value.trim(), 
-    time: time.value.trim(), 
-    subject: sub.value.trim(), 
-    done: false 
-  });
+  tasks.push({ id: Date.now(), goal: name.value.trim(), time: time.value.trim(), done: false });
   safeSet('hub_tasks_' + currentDay, tasks);
-  name.value = ''; time.value = ''; sub.value = '';
+  name.value = ''; time.value = '';
   renderPlanner();
 }
-
 function toggleTask(id) {
   let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks = tasks.map(function (t) { return t.id === id ? Object.assign({}, t, { done: !t.done }) : t; });
+  tasks = tasks.map(function(t) { return t.id === id ? Object.assign({}, t, { done: !t.done }) : t; });
   safeSet('hub_tasks_' + currentDay, tasks);
   renderPlanner();
 }
-
 function deleteTask(id) {
   let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
-  tasks = tasks.filter(function (t) { return t.id !== id; });
+  tasks = tasks.filter(function(t) { return t.id !== id; });
   safeSet('hub_tasks_' + currentDay, tasks);
   renderPlanner();
 }
-
 function setDay(day, btn) {
   currentDay = day;
-  document.querySelectorAll('.day-tab').forEach(function (b) { b.classList.remove('active'); });
+  document.querySelectorAll('.day-tab').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  const labels = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' };
-  setElText('noteDayLabel', labels[day] || day);
   renderPlanner();
-}
-
-function updatePlannerProgress(tasks) {
-  const total = tasks.length;
-  const done = tasks.filter(function (t) { return t.done; }).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  const bar = document.getElementById('progBar');
-  if (bar) bar.style.width = pct + '%';
-  setElText('progPct', pct + '% Completed');
-  setElText('progRatio', done + '/' + total + ' tasks');
-}
-
-function saveNote() {
-  const input = document.getElementById('noteInput');
-  if (input) safeSet('hub_notes_' + currentDay, input.value);
-}
-
-function loadNote() {
-  const input = document.getElementById('noteInput');
-  if (input) input.value = safeGet('hub_notes_' + currentDay, '');
 }
 </script>
 </body>
