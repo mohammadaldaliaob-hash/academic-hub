@@ -1171,12 +1171,49 @@
 
 <!-- ================= SCRIPT ENGINE ================= -->
 <script>
+// EXPLICIT GLOBAL DECLARATIONS (PREVENTS ANY RUNTIME REFERENCE ERRORS)
+let currentQuizCategoryFilter = 'all';
+let currentQuizSearchQuery = '';
+let currentVideoCategoryFilter = 'all';
+let currentVideoSearchQuery = '';
+let currentStethOsc = null;
+let currentStethInterval = null;
+
 // UTILITIES & STATE
 function escapeHTML(str) { if (!str) return ''; return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
 function setElText(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
 const memoryStore = {};
 function safeGet(key, defaultVal) { try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : defaultVal; } catch(e) { return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal; } }
 function safeSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { memoryStore[key] = val; } }
+
+// THEME & ACCENT COLOR
+function setAccentColor(primary, primaryHover) {
+  document.documentElement.style.setProperty('--primary', primary);
+  document.documentElement.style.setProperty('--primary-hover', primaryHover);
+  document.querySelectorAll('.color-dot').forEach(d => {
+    d.classList.toggle('active', d.style.background === primary || d.style.backgroundColor === primary);
+  });
+  safeSet('hub_theme_primary', primary);
+  safeSet('hub_theme_primary_hover', primaryHover);
+}
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  safeSet('hub_theme_mode', next);
+}
+
+// APPLY PERSISTED THEMES
+(function initPersistedTheme() {
+  const savedMode = safeGet('hub_theme_mode', 'light');
+  document.documentElement.setAttribute('data-theme', savedMode);
+  const savedPrimary = safeGet('hub_theme_primary', '#155dfc');
+  const savedHover = safeGet('hub_theme_primary_hover', '#1447e6');
+  if (savedPrimary) {
+    document.documentElement.style.setProperty('--primary', savedPrimary);
+    document.documentElement.style.setProperty('--primary-hover', savedHover);
+  }
+})();
 
 function checkFullAccess() {
   const Clerk = window.Clerk;
@@ -1591,7 +1628,6 @@ function renderExamQuestion() {
   const bar = document.getElementById('examRunnerProgressBar');
   if (bar) bar.style.width = pct + '%';
   
-  // Clean question stem without duplicate numbers
   setElText('examQuestionStem', `${activeExamIndex + 1}. ${q.question}`);
   
   const optContainer = document.getElementById('examOptionList');
@@ -1775,7 +1811,6 @@ function handleMcqFileUpload(e) {
   if (file) processUploadedFile(file);
 }
 
-// CLIENT-SIDE PDF TEXT EXTRACTOR
 async function extractTextFromPDF(arrayBuffer) {
   if (!window.pdfjsLib) throw new Error('PDF.js not loaded');
   const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
@@ -1785,14 +1820,11 @@ async function extractTextFromPDF(arrayBuffer) {
     const page = await pdf.getPage(pageNum);
     const textContent = await page.getTextContent();
     const pageText = textContent.items.map(item => item.str).join(' ');
-    fullText += pageText + '
-
-';
+    fullText += pageText + '\n\n';
   }
   return fullText;
 }
 
-// CLIENT-SIDE WORD (.docx) TEXT EXTRACTOR
 async function extractTextFromDocx(arrayBuffer) {
   if (window.mammoth) {
     const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
@@ -1856,35 +1888,19 @@ async function processUploadedFile(file) {
   }
 }
 
-// ULTRA-SMART BILINGUAL ARABIC & ENGLISH MCQ PARSER
 function parseMcqText(rawText) {
   if (!rawText) return [];
   
-  // 1. Normalize Arabic numbers (١, ٢, ٣...) to standard numbers (1, 2, 3...)
   const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
   let text = rawText;
   arabicDigits.forEach((digit, i) => {
     text = text.replace(new RegExp(digit, 'g'), i);
   });
 
-  // Pre-process: insert line breaks before Question starts even if inline like "...snRNA 2. Which of..."
-  text = text.replace(/(?:\s+|
-|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '
-
-__Q_START__ $1. ');
-
-  // Insert line breaks before Option markers like " a) ", " b) ", " A) ", " (a) ", " أ) ", " ب) "
-  text = text.replace(/(?:\s+|
-|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '
-__OPT_START__ $1) ');
-
-  // Insert line breaks before Answers and Explanations
-  text = text.replace(/(?:\s+|
-|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '
-__ANS_START__ ');
-  text = text.replace(/(?:\s+|
-|^)(?:Explanation|Rationale|Pearl|Note|Reason|التفسير|الشرح|التعليل|ملاحظة|تفسير|شرح)[\:\s]+/gi, '
-__EXP_START__ ');
+  text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__Q_START__ $1. ');
+  text = text.replace(/(?:\s+|\n|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '\n__OPT_START__ $1) ');
+  text = text.replace(/(?:\s+|\n|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '\n__ANS_START__ ');
+  text = text.replace(/(?:\s+|\n|^)(?:Explanation|Rationale|Pearl|Note|Reason|التفسير|الشرح|التعليل|ملاحظة|تفسير|شرح)[\:\s]+/gi, '\n__EXP_START__ ');
 
   const rawBlocks = text.split(/__Q_START__/);
   const questions = [];
@@ -1893,8 +1909,7 @@ __EXP_START__ ');
     const trimmed = block.trim();
     if (!trimmed || trimmed.length < 5) return;
 
-    const lines = trimmed.split('
-').map(l => l.trim()).filter(l => l);
+    const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
     if (lines.length === 0) return;
 
     let stemLines = [];
@@ -1921,17 +1936,14 @@ __EXP_START__ ');
     });
 
     let stem = stemLines.join(' ').trim();
-    // Strip leading numbers from stem so we never get "1. 1 1. Which of..."
-    stem = stem.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|Question\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
+    stem = stem.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
 
-    // Clean options so we never get "A) a) t-RNA"
     let options = [];
     optionLines.forEach(opt => {
       const clean = opt.replace(/^[\(\[]?[A-Ea-eأ-د1-5][\)\]\.\:\-\s]+/i, '').trim();
       if (clean) options.push(clean);
     });
 
-    // Fallback if options were not marked with letters
     if (options.length === 0 && lines.length >= 4) {
       options = lines.slice(1, 5);
     }
@@ -2006,11 +2018,7 @@ function saveNewAdminContent() {
   safeSet('hub_quizzes_custom_v3', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 
-
 // 3. LECTURES & PLAYLISTS ENGINE
-let currentVideoCategoryFilter = 'all';
-let currentVideoSearchQuery = '';
-
 let videoCategories = safeGet('hub_video_categories', [
   'Cardiology', 'Neurology', 'Nephrology', 'Pulmonology', 'Pharmacology', 'Pathology', 'Biochemistry', 'Surgery'
 ]);
@@ -2106,7 +2114,6 @@ function renderVideos() {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.innerHTML = `
-      <!-- COMPLETE MARK CIRCLE -->
       <div class="video-complete-circle ${v.completed ? 'completed' : ''}" onclick="toggleVideoComplete('${v.id}')" title="${v.completed ? 'Completed (Click to uncheck)' : 'Click to mark as Completed'}">
         ${v.completed ? '✓' : ''}
       </div>
@@ -2240,7 +2247,6 @@ function deleteAdminVideo(id) {
   renderVideos();
 }
 
-
 // 4. FLASHCARDS & FILE AUTO-EXTRACTOR
 let customFlashcards = safeGet('hub_fc_custom_v2', [
   { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
@@ -2359,25 +2365,22 @@ function extractFlashcardsFromText() {
   const cat = document.getElementById('newFcCat').value.trim() || 'Medical Deck';
   
   extractedFcList = [];
-  const blocks = text.split(/(?=(?:^|
-)(?:Q\s*[\:\.]|Question\s*[\:\.]|س\s*[\:\.]|\d+[\.\:\)]))/i);
+  const blocks = text.split(/(?=(?:^|\n)(?:Q\s*[\:\.]|\bQuestion\s*[\:\.]|س\s*[\:\.]|\d+[\.\:\)]))/i);
   
   blocks.forEach(block => {
     const trimmed = block.trim();
     if (!trimmed) return;
     
     let q = '', a = '';
-    const ansSplit = trimmed.split(/(?:^|
-|\s{2,})(?:A\s*[\:\.]|Answer\s*[\:\.]|الجواب\s*[\:\.]|الإجابة\s*[\:\.]|\-\>|\=\>)/i);
+    const ansSplit = trimmed.split(/(?:^|\n|\s{2,})(?:A\s*[\:\.]|\bAnswer\s*[\:\.]|الجواب\s*[\:\.]|الإجابة\s*[\:\.]|\-\>|\=\>)/i);
     
     if (ansSplit.length >= 2) {
-      q = ansSplit[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|Question\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
+      q = ansSplit[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
       a = ansSplit[1].trim();
     } else {
-      const lines = trimmed.split('
-').map(l => l.trim()).filter(l => l);
+      const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
       if (lines.length >= 2) {
-        q = lines[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|Question\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
+        q = lines[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
         a = lines.slice(1).join(' ').trim();
       }
     }
@@ -2773,7 +2776,11 @@ function saveUniversalAdd() {
 }
 
 // 12. POMODORO
-let pomodoroTimer = null, pomodoroSecondsLeft = 25 * 60, isPomodoroRunning = false, currentPomodoroMode = 'pomodoro';
+let pomodoroTimer = null;
+let pomodoroSecondsLeft = 25 * 60;
+let isPomodoroRunning = false;
+let currentPomodoroMode = 'pomodoro';
+
 function setPomodoroMode(mode) {
   currentPomodoroMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
