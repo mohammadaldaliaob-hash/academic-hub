@@ -68,6 +68,11 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
+  /* OWNER ONLY SYSTEM VISIBILITY */
+  body:not(.is-admin-mode) .admin-only {
+    display: none !important;
+  }
+
   /* STUDENT SIGN-IN OVERLAY (CLERK ONLY) */
   #authOverlay {
     position: fixed;
@@ -114,10 +119,10 @@
   /* SIDEBAR */
   .sidebar {
     width: 270px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border);
-    padding: 24px 16px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
+    padding: 20px 16px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;
   }
 
-  .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 18px 8px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 14px 8px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
   .brand-icon { width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
   .brand-title { font-size: 17px; font-weight: 700; color: var(--foreground); }
 
@@ -125,144 +130,149 @@
   .customizer-bar {
     display: flex; align-items: center; justify-content: space-between;
     background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md);
-    padding: 8px 12px; margin-bottom: 14px;
+    padding: 8px 12px; margin-bottom: 12px;
   }
   .color-dots { display: flex; gap: 6px; }
   .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
   .color-dot.active { border-color: var(--foreground); }
-  .theme-toggle-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--foreground); }
+  .theme-toggle-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--foreground); }
 
-  .nav-menu { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: calc(100vh - 230px); }
+  .nav-menu { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; max-height: calc(100vh - 270px); }
   .nav-item {
-    display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: var(--radius-md);
+    display: flex; align-items: center; gap: 11px; padding: 8.5px 12px; border-radius: var(--radius-md);
     font-size: 13.5px; font-weight: 500; color: var(--muted-foreground); cursor: pointer; user-select: none;
   }
   .nav-item:hover { background-color: var(--border); color: var(--foreground); }
   .nav-item.active { background-color: var(--primary-tint); color: var(--primary); font-weight: 600; }
 
-  .sidebar-user-section { padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .sidebar-user-section { padding-top: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+  .sidebar-user-info { display: flex; align-items: center; gap: 10px; }
   .sidebar-user-meta { display: flex; flex-direction: column; overflow: hidden; }
   .sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sidebar-user-tag { font-size: 11px; color: #22c55e; font-weight: 600; }
 
+  .admin-toggle-badge {
+    padding: 5px 8px; border-radius: var(--radius-md); background: var(--background); border: 1px solid var(--border);
+    font-size: 11px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  }
+  .admin-toggle-badge:hover { border-color: var(--primary); }
+
   /* MAIN CONTENT */
-  .main-content { flex: 1; padding: 36px 40px; background: var(--background); overflow-y: auto; }
+  .main-content { flex: 1; padding: 32px 36px; background: var(--background); overflow-y: auto; }
   .view-panel { display: none; }
   .view-panel.active { display: block; animation: fadeIn 0.15s ease-in; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .panel-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
-  .panel-title { font-size: 26px; font-weight: 700; color: var(--foreground); }
-  .panel-subtitle { font-size: 14px; color: var(--muted-foreground); margin-top: 4px; }
+  .panel-header { margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+  .panel-title { font-size: 24px; font-weight: 700; color: var(--foreground); }
+  .panel-subtitle { font-size: 13.5px; color: var(--muted-foreground); margin-top: 4px; }
 
   /* GAMIFICATION XP BANNER */
   .rank-badge-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
-    padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
   }
-  .rank-left { display: flex; align-items: center; gap: 16px; }
-  .rank-icon-circle { width: 50px; height: 50px; border-radius: 50%; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid var(--primary); }
-  .rank-title-text { font-size: 18px; font-weight: 700; color: var(--foreground); }
-  .rank-xp-text { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
-  .rank-progress-container { width: 240px; }
+  .rank-left { display: flex; align-items: center; gap: 14px; }
+  .rank-icon-circle { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid var(--primary); }
+  .rank-title-text { font-size: 17px; font-weight: 700; color: var(--foreground); }
+  .rank-xp-text { font-size: 12.5px; color: var(--muted-foreground); margin-top: 2px; }
+  .rank-progress-container { width: 220px; }
 
   /* COUNTDOWN BANNER */
   .announcement-card {
     background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-    color: white; border-radius: var(--radius-lg); padding: 22px 24px; margin-bottom: 24px;
+    color: white; border-radius: var(--radius-lg); padding: 20px 22px; margin-bottom: 22px;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
-    position: relative;
   }
-  .announcement-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .announcement-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
   .announcement-desc { font-size: 13px; opacity: 0.9; }
-  .countdown-box { background: rgba(0, 0, 0, 0.25); padding: 10px 18px; border-radius: var(--radius-md); text-align: center; }
-  .countdown-digits { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+  .countdown-box { background: rgba(0, 0, 0, 0.25); padding: 8px 16px; border-radius: var(--radius-md); text-align: center; }
+  .countdown-digits { font-size: 19px; font-weight: 700; letter-spacing: 1px; }
   .countdown-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
   .btn-edit-countdown {
     background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
-    color: white; padding: 5px 10px; border-radius: var(--radius-md); font-size: 11px;
+    color: white; padding: 4px 10px; border-radius: var(--radius-md); font-size: 11px;
     cursor: pointer; font-weight: 600; margin-top: 6px;
   }
 
   /* WRONG ANSWERS REVIEW HERO CARD */
   .wrong-answers-vault-card {
     background: var(--card-bg); border: 1.5px solid #ef4444; border-radius: var(--radius-lg);
-    padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    padding: 18px 22px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
   }
 
   /* CIRCULAR FOCUS LAUNCHER BUTTON */
   .focus-hero-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
-    padding: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 24px;
+    padding: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;
   }
   .circular-focus-btn {
-    width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-hover));
     color: white; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 13px; text-decoration: none; cursor: pointer; border: 4px solid var(--primary-tint);
+    font-weight: 700; font-size: 12px; text-decoration: none; cursor: pointer; border: 4px solid var(--primary-tint);
     box-shadow: 0 10px 25px -5px rgba(21, 93, 252, 0.4); transition: transform 0.2s, box-shadow 0.2s;
   }
   .circular-focus-btn:hover { transform: scale(1.06); box-shadow: 0 15px 30px -5px rgba(21, 93, 252, 0.6); }
 
   /* FOCUS ROOM */
-  .focus-room-container { max-width: 720px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 36px; text-align: center; }
-  .timer-display { font-size: 68px; font-weight: 800; letter-spacing: 2px; color: var(--foreground); margin: 20px 0; }
+  .focus-room-container { max-width: 700px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; }
+  .timer-display { font-size: 64px; font-weight: 800; letter-spacing: 2px; color: var(--foreground); margin: 18px 0; }
   .timer-mode-buttons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
-  .mode-btn { padding: 8px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--muted-foreground); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .mode-btn { padding: 7px 16px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--muted-foreground); font-size: 12.5px; font-weight: 600; cursor: pointer; }
   .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-  .sound-selector-box { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; align-items: center; }
-  .sound-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-  .sound-btn { padding: 10px 16px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--foreground); font-size: 13px; cursor: pointer; font-weight: 500; }
+  .sound-selector-box { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .sound-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .sound-btn { padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--foreground); font-size: 12.5px; cursor: pointer; font-weight: 500; }
   .sound-btn.active { background: var(--primary-tint); border-color: var(--primary); color: var(--primary); font-weight: 700; }
 
   /* STETHOSCOPE SOUNDBOARD */
-  .steth-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-  .steth-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-  .steth-btn-play { background: var(--primary-tint); color: var(--primary); border: 1.5px solid var(--primary); padding: 10px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .steth-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+  .steth-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+  .steth-btn-play { background: var(--primary-tint); color: var(--primary); border: 1.5px solid var(--primary); padding: 9px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; }
   .steth-btn-play.playing { background: var(--primary); color: white; }
 
   /* ANTIBIOTIC LADDER */
-  .abx-ladder { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-  .abx-tier { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: relative; }
-  .abx-tag { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+  .abx-ladder { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+  .abx-tier { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 15px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: relative; }
+  .abx-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
 
   /* MNEMONICS VAULT */
-  .mnemonic-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); margin-bottom: 16px; position: relative; }
-  .mnemonic-letter-box { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
-  .mnemonic-line { font-size: 13.5px; padding: 6px 10px; border-radius: 6px; background: var(--background); }
+  .mnemonic-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card-bg); margin-bottom: 16px; position: relative; }
+  .mnemonic-letter-box { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .mnemonic-line { font-size: 13px; padding: 6px 10px; border-radius: 6px; background: var(--background); }
 
   /* CLINICAL CANVAS PRO WHITEBOARD */
-  .whiteboard-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px; position: relative; }
-  .wb-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--background); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border); }
-  .canvas-sheet-wrapper { position: relative; width: 100%; height: 520px; background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: crosshair; }
+  .whiteboard-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+  .wb-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: var(--background); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border); }
+  .canvas-sheet-wrapper { position: relative; width: 100%; height: 500px; background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: crosshair; }
   .canvas-sheet { width: 100%; height: 100%; display: block; touch-action: none; }
-  .canvas-overlay-text { position: absolute; background: transparent; border: 1px dashed #155dfc; outline: none; padding: 4px 8px; font-size: 16px; font-weight: 600; color: #000000; }
 
   /* ORAL ROUNDS SIMULATOR */
-  .oral-sim-card { max-width: 640px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; }
-  .countdown-circle { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; margin: 20px auto; color: var(--primary); }
+  .oral-sim-card { max-width: 620px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; text-align: center; position: relative; }
+  .countdown-circle { width: 75px; height: 75px; border-radius: 50%; border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; margin: 16px auto; color: var(--primary); }
 
   /* STATS GRID */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
-  .stat-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card-bg); }
-  .stat-label { font-size: 13px; color: var(--muted-foreground); font-weight: 500; }
-  .stat-value { font-size: 26px; font-weight: 700; color: var(--foreground); margin-top: 6px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 22px; }
+  .stat-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; background: var(--card-bg); }
+  .stat-label { font-size: 12.5px; color: var(--muted-foreground); font-weight: 500; }
+  .stat-value { font-size: 24px; font-weight: 700; color: var(--foreground); margin-top: 5px; }
 
   /* BIG CIRCULAR PROGRESS GAUGES (ANALYTICS) */
-  .analytics-rings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 28px; }
+  .analytics-rings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; margin-bottom: 26px; }
   .ring-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
-    padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 22px; display: flex; flex-direction: column; align-items: center; text-align: center;
   }
-  .ring-svg-container { position: relative; width: 140px; height: 140px; margin-bottom: 14px; }
-  .ring-svg { transform: rotate(-90deg); width: 140px; height: 140px; }
-  .ring-bg { fill: none; stroke: var(--border); stroke-width: 12; }
-  .ring-fill { fill: none; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 377; stroke-dashoffset: 377; transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-  .ring-center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: var(--foreground); }
-  .ring-center-label { font-size: 11px; font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; }
+  .ring-svg-container { position: relative; width: 130px; height: 130px; margin-bottom: 12px; }
+  .ring-svg { transform: rotate(-90deg); width: 130px; height: 130px; }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 11; }
+  .ring-fill { fill: none; stroke-width: 11; stroke-linecap: round; stroke-dasharray: 377; stroke-dashoffset: 377; transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .ring-center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: var(--foreground); }
+  .ring-center-label { font-size: 10px; font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; }
 
   .btn {
-    display: inline-flex; justify-content: center; align-items: center; gap: 8px;
-    width: 100%; padding: 11px 16px; border-radius: var(--radius-md); text-decoration: none;
+    display: inline-flex; justify-content: center; align-items: center; gap: 7px;
+    width: 100%; padding: 10px 15px; border-radius: var(--radius-md); text-decoration: none;
     font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.15s;
   }
   .btn-primary { background: var(--primary); color: white; }
@@ -271,177 +281,172 @@
   .btn-outline:hover { background: var(--border); }
 
   /* VIDEO MASTERCLASSES (LECTURES) */
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; }
   .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
   .video-embed-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-  .video-body { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+  .video-body { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
   .video-tag { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-tint); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
-  .video-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
-  .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px; }
+  .video-title { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
+  .video-desc { font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 12px; }
 
   /* VIDEO COMPLETE CHECK CIRCLE & ATTACH CIRCLE */
-  .video-header-actions { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 10; }
+  .video-header-actions { position: absolute; top: 10px; left: 10px; display: flex; gap: 8px; z-index: 10; }
   .video-action-circle {
-    width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, 0.65); border: 2px solid #ffffff;
-    color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: 800; transition: all 0.2s; backdrop-filter: blur(4px);
+    width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 0, 0, 0.65); border: 2px solid #ffffff;
+    color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; font-weight: 800; transition: all 0.2s; backdrop-filter: blur(4px);
   }
   .video-action-circle.completed { background: #16a34a; border-color: #16a34a; }
   .video-action-circle:hover { transform: scale(1.1); background: var(--primary); border-color: white; }
 
   /* ATTACHED FILE BADGE */
   .attached-file-badge {
-    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--radius-md);
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: var(--radius-md);
     background: var(--primary-tint); border: 1px solid var(--primary); color: var(--primary);
-    font-size: 12px; font-weight: 600; text-decoration: none; margin-bottom: 12px; width: fit-content;
+    font-size: 11.5px; font-weight: 600; text-decoration: none; margin-bottom: 10px; width: fit-content;
   }
   .attached-file-badge:hover { background: var(--primary); color: white; }
 
   /* SEARCH DIRECTORY */
   .search-input-box {
-    width: 100%; padding: 13px 16px; border-radius: var(--radius-md); border: 1.5px solid var(--border);
-    background: var(--card-bg); color: var(--foreground); font-size: 14px; outline: none; margin-bottom: 20px;
+    width: 100%; padding: 12px 15px; border-radius: var(--radius-md); border: 1.5px solid var(--border);
+    background: var(--card-bg); color: var(--foreground); font-size: 13.5px; outline: none; margin-bottom: 18px;
   }
   .search-input-box:focus { border-color: var(--primary); }
   .ref-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
-  .ref-table th, .ref-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .ref-table th, .ref-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
   .ref-table th { background: var(--background); font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; font-size: 11px; }
 
-  /* Q&A SECTION (STUDENT & ADMIN) */
-  .qa-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
-  .qa-thread { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
-  .qa-msg { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: var(--background); position: relative; }
-  .qa-msg-header { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 8px; font-weight: 600; flex-wrap: wrap; gap: 6px; }
-  .qa-msg-body { font-size: 14.5px; color: var(--foreground); line-height: 1.5; margin-bottom: 10px; }
-  .qa-reply { margin-top: 10px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--primary-tint); border-left: 3.5px solid var(--primary); font-size: 13.5px; }
-  .qa-author-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: var(--radius-full); background: var(--card-bg); border: 1px solid var(--border); font-size: 11.5px; font-weight: 600; }
+  /* Q&A SECTION */
+  .qa-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 22px; }
+  .qa-thread { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+  .qa-msg { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--background); position: relative; }
+  .qa-msg-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); margin-bottom: 8px; font-weight: 600; flex-wrap: wrap; gap: 6px; }
+  .qa-msg-body { font-size: 14px; color: var(--foreground); line-height: 1.5; margin-bottom: 8px; }
+  .qa-reply { margin-top: 8px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--primary-tint); border-left: 3.5px solid var(--primary); font-size: 13px; }
+  .qa-author-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 7px; border-radius: var(--radius-full); background: var(--card-bg); border: 1px solid var(--border); font-size: 11px; font-weight: 600; }
 
-  /* QUESTION BANK & PLANNER */
-  .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-  .qbank-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+  /* QUESTION BANK */
+  .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 22px; }
+  .qbank-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
   .qbank-card.solved { border-color: #86efac; }
-  .status-badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+  .status-badge { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 6px; }
   .status-pending { background: #fef3c7; color: #b45309; }
   .status-done { background: #dcfce7; color: #15803d; }
 
-  .progress-bar-bg { background: var(--border); height: 8px; border-radius: var(--radius-full); overflow: hidden; margin-bottom: 20px; }
+  .progress-bar-bg { background: var(--border); height: 8px; border-radius: var(--radius-full); overflow: hidden; margin-bottom: 18px; }
   .progress-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.3s ease; }
-  .day-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-  .day-tab { padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; background: var(--card-bg); border: 1px solid var(--border); color: var(--muted-foreground); cursor: pointer; }
+  .day-tabs { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  .day-tab { padding: 7px 14px; border-radius: var(--radius-md); font-size: 12.5px; font-weight: 500; background: var(--card-bg); border: 1px solid var(--border); color: var(--muted-foreground); cursor: pointer; }
   .day-tab.active { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
-  .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 8px; }
+  .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 11px 15px; margin-bottom: 8px; }
   .task-item.completed { opacity: 0.6; }
   .task-item.completed .task-label { text-decoration: line-through; }
-  .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .checkbox { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 11px; }
   .task-item.completed .checkbox { background: var(--primary); border-color: var(--primary); color: white; }
 
-  /* FLASHCARDS - SCROLLABLE & RESPONSIVE */
-  .flashcard-wrapper { max-width: 640px; margin: 0 auto 30px auto; perspective: 1000px; position: relative; }
+  /* FLASHCARDS - ULTRA CLEAN & ACCURATE */
+  .flashcard-wrapper { max-width: 640px; margin: 0 auto 24px auto; perspective: 1000px; position: relative; }
   .flashcard {
-    position: relative; width: 100%; min-height: 280px; max-height: 440px; background: var(--card-bg);
+    position: relative; width: 100%; min-height: 270px; max-height: 420px; background: var(--card-bg);
     border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer;
     transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
   }
   .flashcard.flipped { transform: rotateY(180deg); }
   .flashcard-face {
-    position: absolute; inset: 0; backface-visibility: hidden; padding: 28px 24px;
+    position: absolute; inset: 0; backface-visibility: hidden; padding: 26px 22px;
     display: flex; flex-direction: column; justify-content: space-between; align-items: center;
     text-align: center; overflow-y: auto; word-break: break-word; border-radius: var(--radius-lg);
   }
   .flashcard-back { transform: rotateY(180deg); background: var(--card-bg); }
-  .flashcard-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); background: var(--primary-tint); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 8px; }
-  .flashcard-text { font-size: 16.5px; font-weight: 600; line-height: 1.6; color: var(--foreground); margin: auto 0; width: 100%; text-align: left; max-height: 280px; overflow-y: auto; padding: 4px 8px; }
-  .flashcard-hint { font-size: 12px; color: var(--muted-foreground); margin-top: 10px; }
-  .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 640px; margin: 0 auto; flex-wrap: wrap; }
+  .flashcard-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); background: var(--primary-tint); padding: 3px 9px; border-radius: var(--radius-full); margin-bottom: 8px; }
+  .flashcard-text { font-size: 16px; font-weight: 600; line-height: 1.6; color: var(--foreground); margin: auto 0; width: 100%; text-align: left; max-height: 260px; overflow-y: auto; padding: 4px 6px; }
+  .flashcard-hint { font-size: 11.5px; color: var(--muted-foreground); margin-top: 8px; }
+  .flashcard-controls { display: flex; gap: 10px; justify-content: center; max-width: 640px; margin: 0 auto; flex-wrap: wrap; }
 
-  /* MODALS & MCQ RUNNER */
+  /* MODALS */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
-  .btn-del-item { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; }
+  .btn-del-item { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ef4444; font-size: 15px; cursor: pointer; }
 
   /* DROPZONE UPLOAD STYLES */
   .dropzone-area {
     border: 2px dashed var(--primary); background: var(--primary-tint); border-radius: var(--radius-lg);
-    padding: 28px 18px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 14px;
+    padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 12px;
   }
   .dropzone-area:hover, .dropzone-area.dragover {
     background: rgba(21, 93, 252, 0.15); border-color: var(--primary-hover); transform: scale(1.01);
   }
-  .dropzone-icon { font-size: 38px; margin-bottom: 8px; }
-  .dropzone-title { font-size: 15px; font-weight: 700; color: var(--foreground); margin-bottom: 4px; }
-  .dropzone-desc { font-size: 12.5px; color: var(--muted-foreground); }
+  .dropzone-icon { font-size: 34px; margin-bottom: 6px; }
+  .dropzone-title { font-size: 14.5px; font-weight: 700; color: var(--foreground); margin-bottom: 3px; }
+  .dropzone-desc { font-size: 12px; color: var(--muted-foreground); }
 
-  /* MCQ RUNNER 2-COLUMN LAYOUT WITH QUESTION PALETTE */
-  .mcq-runner-layout { display: flex; gap: 20px; min-height: 440px; }
+  /* MCQ RUNNER 2-COLUMN LAYOUT */
+  .mcq-runner-layout { display: flex; gap: 18px; min-height: 420px; }
   @media (max-width: 768px) { .mcq-runner-layout { flex-direction: column; } }
 
   .mcq-palette-sidebar {
-    width: 175px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 16px; display: flex; flex-direction: column;
+    width: 170px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 14px; display: flex; flex-direction: column;
   }
   .mcq-palette-header {
-    font-size: 11.5px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
   }
   .mcq-palette-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; overflow-y: auto; max-height: 320px; padding-right: 4px; padding-bottom: 6px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; overflow-y: auto; max-height: 310px; padding-right: 4px; padding-bottom: 6px;
   }
-
-  /* QUESTION CIRCLES */
   .mcq-q-circle {
-    width: 32px; height: 32px; border-radius: 50%; background: #ffffff; border: 1.5px solid var(--border-hover);
-    color: var(--foreground); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%; background: #ffffff; border: 1.5px solid var(--border-hover);
+    color: var(--foreground); font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all 0.15s ease; user-select: none;
   }
   [data-theme="dark"] .mcq-q-circle { background: #1e293b; border-color: #334155; }
   .mcq-q-circle:hover { border-color: var(--primary); transform: scale(1.08); }
   .mcq-q-circle.active { box-shadow: 0 0 0 2.5px var(--primary); border-color: var(--primary); font-weight: 800; }
   
-  /* CIRCLE COLORS */
   .mcq-q-circle.correct { background: #16a34a !important; border-color: #16a34a !important; color: #ffffff !important; }
   .mcq-q-circle.wrong { background: #ef4444 !important; border-color: #ef4444 !important; color: #ffffff !important; }
   .mcq-q-circle.skipped { background: #ffffff !important; border-color: #cbd5e1 !important; color: var(--muted-foreground) !important; }
   [data-theme="dark"] .mcq-q-circle.skipped { background: #1e293b !important; border-color: #475569 !important; }
 
   .mcq-palette-legend {
-    margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--muted-foreground);
+    margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; font-size: 10.5px; color: var(--muted-foreground);
   }
-  .mcq-legend-item { display: flex; align-items: center; gap: 6px; }
-  .mcq-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .mcq-legend-item { display: flex; align-items: center; gap: 5px; }
+  .mcq-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
   .mcq-main-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
 
-  /* INTERACTIVE MCQ OPTION CARDS */
-  .mcq-option-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .mcq-option-list { display: flex; flex-direction: column; gap: 9px; margin: 14px 0; }
   .mcq-option-card {
-    display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-md);
+    display: flex; align-items: center; gap: 11px; padding: 11px 15px; border-radius: var(--radius-md);
     border: 1.5px solid var(--border); background: var(--card-bg); cursor: pointer; transition: all 0.15s ease;
-    font-size: 13.5px; font-weight: 500; text-align: left; color: var(--foreground); line-height: 1.4;
+    font-size: 13px; font-weight: 500; text-align: left; color: var(--foreground); line-height: 1.4;
   }
   .mcq-option-card:hover { border-color: var(--primary); background: var(--primary-tint); }
   .mcq-option-card.selected { border-color: var(--primary); background: var(--primary-tint); font-weight: 600; color: var(--primary); }
   .mcq-option-card.correct { border-color: #16a34a; background: #dcfce7; color: #15803d; font-weight: 600; }
   .mcq-option-card.wrong { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
   .mcq-option-radio {
-    width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-hover);
-    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-hover);
+    display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; flex-shrink: 0;
   }
   .mcq-option-card.selected .mcq-option-radio { border-color: var(--primary); background: var(--primary); color: white; }
   .mcq-option-card.correct .mcq-option-radio { border-color: #16a34a; background: #16a34a; color: white; }
   .mcq-option-card.wrong .mcq-option-radio { border-color: #ef4444; background: #ef4444; color: white; }
   .mcq-explanation-box {
-    margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--background);
-    border-left: 4px solid var(--primary); font-size: 13px; text-align: left; line-height: 1.5; color: var(--foreground);
+    margin-top: 10px; padding: 11px 13px; border-radius: var(--radius-md); background: var(--background);
+    border-left: 4px solid var(--primary); font-size: 12.5px; text-align: left; line-height: 1.5; color: var(--foreground);
   }
 
-  /* CUSTOM SECTION VIEW CARDS */
-  .custom-section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-  .custom-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); padding: 22px; position: relative; }
+  .custom-section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+  .custom-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); padding: 20px; position: relative; }
 
   @media (max-width: 768px) {
     .dashboard-wrapper { flex-direction: column; }
     .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
     .nav-menu { flex-direction: row; overflow-x: auto; padding-bottom: 6px; }
     .nav-item { white-space: nowrap; }
-    .main-content { padding: 24px 16px; }
+    .main-content { padding: 20px 14px; }
   }
 </style>
 </head>
@@ -459,35 +464,35 @@
   </div>
 </div>
 
-<!-- MANAGE SECTIONS MODAL (ADMIN) -->
+<!-- MANAGE ALL SECTIONS MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="manageSectionsModal">
-  <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h3 style="font-size: 18px;">⚙️ Manage Platform Sections</h3>
-      <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openCreateSectionModal()">➕ Add New Section</button>
+  <div class="auth-card" style="max-width: 620px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="font-size: 18px;">⚙️ Manage All Navigation Sections</h3>
+      <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openCreateSectionModal()">➕ + Add Custom Section</button>
     </div>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Customize, rename, or remove sections from the navigation menu.</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Toggle visibility (Hide / Show), rename, or remove any section across the entire platform.</p>
     
-    <div id="manageSectionsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+    <div id="manageSectionsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;"></div>
 
     <button class="btn btn-outline" onclick="closeManageSectionsModal()">Close</button>
   </div>
 </div>
 
-<!-- CREATE DYNAMIC SECTION MODAL (ADMIN) -->
+<!-- CREATE DYNAMIC SECTION MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="createSectionModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 6px;">➕ Create New Section</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Add any custom subject, atlas, or study tool directly to your platform navigation menu!</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Add any custom subject, atlas, or clinical topic directly to your platform navigation!</p>
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Title:</label>
-    <input type="text" id="newSectionTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Pathology Gross Atlas, ECG Files, Surgery Protocols">
+    <input type="text" id="newSectionTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Pathology Gross Atlas, ECG Files, Surgery Protocols">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Icon / Emoji:</label>
-    <input type="text" id="newSectionIcon" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. 🔬, 📑, 🫀, 🧬, 🩺, 💉" value="📑">
+    <input type="text" id="newSectionIcon" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. 🔬, 📑, 🫀, 🧬, 🩺, 💉" value="📑">
 
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Subtitle / Description:</label>
-    <input type="text" id="newSectionDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="e.g. High-yield clinical case files and study materials.">
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Description:</label>
+    <input type="text" id="newSectionDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="e.g. High-yield clinical case files and study materials.">
 
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewCustomSection()">Create Section Live 🚀</button>
@@ -496,44 +501,44 @@
   </div>
 </div>
 
-<!-- MANAGE EXAMS MODAL (ADMIN) -->
+<!-- MANAGE EXAMS MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="manageExamsModal">
-  <div class="auth-card" style="max-width: 620px; text-align: left; max-height: 90vh; overflow-y: auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+  <div class="auth-card" style="max-width: 600px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <h3 style="font-size: 18px;">🎯 Manage Question Banks & Exams</h3>
       <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openAdminMcqExtractorModal()">📝 + Add/Extract Exam</button>
     </div>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Review all active examinations, reset student attempts, or remove deprecated question banks.</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Review all active examinations, reset student attempts, or remove deprecated question banks.</p>
     
-    <div id="manageExamsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+    <div id="manageExamsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;"></div>
 
     <button class="btn btn-outline" onclick="closeManageExamsModal()">Close</button>
   </div>
 </div>
 
-<!-- ADD CUSTOM FOCUS SOUND (YOUTUBE / DESKTOP AUDIO) MODAL -->
+<!-- ADD CUSTOM FOCUS SOUND (STUDENT & ADMIN) -->
 <div class="modal-overlay" id="addFocusSoundModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 6px;">🎵 Add Custom Focus Audio</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Add your favorite study playlist or ambient tracks from YouTube or your local desktop files!</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Add your favorite study playlist or ambient tracks from YouTube or your local desktop files!</p>
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Sound Source:</label>
-    <select id="focusSoundSourceType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" onchange="toggleFocusSoundInputs()">
+    <select id="focusSoundSourceType" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" onchange="toggleFocusSoundInputs()">
       <option value="youtube">▶ YouTube Video / Lo-Fi Stream Link</option>
       <option value="desktop">💻 Local Audio File from Desktop (MP3, WAV, M4A)</option>
     </select>
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Sound Title / Label:</label>
-    <input type="text" id="newFocusSoundTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Lo-Fi Beats for Medicine, Alpha Waves 40Hz, Deep Focus Piano">
+    <input type="text" id="newFocusSoundTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Lo-Fi Beats for Medicine, Alpha Waves 40Hz, Deep Focus Piano">
 
     <div id="focusSoundYoutubeGroup">
       <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube URL / Playlist:</label>
-      <input type="url" id="newFocusSoundUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="https://www.youtube.com/watch?v=... or playlist link">
+      <input type="url" id="newFocusSoundUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="https://www.youtube.com/watch?v=... or playlist link">
     </div>
 
     <div id="focusSoundDesktopGroup" style="display:none;">
       <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Select Audio File from C: or D: disk:</label>
-      <input type="file" id="newFocusSoundFile" accept="audio/*" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;">
+      <input type="file" id="newFocusSoundFile" accept="audio/*" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;">
     </div>
 
     <div style="display: flex; gap: 10px;">
@@ -543,14 +548,14 @@
   </div>
 </div>
 
-<!-- ADD TOPIC / CATEGORY MODAL -->
+<!-- ADD TOPIC / CATEGORY MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="addTopicModal">
   <div class="auth-card" style="max-width: 440px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 6px;">🏷️ Add New Topic / Category</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Create a new subject filter tab for Lectures and Playlists.</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Create a new subject filter tab for Lectures and Playlists.</p>
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Topic Name:</label>
-    <input type="text" id="newTopicName" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="e.g. Biochemistry, Surgery, Pediatrics, Emergency">
+    <input type="text" id="newTopicName" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="e.g. Biochemistry, Surgery, Pediatrics, Emergency">
 
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewTopic()">Add Topic Tab 🚀</button>
@@ -559,18 +564,18 @@
   </div>
 </div>
 
-<!-- ATTACH FILE / NOTES TO VIDEO MODAL -->
+<!-- ATTACH FILE / NOTES TO VIDEO MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="attachVideoFileModal">
   <div class="auth-card" style="max-width: 460px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 6px;">📎 Attach Material to Lecture</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Attach summary slides, PDF notes, or study links directly to this video.</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Attach summary slides, PDF notes, or study links directly to this video.</p>
     <input type="hidden" id="attachVideoId">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File / Note Title:</label>
-    <input type="text" id="attachFileName" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Lecture Slides & High-Yield Summary PDF">
+    <input type="text" id="attachFileName" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Lecture Slides & High-Yield Summary PDF">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File URL / Google Drive Link:</label>
-    <input type="url" id="attachFileUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="https://drive.google.com/file/... or any link">
+    <input type="url" id="attachFileUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="https://drive.google.com/file/... or any link">
 
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveAttachedFile()">Save Material 🚀</button>
@@ -579,52 +584,50 @@
   </div>
 </div>
 
-<!-- UNIVERSAL ADMIN ADD MODAL -->
+<!-- UNIVERSAL ADMIN ADD MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="universalAddModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 14px;" id="universalModalTitle">⚙️ Add New Item</h3>
     <input type="hidden" id="universalModalType">
     <div id="universalModalFields"></div>
 
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
+    <div style="display: flex; gap: 10px; margin-top: 18px;">
       <button class="btn btn-primary" onclick="saveUniversalAdd()">Save Item Live 🚀</button>
       <button class="btn btn-outline" onclick="closeUniversalAddModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL WITH LEFT QUESTION PALETTE -->
+<!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL -->
 <div class="modal-overlay" id="inAppQuizModal">
   <div class="auth-card" style="max-width: 840px; width: 100%; text-align: left; max-height: 92vh; overflow-y: auto; position: relative;">
     <button class="btn-del-item" style="font-size: 20px; top: 16px; right: 16px;" onclick="closeInAppQuizModal()">✕</button>
     
     <!-- QUIZ HEADER -->
-    <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+    <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <span class="video-tag" id="examRunnerCategory" style="margin-bottom:0;">Medical Assessment</span>
         <span id="examRunnerScoreLive" style="font-size:12px; font-weight:700; color:var(--primary);">+100 XP Upon Completion</span>
       </div>
-      <h3 style="font-size: 20px; margin: 6px 0 8px 0;" id="examRunnerTitle">Exam Title</h3>
+      <h3 style="font-size: 19px; margin: 5px 0 7px 0;" id="examRunnerTitle">Exam Title</h3>
       <div class="progress-bar-bg" style="margin-bottom: 0;">
         <div class="progress-bar-fill" id="examRunnerProgressBar" style="width: 0%;"></div>
       </div>
     </div>
 
-    <!-- 2-COLUMN EXAM LAYOUT (LEFT PALETTE + RIGHT QUESTION) -->
+    <!-- 2-COLUMN EXAM LAYOUT -->
     <div id="examRunnerQuestionContainer">
       <div class="mcq-runner-layout">
         
-        <!-- LEFT SIDE: NUMBERED QUESTION CIRCLES PALETTE -->
+        <!-- LEFT SIDE: QUESTION CIRCLES PALETTE -->
         <div class="mcq-palette-sidebar">
           <div class="mcq-palette-header">
             <span>Questions</span>
             <span id="paletteProgressCount">0/0</span>
           </div>
 
-          <!-- QUESTION CIRCLES GRID -->
           <div class="mcq-palette-grid" id="examPaletteGrid"></div>
 
-          <!-- PALETTE LEGEND -->
           <div class="mcq-palette-legend">
             <div class="mcq-legend-item">
               <div class="mcq-legend-dot" style="background:#16a34a;"></div>
@@ -636,7 +639,7 @@
             </div>
             <div class="mcq-legend-item">
               <div class="mcq-legend-dot" style="background:#cbd5e1; border:1px solid #94a3b8;"></div>
-              <span>Skipped / Unanswered</span>
+              <span>Skipped</span>
             </div>
           </div>
         </div>
@@ -645,26 +648,25 @@
         <div class="mcq-main-content">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-              <span id="examRunnerProgressText" style="font-size:12.5px; font-weight:700; color:var(--muted-foreground);">Question 1 of 10</span>
-              <button class="btn btn-outline" style="width:auto; padding:4px 12px; font-size:12px;" onclick="skipExamQuestion()">⏭ Skip / Pass</button>
+              <span id="examRunnerProgressText" style="font-size:12px; font-weight:700; color:var(--muted-foreground);">Question 1 of 10</span>
+              <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px;" onclick="skipExamQuestion()">⏭ Skip / Pass</button>
             </div>
             
-            <h4 style="font-size: 15.5px; line-height: 1.5; color: var(--foreground); margin-bottom: 12px;" id="examQuestionStem">Question text here...</h4>
+            <h4 style="font-size: 15px; line-height: 1.5; color: var(--foreground); margin-bottom: 10px;" id="examQuestionStem">Question text here...</h4>
             
             <div class="mcq-option-list" id="examOptionList"></div>
 
-            <!-- CLINICAL EXPLANATION BOX -->
             <div id="examLiveExplanation" class="mcq-explanation-box" style="display:none;"></div>
           </div>
 
           <!-- QUESTION FOOTER NAV & ACTIONS -->
-          <div style="display: flex; gap: 8px; justify-content: space-between; align-items:center; margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; flex-wrap:wrap;">
-            <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" id="btnExamPrev" onclick="navExamQuestion(-1)">← Previous</button>
+          <div style="display: flex; gap: 8px; justify-content: space-between; align-items:center; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; flex-wrap:wrap;">
+            <button class="btn btn-outline" style="width: auto; padding: 8px 14px;" id="btnExamPrev" onclick="navExamQuestion(-1)">← Previous</button>
             
             <div style="display:flex; gap:8px;">
-              <button class="btn btn-primary" style="width: auto; padding: 9px 18px; background: #0284c7;" id="btnCheckAnswer" onclick="checkCurrentAnswer()">👁️ See / Check Answer</button>
-              <button class="btn btn-primary" style="width: auto; padding: 9px 20px;" id="btnExamNext" onclick="navExamQuestion(1)">Next Question →</button>
-              <button class="btn btn-primary" style="width: auto; padding: 9px 22px; display:none; background: #16a34a;" id="btnExamSubmit" onclick="submitInAppExam()">Finish Exam ✓</button>
+              <button class="btn btn-primary" style="width: auto; padding: 8px 16px; background: #0284c7;" id="btnCheckAnswer" onclick="checkCurrentAnswer()">👁️ See / Check Answer</button>
+              <button class="btn btn-primary" style="width: auto; padding: 8px 18px;" id="btnExamNext" onclick="navExamQuestion(1)">Next Question →</button>
+              <button class="btn btn-primary" style="width: auto; padding: 8px 20px; display:none; background: #16a34a;" id="btnExamSubmit" onclick="submitInAppExam()">Finish Exam ✓</button>
             </div>
           </div>
         </div>
@@ -674,30 +676,29 @@
 
     <!-- EXAM RESULT SUMMARY -->
     <div id="examRunnerResultsContainer" style="display:none; text-align:center; padding: 10px 0;">
-      <div style="font-size: 48px; margin-bottom: 8px;" id="examResultEmoji">🎉</div>
-      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 4px;" id="examResultHeading">Exam Completed!</h3>
-      <p style="font-size: 15px; color: var(--muted-foreground); margin-bottom: 16px;" id="examResultScoreText">You scored 8/10 (80%)</p>
+      <div style="font-size: 44px; margin-bottom: 6px;" id="examResultEmoji">🎉</div>
+      <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" id="examResultHeading">Exam Completed!</h3>
+      <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 14px;" id="examResultScoreText">You scored 8/10 (80%)</p>
       
-      <div id="examDetailedReview" style="max-height: 340px; overflow-y: auto; text-align:left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="examDetailedReview" style="max-height: 320px; overflow-y: auto; text-align:left; margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px;"></div>
 
       <div style="display:flex; gap:10px; justify-content:center;">
-        <button class="btn btn-primary" style="width:auto; padding:10px 24px;" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
+        <button class="btn btn-primary" style="width:auto; padding:9px 22px;" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ADMIN MCQ FILE DRAG & DROP AUTO-EXTRACTOR MODAL -->
+<!-- ADMIN MCQ FILE DRAG & DROP AUTO-EXTRACTOR MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="adminMcqExtractorModal">
   <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
     <h3 style="font-size: 18px; margin-bottom: 4px;">📝 Drag & Drop MCQ File Extractor</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag & drop any MCQ file from C: or D: disk (PDF, Word, TXT). Auto-extracts questions, stems, choices, and answers into a native interactive exam!</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 12px;">Drag & drop any MCQ file from C: or D: disk (PDF, Word, TXT). Auto-extracts questions, stems, choices, and answers into a native interactive exam!</p>
     
-    <!-- DRAG & DROP FILE ZONE -->
     <div class="dropzone-area" id="mcqDropZone" onclick="document.getElementById('mcqFileInput').click()">
       <div class="dropzone-icon">📁</div>
       <div class="dropzone-title">Drag & Drop MCQ File Here</div>
-      <div class="dropzone-desc">or Click to select file from C: or D: disk (PDF, Word .docx, .txt, .json)</div>
+      <div class="dropzone-desc">or Click to select file from C: or D: disk (PDF, Word .docx, .txt)</div>
       <input type="file" id="mcqFileInput" accept=".pdf,.txt,.json,.csv,.md,.doc,.docx" style="display:none;" onchange="handleMcqFileUpload(event)">
     </div>
 
@@ -708,10 +709,10 @@
     <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Biochemistry • Genetics">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Extracted / Pasted MCQ Text:</label>
-    <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 130px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
+    <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 120px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-      <button class="btn btn-outline" style="width: auto; padding: 7px 14px; font-size: 12px;" onclick="extractMcqFromText()">⚡ Re-Extract Questions</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+      <button class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="extractMcqFromText()">⚡ Re-Extract Questions</button>
       <span id="mcqExtractStatus" style="font-size: 12px; font-weight: 600; color: var(--primary);">0 Questions detected</span>
     </div>
 
@@ -722,11 +723,11 @@
   </div>
 </div>
 
-<!-- FLASHCARDS DRAG & DROP FILE AUTO-EXTRACTOR MODAL -->
+<!-- FLASHCARDS DRAG & DROP FILE AUTO-EXTRACTOR MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="adminFlashcardExtractorModal">
   <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
     <h3 style="font-size: 18px; margin-bottom: 4px;">🗂️ Drag & Drop Flashcards File Extractor</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag & drop any PDF, Word doc, or text file containing medical terms & definitions or Q&A pairs to instantly generate flashcards!</p>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 12px;">Auto-extracts Question Stem for Card Front, and ONLY the Right Answer for Card Back!</p>
     
     <div class="dropzone-area" id="fcDropZone" onclick="document.getElementById('fcFileInput').click()">
       <div class="dropzone-icon">📁</div>
@@ -739,10 +740,10 @@
     <input type="text" id="newFcCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Clinical Pharmacology, Pathology High-Yield">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File Text / Raw Notes:</label>
-    <textarea id="fcTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 130px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="Q: What is the mechanism of Metformin?&#10;A: Activates AMP-activated protein kinase (AMPK) to reduce hepatic gluconeogenesis.&#10;&#10;Q: Reed-Sternberg cells?&#10;A: Hodgkin Lymphoma."></textarea>
+    <textarea id="fcTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 120px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="1. Which of the following RNA contains thymine?&#10;a) t-RNA&#10;b) m-RNA&#10;c) r-RNA&#10;d) snRNA&#10;Answer: a"></textarea>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-      <button class="btn btn-outline" style="width: auto; padding: 7px 14px; font-size: 12px;" onclick="extractFlashcardsFromText()">⚡ Re-Extract Flashcards</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+      <button class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="extractFlashcardsFromText()">⚡ Re-Extract Flashcards</button>
       <span id="fcExtractStatus" style="font-size: 12px; font-weight: 600; color: var(--primary);">0 Flashcards detected</span>
     </div>
 
@@ -753,23 +754,23 @@
   </div>
 </div>
 
-<!-- ADMIN ADD QUIZ / EXTERNAL FORM MODAL -->
+<!-- ADMIN ADD QUIZ / EXTERNAL FORM MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="adminContentModal">
   <div class="auth-card" style="max-width: 460px; text-align: left;">
-    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Add Quiz or Study File</h3>
+    <h3 style="font-size: 18px; margin-bottom: 12px;">⚙️ Add Quiz or Study File</h3>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Content Type:</label>
-    <select id="newContentType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;">
+    <select id="newContentType" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;">
       <option value="quiz">🎯 Online Quiz (Google Form / Assessment Link)</option>
       <option value="file">📁 Study Notes / PDF Document (Google Drive Link)</option>
     </select>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
-    <input type="text" id="newContentTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Quiz 03: Renal Pathology">
+    <input type="text" id="newContentTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Quiz 03: Renal Pathology">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
-    <input type="text" id="newContentDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. 15 Questions evaluating Glomerular Diseases">
+    <input type="text" id="newContentDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. 15 Questions evaluating Glomerular Diseases">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Link URL:</label>
-    <input type="url" id="newContentUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" value="https://forms.google.com">
+    <input type="url" id="newContentUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" value="https://forms.google.com">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Questions / XP:</label>
-    <input type="number" id="newContentQuestions" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" value="15">
+    <input type="number" id="newContentQuestions" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" value="15">
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewAdminContent()">Publish Live 🚀</button>
       <button class="btn btn-outline" onclick="closeAdminContentModal()">Cancel</button>
@@ -777,21 +778,21 @@
   </div>
 </div>
 
-<!-- ADMIN ADD VIDEO / PLAYLIST MODAL -->
+<!-- ADMIN ADD VIDEO / PLAYLIST MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="adminVideoModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
-    <h3 style="font-size: 18px; margin-bottom: 14px;">🎥 Add Video Lecture or YouTube Playlist</h3>
+    <h3 style="font-size: 18px; margin-bottom: 12px;">🎥 Add Video Lecture or YouTube Playlist</h3>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
-    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Comprehensive Cardiology & ECG Masterclass">
+    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Comprehensive Cardiology & ECG Masterclass">
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category / Topic Tab:</label>
-    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology, Neurology, Surgery, Pharmacology">
+    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Cardiology, Neurology, Surgery, Pharmacology">
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
-    <input type="text" id="newVidDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Full series covering ECG interpretation, cardiac cycle, and murmurs">
+    <input type="text" id="newVidDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="Full series covering ECG interpretation, cardiac cycle, and murmurs">
     
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube Video or Playlist URL:</label>
-    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="https://www.youtube.com/playlist?list=... or https://youtu.be/...">
+    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="https://www.youtube.com/playlist?list=... or https://youtu.be/...">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Optional Attached Material (PDF / Notes URL):</label>
     <input type="url" id="newVidAttachment" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="Optional Google Drive or PDF link">
@@ -803,16 +804,16 @@
   </div>
 </div>
 
-<!-- ADMIN COUNTDOWN SETTINGS MODAL -->
+<!-- ADMIN COUNTDOWN SETTINGS MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="adminCountdownModal">
   <div class="auth-card" style="max-width: 420px; text-align: left;">
-    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Edit Exam Announcement</h3>
+    <h3 style="font-size: 18px; margin-bottom: 12px;">⚙️ Edit Exam Announcement</h3>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
-    <input type="text" id="adminAnnounceTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" value="📢 Board Exam Countdown & Updates">
+    <input type="text" id="adminAnnounceTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" value="📢 Board Exam Countdown & Updates">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subtitle:</label>
-    <input type="text" id="adminAnnounceDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" value="Weekly Unit 1 Review & Diagnostic Quiz 01 is now open.">
+    <input type="text" id="adminAnnounceDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" value="Weekly Unit 1 Review & Diagnostic Quiz 01 is now open.">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Date & Time:</label>
-    <input type="datetime-local" id="adminTargetDate" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;">
+    <input type="datetime-local" id="adminTargetDate" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;">
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveAdminCountdown()">Save & Update ✓</button>
       <button class="btn btn-outline" onclick="closeAdminModal()">Cancel</button>
@@ -839,31 +840,31 @@
           <div class="color-dot" style="background:#8b5cf6;" onclick="setAccentColor('#8b5cf6', '#7c3aed')"></div>
           <div class="color-dot" style="background:#f59e0b;" onclick="setAccentColor('#f59e0b', '#d97706')"></div>
         </div>
-        <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">☀️</button>
       </div>
 
       <nav class="nav-menu" id="sidebarNavMenu">
-        <div class="nav-item active" onclick="goToTab('overview')"><span>📊</span> Overview</div>
-        <div class="nav-item" onclick="goToTab('focus')"><span>⏳</span> Focus Room</div>
-        <div class="nav-item" onclick="goToTab('qbank')"><span>🎯</span> Question Bank</div>
-        <div class="nav-item" onclick="goToTab('videos')"><span>🎥</span> Lectures</div>
-        <div class="nav-item" onclick="goToTab('stethoscope')"><span>🩺</span> Stethoscope Lab</div>
-        <div class="nav-item" onclick="goToTab('antibiotics')"><span>💊</span> Antibiotic Ladder</div>
-        <div class="nav-item" onclick="goToTab('mnemonics')"><span>🧠</span> Mnemonic Vault</div>
-        <div class="nav-item" onclick="goToTab('whiteboard')"><span>🎨</span> Clinical Canvas</div>
-        <div class="nav-item" onclick="goToTab('oral')"><span>🗣️</span> Oral Rounds Sim</div>
-        <div class="nav-item" onclick="goToTab('flashcards')"><span>🗂️</span> Flashcards</div>
-        <div class="nav-item" onclick="goToTab('cheatsheet')"><span>🔍</span> Medical Directory</div>
-        <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
-        <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Mohammad</div>
-        <div class="nav-item" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
-        <div class="nav-item" onclick="goToTab('students_admin')"><span>🔒</span> Student Telemetry</div>
+        <div class="nav-item" id="nav-overview" onclick="goToTab('overview')"><span>📊</span> Overview</div>
+        <div class="nav-item" id="nav-focus" onclick="goToTab('focus')"><span>⏳</span> Focus Room</div>
+        <div class="nav-item" id="nav-qbank" onclick="goToTab('qbank')"><span>🎯</span> Question Bank</div>
+        <div class="nav-item" id="nav-videos" onclick="goToTab('videos')"><span>🎥</span> Lectures</div>
+        <div class="nav-item" id="nav-stethoscope" onclick="goToTab('stethoscope')"><span>🩺</span> Stethoscope Lab</div>
+        <div class="nav-item" id="nav-antibiotics" onclick="goToTab('antibiotics')"><span>💊</span> Antibiotic Ladder</div>
+        <div class="nav-item" id="nav-mnemonics" onclick="goToTab('mnemonics')"><span>🧠</span> Mnemonic Vault</div>
+        <div class="nav-item" id="nav-whiteboard" onclick="goToTab('whiteboard')"><span>🎨</span> Clinical Canvas</div>
+        <div class="nav-item" id="nav-oral" onclick="goToTab('oral')"><span>🗣️</span> Oral Rounds Sim</div>
+        <div class="nav-item" id="nav-flashcards" onclick="goToTab('flashcards')"><span>🗂️</span> Flashcards</div>
+        <div class="nav-item" id="nav-cheatsheet" onclick="goToTab('cheatsheet')"><span>🔍</span> Medical Directory</div>
+        <div class="nav-item" id="nav-planner" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
+        <div class="nav-item" id="nav-qa" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Mohammad</div>
+        <div class="nav-item" id="nav-analytics" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
+        <div class="nav-item admin-only" id="nav-students_admin" onclick="goToTab('students_admin')"><span>🔒</span> Student Telemetry</div>
 
         <!-- DYNAMIC CUSTOM SECTIONS INSERTED HERE -->
         <div id="dynamicNavItems"></div>
 
-        <!-- MANAGE SECTIONS & + ADD BUTTONS -->
-        <div style="display:flex; flex-direction:column; gap:6px; margin-top:14px;">
+        <!-- MANAGE SECTIONS & + ADD BUTTONS (ADMIN ONLY) -->
+        <div class="admin-only" style="display:flex; flex-direction:column; gap:5px; margin-top:12px;">
           <div class="nav-item" onclick="openManageSectionsModal()" style="background: var(--background); border: 1px solid var(--border); justify-content: center; font-weight: 600;">
             <span>⚙️</span> Manage Sections
           </div>
@@ -874,12 +875,20 @@
       </nav>
     </div>
 
-    <!-- Official Clerk Profile -->
+    <!-- Official Clerk Profile & Admin Access Switch -->
     <div class="sidebar-user-section">
-      <div id="clerkUserButton"></div>
-      <div class="sidebar-user-meta">
-        <span class="sidebar-user-name" id="clerkUserName">Student</span>
-        <span class="sidebar-user-tag" id="sidebarRankTag">● Beginner (0 XP)</span>
+      <div class="sidebar-user-info">
+        <div id="clerkUserButton"></div>
+        <div class="sidebar-user-meta">
+          <span class="sidebar-user-name" id="clerkUserName">Student</span>
+          <span class="sidebar-user-tag" id="sidebarRankTag">● Beginner (0 XP)</span>
+        </div>
+      </div>
+      
+      <!-- OWNER ADMIN PORTAL TOGGLE -->
+      <div class="admin-toggle-badge" onclick="toggleAdminPasscodePrompt()">
+        <span id="adminStatusLabel">🔒 Student Mode</span>
+        <span style="font-size:10px; color:var(--primary); font-weight:700;">🔑 Owner Access</span>
       </div>
     </div>
   </aside>
@@ -911,21 +920,21 @@
         <div>
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:22px;">❌</span>
-            <h3 style="font-size: 17px; font-weight: 700; color: #dc2626;" id="wrongQuestionsCountHeading">Wrong Questions Vault: 0 Questions to Re-solve</h3>
+            <h3 style="font-size: 16px; font-weight: 700; color: #dc2626;" id="wrongQuestionsCountHeading">Wrong Questions Vault: 0 Questions to Re-solve</h3>
           </div>
-          <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Targeted spaced-repetition practice: Re-test exclusively on questions you missed across any exam!</p>
+          <p style="font-size: 12.5px; color: var(--muted-foreground); margin-top: 3px;">Targeted spaced-repetition practice: Re-test exclusively on questions you missed across any exam!</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 10px 22px; background: #dc2626;" onclick="startWrongQuestionsReExam()">🎯 Re-solve Only Wrong Answers</button>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 20px; background: #dc2626;" onclick="startWrongQuestionsReExam()">🎯 Re-solve Only Wrong Answers</button>
       </div>
 
       <!-- BIG CIRCULAR FOCUS LAUNCHER -->
       <div class="focus-hero-card">
         <div>
-          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">🎧 Ready for Deep Clinical Study?</h3>
-          <p style="font-size: 13.5px; color: var(--muted-foreground);">Start a custom Pomodoro study block with ambient medical rain, alpha focus waves, or custom YouTube streams.</p>
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 3px;">🎧 Ready for Deep Clinical Study?</h3>
+          <p style="font-size: 13px; color: var(--muted-foreground);">Start a custom Pomodoro study block with ambient medical rain, alpha focus waves, or custom YouTube streams.</p>
         </div>
         <div class="circular-focus-btn" onclick="goToTab('focus')">
-          <span style="font-size: 24px; margin-bottom: 2px;">⏳</span>
+          <span style="font-size: 22px; margin-bottom: 2px;">⏳</span>
           <span>FOCUS</span>
         </div>
       </div>
@@ -935,7 +944,7 @@
         <div>
           <h3 class="announcement-title" id="displayAnnounceTitle">📢 Board Exam Countdown & Updates</h3>
           <p class="announcement-desc" id="displayAnnounceDesc">Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.</p>
-          <button class="btn-edit-countdown" onclick="openAdminModal()">✏️ Edit Exam Date & Message</button>
+          <button class="btn-edit-countdown admin-only" onclick="openAdminModal()">✏️ Edit Exam Date & Message</button>
         </div>
         <div class="countdown-box">
           <div class="countdown-digits" id="examCountdown">Loading...</div>
@@ -963,7 +972,7 @@
       </div>
     </div>
 
-    <!-- 2. FOCUS ROOM (WITH CUSTOM YOUTUBE / DESKTOP SOUNDS) -->
+    <!-- 2. FOCUS ROOM (STUDENT FRIENDLY) -->
     <div id="view-focus" class="view-panel">
       <div class="panel-header" style="text-align: center;">
         <div style="width:100%;">
@@ -984,16 +993,15 @@
 
         <div class="timer-display" id="pomodoroDisplay">25:00</div>
 
-        <div style="display:flex; gap:12px; justify-content:center; margin-bottom:14px;">
-          <button class="btn btn-primary" id="btnTimerToggle" style="width: auto; padding: 12px 32px; font-size: 15px;" onclick="togglePomodoro()">▶ Start Focus</button>
-          <button class="btn btn-outline" style="width: auto; padding: 12px 20px;" onclick="resetPomodoro()">↺ Reset</button>
+        <div style="display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
+          <button class="btn btn-primary" id="btnTimerToggle" style="width: auto; padding: 11px 30px; font-size: 14.5px;" onclick="togglePomodoro()">▶ Start Focus</button>
+          <button class="btn btn-outline" style="width: auto; padding: 11px 18px;" onclick="resetPomodoro()">↺ Reset</button>
         </div>
 
-        <!-- SOUND SELECTOR -->
         <div class="sound-selector-box">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:480px; flex-wrap:wrap; gap:8px;">
-            <div style="font-size: 14px; font-weight: 700; color: var(--foreground);">🎧 Ambient Focus Audio:</div>
-            <button class="btn btn-primary" style="width:auto; padding:6px 14px; font-size:12px;" onclick="openAddFocusSoundModal()">🎵 + Add Sound (YouTube / Desktop)</button>
+            <div style="font-size: 13.5px; font-weight: 700; color: var(--foreground);">🎧 Ambient Focus Audio:</div>
+            <button class="btn btn-primary" style="width:auto; padding:5px 12px; font-size:11.5px;" onclick="openAddFocusSoundModal()">🎵 + Add Sound (YouTube / Desktop)</button>
           </div>
 
           <div class="sound-buttons" id="soundButtonsContainer">
@@ -1003,18 +1011,16 @@
             <button class="sound-btn" id="btnSoundLibrary" onclick="setAmbientSound('library')">☕ Quiet Library</button>
           </div>
 
-          <!-- YOUTUBE BACKGROUND PLAYER (HIDDEN OR MINIMAL) -->
-          <div id="customYoutubePlayerBox" style="display:none; width:100%; max-width:480px; margin-top:12px;">
-            <div style="position:relative; width:100%; padding-bottom:40px; background:#000; border-radius:var(--radius-md); overflow:hidden;">
+          <div id="customYoutubePlayerBox" style="display:none; width:100%; max-width:480px; margin-top:10px;">
+            <div style="position:relative; width:100%; padding-bottom:38px; background:#000; border-radius:var(--radius-md); overflow:hidden;">
               <iframe id="focusYoutubeIframe" src="" style="position:absolute; inset:0; width:100%; height:100%; border:none;" allow="autoplay"></iframe>
             </div>
           </div>
 
-          <!-- LOCAL HTML5 AUDIO PLAYER -->
           <audio id="desktopAudioPlayer" loop style="display:none;"></audio>
 
-          <div style="display:flex; align-items:center; gap:10px; margin-top:8px; width:100%; max-width:280px;">
-            <span style="font-size:12px; color:var(--muted-foreground);">Volume:</span>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:6px; width:100%; max-width:260px;">
+            <span style="font-size:11.5px; color:var(--muted-foreground);">Volume:</span>
             <input type="range" id="soundVol" min="0" max="1" step="0.05" value="0.5" style="flex:1;" oninput="updateAmbientVolume(this.value)">
           </div>
         </div>
@@ -1028,16 +1034,16 @@
           <h2 class="panel-title">Clinical Question Bank & Native MCQ Exams</h2>
           <p class="panel-subtitle">Interactive board exams with question-by-question scoring, clinical explanations, and wrong answer review. (+100 XP per exam!)</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openManageExamsModal()">⚙️ Manage Exams</button>
-          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminMcqExtractorModal()">📝 + Extract MCQ File / Text (Admin)</button>
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAdminContentModal('quiz')">📁 + Add External Form / PDF</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openManageExamsModal()">⚙️ Manage Exams</button>
+          <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openAdminMcqExtractorModal()">📝 + Extract MCQ File / Text (Admin)</button>
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openAdminContentModal('quiz')">📁 + Add External Form</button>
         </div>
       </div>
 
       <input type="text" id="qbankSearchInput" class="search-input-box" placeholder="🔍 Search question banks, exams, or clinical topics..." oninput="filterQuizzes()">
 
-      <div class="day-tabs" style="margin-bottom: 20px;">
+      <div class="day-tabs" style="margin-bottom: 18px;">
         <button class="day-tab active" onclick="filterQuizCategory('all', this)">All Exams</button>
         <button class="day-tab" onclick="filterQuizCategory('Cardiology', this)">Cardiology</button>
         <button class="day-tab" onclick="filterQuizCategory('Nephrology', this)">Nephrology</button>
@@ -1049,22 +1055,21 @@
       <div class="qbank-grid" id="qbankGridContainer"></div>
     </div>
 
-    <!-- 4. LECTURES & PLAYLISTS (WITH FULL YOUTUBE PLAYLIST VIEW) -->
+    <!-- 4. LECTURES & PLAYLISTS -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
         <div>
           <h2 class="panel-title">Medical Lectures & Complete Video Masterclasses</h2>
           <p class="panel-subtitle">Curated clinical lectures & complete video series with interactive YouTube playlist list, attached slides, and completion markers.</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAddTopicModal()">🏷️ + Add Topic / Category</button>
-          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminVideoModal()">🎥 + Add Video or Playlist (Admin)</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openAddTopicModal()">🏷️ + Add Topic / Category</button>
+          <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openAdminVideoModal()">🎥 + Add Video or Playlist (Admin)</button>
         </div>
       </div>
 
       <input type="text" id="videoSearchInput" class="search-input-box" placeholder="🔍 Search lectures or playlists by title, topic, or system..." oninput="filterVideos()">
 
-      <!-- DYNAMIC TOPIC FILTER TABS -->
       <div class="day-tabs" id="videoCategoryTabsContainer"></div>
 
       <div class="video-grid" id="videoGridContainer"></div>
@@ -1077,7 +1082,7 @@
           <h2 class="panel-title">🩺 Stethoscope Auscultation Simulator</h2>
           <p class="panel-subtitle">Train your ears for clinical heart and lung sound exams.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('stethoscope')">⚙️ + Add Sound (Admin)</button>
+        <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openUniversalAddModal('stethoscope')">⚙️ + Add Sound (Admin)</button>
       </div>
 
       <div class="steth-grid" id="stethGridContainer"></div>
@@ -1090,7 +1095,7 @@
           <h2 class="panel-title">💊 "Bug vs. Drug" Antibiotic Ladder</h2>
           <p class="panel-subtitle">Master antimicrobial coverage from narrow spectrum to heavy guns.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('antibiotics')">⚙️ + Add Antibiotic (Admin)</button>
+        <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openUniversalAddModal('antibiotics')">⚙️ + Add Antibiotic (Admin)</button>
       </div>
 
       <div class="abx-ladder" id="abxLadderContainer"></div>
@@ -1103,7 +1108,7 @@
           <h2 class="panel-title">🧠 High-Yield Medical Mnemonic Vault</h2>
           <p class="panel-subtitle">Master classic diagnostic memory hacks.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('mnemonics')">⚙️ + Add Mnemonic (Admin)</button>
+        <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openUniversalAddModal('mnemonics')">⚙️ + Add Mnemonic (Admin)</button>
       </div>
 
       <input type="text" id="mnemonicSearch" class="search-input-box" placeholder="🔍 Search mnemonics (e.g. Acidosis, Depression, Calcium, Sepsis)..." oninput="filterMnemonics()">
@@ -1111,7 +1116,7 @@
       <div id="mnemonicListContainer"></div>
     </div>
 
-    <!-- 8. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, STICKIES, SHAPES, PHOTOS) -->
+    <!-- 8. CLINICAL CANVAS PRO (STUDENT FRIENDLY) -->
     <div id="view-whiteboard" class="view-panel">
       <div class="panel-header">
         <div>
@@ -1121,26 +1126,25 @@
       </div>
 
       <div class="whiteboard-box">
-        <!-- ADVANCED TOOLBAR -->
         <div class="wb-toolbar">
           <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbMode('draw')">✏️ Pen</button>
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbMode('text')">🔤 Add Text</button>
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="addStickyNotePrompt()">📝 Sticky Note</button>
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="document.getElementById('wbImgInput').click()">🖼️ Add Photo / ECG</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="setWbMode('draw')">✏️ Pen</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="setWbMode('text')">🔤 Add Text</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="addStickyNotePrompt()">📝 Sticky Note</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="document.getElementById('wbImgInput').click()">🖼️ Add Photo / ECG</button>
             <input type="file" id="wbImgInput" accept="image/*" style="display:none;" onchange="handleWbImageUpload(event)">
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbEraser()">🧹 Eraser</button>
-            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="clearCanvas()">✕ Clear All</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="setWbEraser()">🧹 Eraser</button>
+            <button class="btn btn-outline" style="width:auto; padding:5px 10px;" onclick="clearCanvas()">✕ Clear All</button>
           </div>
 
-          <div style="display:flex; gap:8px; align-items:center; margin-left:auto; flex-wrap:wrap;">
-            <span style="font-size:12px; color:var(--muted-foreground);">Color:</span>
-            <input type="color" id="wbColorPicker" value="#155dfc" style="width:32px; height:32px; border:none; border-radius:6px; cursor:pointer;" onchange="setWbColor(this.value)">
+          <div style="display:flex; gap:6px; align-items:center; margin-left:auto; flex-wrap:wrap;">
+            <span style="font-size:11.5px; color:var(--muted-foreground);">Color:</span>
+            <input type="color" id="wbColorPicker" value="#155dfc" style="width:30px; height:30px; border:none; border-radius:6px; cursor:pointer;" onchange="setWbColor(this.value)">
             
-            <span style="font-size:12px; color:var(--muted-foreground);">Size:</span>
-            <input type="range" id="wbSizeSlider" min="1" max="25" value="3" style="width:70px;" oninput="setWbWidth(this.value)">
+            <span style="font-size:11.5px; color:var(--muted-foreground);">Size:</span>
+            <input type="range" id="wbSizeSlider" min="1" max="25" value="3" style="width:65px;" oninput="setWbWidth(this.value)">
             
-            <button class="btn btn-primary" style="width:auto; padding:6px 16px;" onclick="saveCanvasImage()">💾 Export Image</button>
+            <button class="btn btn-primary" style="width:auto; padding:5px 14px;" onclick="saveCanvasImage()">💾 Export Image</button>
           </div>
         </div>
 
@@ -1157,39 +1161,39 @@
           <h2 class="panel-title">🗣️ Attending Physician "Oral Rounds" Simulator</h2>
           <p class="panel-subtitle">Listen to rapid-fire oral questions and test your recall under pressure.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('oral')">⚙️ + Add Question (Admin)</button>
+        <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openUniversalAddModal('oral')">⚙️ + Add Question (Admin)</button>
       </div>
 
       <div class="oral-sim-card">
         <span class="video-tag" id="oralTag">Clinical Emergency • +50 XP</span>
-        <h3 style="font-size: 20px; margin: 12px 0;" id="oralQuestionText">"Student! What is the immediate first-line drug and route for Acute Anaphylaxis?"</h3>
+        <h3 style="font-size: 19px; margin: 10px 0;" id="oralQuestionText">"Student! What is the immediate first-line drug and route for Acute Anaphylaxis?"</h3>
         
         <div class="countdown-circle" id="oralTimerDisplay">10s</div>
         
-        <div style="display:flex; gap:10px; justify-content:center; margin-bottom:16px;">
-          <button class="btn btn-primary" style="width:auto; padding:10px 22px;" onclick="speakOralQuestion()">🔊 Speak Question</button>
-          <button class="btn btn-outline" style="width:auto; padding:10px 22px;" onclick="revealOralAnswer()">👁️ Reveal Answer</button>
-          <button class="btn btn-outline" style="width:auto; padding:10px 22px;" onclick="nextOralQuestion()">Next Question →</button>
+        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:14px;">
+          <button class="btn btn-primary" style="width:auto; padding:9px 20px;" onclick="speakOralQuestion()">🔊 Speak Question</button>
+          <button class="btn btn-outline" style="width:auto; padding:9px 20px;" onclick="revealOralAnswer()">👁️ Reveal Answer</button>
+          <button class="btn btn-outline" style="width:auto; padding:9px 20px;" onclick="nextOralQuestion()">Next Question →</button>
         </div>
 
-        <div id="oralAnswerBox" style="display:none; background:var(--primary-tint); border:1.5px solid var(--primary); padding:16px; border-radius:var(--radius-md); text-align:left;">
+        <div id="oralAnswerBox" style="display:none; background:var(--primary-tint); border:1.5px solid var(--primary); padding:14px; border-radius:var(--radius-md); text-align:left;">
           <strong>Attending Feedback:</strong>
-          <p id="oralAnswerText" style="margin-top:4px; font-size:14px;">Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!</p>
+          <p id="oralAnswerText" style="margin-top:3px; font-size:13.5px;">Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!</p>
         </div>
       </div>
     </div>
 
-    <!-- 10. FLASHCARDS (FIXED SCROLL & OVERFLOW) -->
+    <!-- 10. FLASHCARDS -->
     <div id="view-flashcards" class="view-panel">
       <div class="panel-header" style="text-align: center;">
         <div style="width:100%;">
           <h2 class="panel-title">High-Yield Flashcard Deck</h2>
           <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; margin-top:10px;">
-          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Flashcards from File / PDF</button>
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px; color:#ef4444;" onclick="clearFlashcardDeck()">🗑️ Clear Deck</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; width:100%; margin-top:8px;">
+          <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Flashcards from File / PDF (Admin)</button>
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px; color:#ef4444;" onclick="clearFlashcardDeck()">🗑️ Clear Deck</button>
         </div>
       </div>
 
@@ -1206,12 +1210,12 @@
             <span class="flashcard-hint">👆 Click to flip back</span>
           </div>
         </div>
-        <button class="btn-del-item" title="Delete Flashcard" onclick="deleteFlashcard()">✕</button>
+        <button class="btn-del-item admin-only" title="Delete Flashcard" onclick="deleteFlashcard()">✕</button>
       </div>
 
       <div class="flashcard-controls">
-        <button class="btn btn-outline" style="width: auto; padding: 12px 24px;" onclick="prevCard()">← Prev</button>
-        <button class="btn btn-primary" style="width: auto; padding: 12px 28px;" onclick="nextCard()">Next Card (+15 XP) →</button>
+        <button class="btn btn-outline" style="width: auto; padding: 10px 22px;" onclick="prevCard()">← Prev</button>
+        <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="nextCard()">Next Card (+15 XP) →</button>
       </div>
     </div>
 
@@ -1222,7 +1226,7 @@
           <h2 class="panel-title">Searchable Medical Reference Directory</h2>
           <p class="panel-subtitle">Instant clinical values, lab reference ranges, and diagnostic criteria.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('directory')">⚙️ + Add Lab Value (Admin)</button>
+        <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openUniversalAddModal('directory')">⚙️ + Add Lab Value (Admin)</button>
       </div>
 
       <input type="text" id="medSearchInput" class="search-input-box" placeholder="🔍 Search any lab value, formula, or drug..." oninput="filterMedicalDirectory()">
@@ -1234,14 +1238,14 @@
             <th>Normal Range / Standard</th>
             <th>Category</th>
             <th>Clinical Pearl</th>
-            <th style="width: 50px;">Delete</th>
+            <th class="admin-only" style="width: 50px;">Delete</th>
           </tr>
         </thead>
         <tbody id="medDirectoryBody"></tbody>
       </table>
     </div>
 
-    <!-- 12. STUDY ROADMAP -->
+    <!-- 12. STUDY ROADMAP (STUDENT FRIENDLY) -->
     <div id="view-planner" class="view-panel">
       <div class="panel-header">
         <div>
@@ -1264,35 +1268,35 @@
         <button class="day-tab" onclick="setDay('sun', this)">Sun</button>
       </div>
 
-      <div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+      <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
         <input type="text" id="taskName" class="search-input-box" style="flex:2; margin:0;" placeholder="What are you studying?">
         <input type="text" id="taskTime" class="search-input-box" style="flex:1; margin:0;" placeholder="Time (e.g. 4:00 PM)">
-        <button class="btn btn-primary" style="width: auto; padding: 12px 24px;" onclick="addNewTask()">+ Add Task</button>
+        <button class="btn btn-primary" style="width: auto; padding: 11px 22px;" onclick="addNewTask()">+ Add Task</button>
       </div>
 
       <div id="taskContainer"></div>
     </div>
 
-    <!-- 13. Q&A WITH DR. MOHAMMAD (WITH ADMIN INTERACTION & STUDENT INFO) -->
+    <!-- 13. Q&A WITH DR. MOHAMMAD -->
     <div id="view-qa" class="view-panel">
       <div class="panel-header">
         <div>
           <h2 class="panel-title">💬 Q&A with Dr. Mohammad</h2>
-          <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep. Admin can respond live with full student profile context.</p>
+          <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
         </div>
       </div>
 
       <div class="qa-box">
-        <h3 style="font-size: 16px; margin-bottom: 8px;">Ask Dr. Mohammad a Question:</h3>
-        <textarea id="qaQuestionInput" class="search-input-box" style="height: 90px; resize: vertical;" placeholder="Type your medical inquiry or question here..."></textarea>
-        <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="submitStudentQuestion()">Submit Inquiry ✉️</button>
+        <h3 style="font-size: 15px; margin-bottom: 6px;">Ask Dr. Mohammad a Question:</h3>
+        <textarea id="qaQuestionInput" class="search-input-box" style="height: 85px; resize: vertical;" placeholder="Type your medical inquiry or question here..."></textarea>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 22px;" onclick="submitStudentQuestion()">Submit Inquiry ✉️</button>
       </div>
 
-      <h3 style="font-size: 18px; margin-bottom: 14px;">Inquiry Thread:</h3>
+      <h3 style="font-size: 17px; margin-bottom: 12px;">Inquiry Thread:</h3>
       <div class="qa-thread" id="qaThreadList"></div>
     </div>
 
-    <!-- 14. PERFORMANCE ANALYTICS (WITH BIG VISUAL PROGRESS CIRCLES) -->
+    <!-- 14. PERFORMANCE ANALYTICS -->
     <div id="view-analytics" class="view-panel">
       <div class="panel-header">
         <div>
@@ -1301,73 +1305,66 @@
         </div>
       </div>
 
-      <!-- BIG CIRCULAR PROGRESS RINGS -->
       <div class="analytics-rings-grid">
-        
-        <!-- 1. COURSE WATCH COMPLETION -->
         <div class="ring-card">
           <div class="ring-svg-container">
             <svg class="ring-svg">
-              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
-              <circle class="ring-fill" id="ringCourseFill" cx="70" cy="70" r="60" stroke="#155dfc"></circle>
+              <circle class="ring-bg" cx="65" cy="65" r="55"></circle>
+              <circle class="ring-fill" id="ringCourseFill" cx="65" cy="65" r="55" stroke="#155dfc"></circle>
             </svg>
             <div class="ring-center-text">
               <span id="ringCoursePct">0%</span>
               <span class="ring-center-label">Lectures</span>
             </div>
           </div>
-          <h4 style="font-size:15px; margin-bottom:4px;">Lecture Series Watched</h4>
-          <p style="font-size:12px; color:var(--muted-foreground);" id="ringCourseSub">0 / 0 Lectures Completed</p>
+          <h4 style="font-size:14.5px; margin-bottom:3px;">Lecture Series Watched</h4>
+          <p style="font-size:11.5px; color:var(--muted-foreground);" id="ringCourseSub">0 / 0 Lectures Completed</p>
         </div>
 
-        <!-- 2. EXAM MASTERY & ACCURACY -->
         <div class="ring-card">
           <div class="ring-svg-container">
             <svg class="ring-svg">
-              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
-              <circle class="ring-fill" id="ringExamFill" cx="70" cy="70" r="60" stroke="#16a34a"></circle>
+              <circle class="ring-bg" cx="65" cy="65" r="55"></circle>
+              <circle class="ring-fill" id="ringExamFill" cx="65" cy="65" r="55" stroke="#16a34a"></circle>
             </svg>
             <div class="ring-center-text">
               <span id="ringExamPct">0%</span>
               <span class="ring-center-label">Q-Bank</span>
             </div>
           </div>
-          <h4 style="font-size:15px; margin-bottom:4px;">Exams Solved</h4>
-          <p style="font-size:12px; color:var(--muted-foreground);" id="ringExamSub">0 / 0 Quizzes Cleared</p>
+          <h4 style="font-size:14.5px; margin-bottom:3px;">Exams Solved</h4>
+          <p style="font-size:11.5px; color:var(--muted-foreground);" id="ringExamSub">0 / 0 Quizzes Cleared</p>
         </div>
 
-        <!-- 3. FLASHCARD MASTERY -->
         <div class="ring-card">
           <div class="ring-svg-container">
             <svg class="ring-svg">
-              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
-              <circle class="ring-fill" id="ringFcFill" cx="70" cy="70" r="60" stroke="#8b5cf6"></circle>
+              <circle class="ring-bg" cx="65" cy="65" r="55"></circle>
+              <circle class="ring-fill" id="ringFcFill" cx="65" cy="65" r="55" stroke="#8b5cf6"></circle>
             </svg>
             <div class="ring-center-text">
               <span id="ringFcPct">0%</span>
               <span class="ring-center-label">Cards</span>
             </div>
           </div>
-          <h4 style="font-size:15px; margin-bottom:4px;">Flashcard Mastery</h4>
-          <p style="font-size:12px; color:var(--muted-foreground);" id="ringFcSub">0 Active Cards Reviewed</p>
+          <h4 style="font-size:14.5px; margin-bottom:3px;">Flashcard Mastery</h4>
+          <p style="font-size:11.5px; color:var(--muted-foreground);" id="ringFcSub">0 Active Cards Reviewed</p>
         </div>
 
-        <!-- 4. WRONG ANSWERS RESOLVED -->
         <div class="ring-card">
           <div class="ring-svg-container">
             <svg class="ring-svg">
-              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
-              <circle class="ring-fill" id="ringWrongFill" cx="70" cy="70" r="60" stroke="#ef4444"></circle>
+              <circle class="ring-bg" cx="65" cy="65" r="55"></circle>
+              <circle class="ring-fill" id="ringWrongFill" cx="65" cy="65" r="55" stroke="#ef4444"></circle>
             </svg>
             <div class="ring-center-text">
               <span id="ringWrongPct">100%</span>
               <span class="ring-center-label">Accuracy</span>
             </div>
           </div>
-          <h4 style="font-size:15px; margin-bottom:4px;">Wrong Qs Resolved</h4>
-          <p style="font-size:12px; color:var(--muted-foreground);" id="ringWrongSub">0 Pending Mistakes</p>
+          <h4 style="font-size:14.5px; margin-bottom:3px;">Wrong Qs Resolved</h4>
+          <p style="font-size:11.5px; color:var(--muted-foreground);" id="ringWrongSub">0 Pending Mistakes</p>
         </div>
-
       </div>
 
       <div class="stats-grid">
@@ -1386,14 +1383,14 @@
       </div>
     </div>
 
-    <!-- 15. PRIVATE STUDENT TELEMETRY & DATA DIRECTORY (ADMIN ONLY) -->
+    <!-- 15. PRIVATE STUDENT TELEMETRY & DATA DIRECTORY (OWNER ONLY) -->
     <div id="view-students_admin" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">🔒 Student Telemetry & Privacy Vault (Admin View)</h2>
+          <h2 class="panel-title">🔒 Student Telemetry & Privacy Vault (Owner Only)</h2>
           <p class="panel-subtitle">Comprehensive student profiles, authentication data, quiz scores, and course completion metrics.</p>
         </div>
-        <button class="btn btn-primary" style="width:auto; padding:9px 18px;" onclick="exportStudentDataCSV()">📥 Export Student Data (CSV)</button>
+        <button class="btn btn-primary" style="width:auto; padding:8px 16px;" onclick="exportStudentDataCSV()">📥 Export Student Data (CSV)</button>
       </div>
 
       <table class="ref-table" style="margin-top:10px;">
@@ -1432,7 +1429,55 @@ const memoryStore = {};
 function safeGet(key, defaultVal) { try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : defaultVal; } catch(e) { return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal; } }
 function safeSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { memoryStore[key] = val; } }
 
+// OWNER / ADMIN MODE CONTROLS
+let isOwnerAdmin = safeGet('hub_is_admin_mode', false);
+
+function applyAdminModeUI() {
+  if (isOwnerAdmin) {
+    document.body.classList.add('is-admin-mode');
+    setElText('adminStatusLabel', '👑 Owner Mode Active');
+    const badge = document.querySelector('.admin-toggle-badge');
+    if (badge) badge.style.borderColor = '#eab308';
+  } else {
+    document.body.classList.remove('is-admin-mode');
+    setElText('adminStatusLabel', '🔒 Student Mode');
+    const badge = document.querySelector('.admin-toggle-badge');
+    if (badge) badge.style.borderColor = 'var(--border)';
+  }
+}
+
+function toggleAdminPasscodePrompt() {
+  if (isOwnerAdmin) {
+    if (confirm('Switch back to regular Student View? (Hides all admin buttons & telemetry)')) {
+      isOwnerAdmin = false;
+      safeSet('hub_is_admin_mode', false);
+      applyAdminModeUI();
+      if (document.getElementById('view-students_admin')?.classList.contains('active')) {
+        goToTab('overview');
+      }
+      alert('Switched to Student Mode.');
+    }
+  } else {
+    const pin = prompt('🔑 Enter Owner Admin Passcode to unlock admin tools & telemetry:');
+    if (pin === 'drdalia2026' || pin === 'admin2026' || pin === 'owner2026') {
+      isOwnerAdmin = true;
+      safeSet('hub_is_admin_mode', true);
+      applyAdminModeUI();
+      alert('🎉 Welcome Dr. Mohammad! Owner / Admin mode unlocked.');
+    } else if (pin !== null) {
+      alert('❌ Incorrect passcode. Access restricted to site owner.');
+    }
+  }
+}
+
 // THEME & ACCENT COLOR
+function updateThemeIcon(mode) {
+  const btn = document.getElementById('themeToggleBtn');
+  if (!btn) return;
+  // In Light mode -> show ☀️ (or click to dark), In Dark mode -> show 🌙
+  btn.textContent = mode === 'dark' ? '🌙' : '☀️';
+}
+
 function setAccentColor(primary, primaryHover) {
   document.documentElement.style.setProperty('--primary', primary);
   document.documentElement.style.setProperty('--primary-hover', primaryHover);
@@ -1442,23 +1487,27 @@ function setAccentColor(primary, primaryHover) {
   safeSet('hub_theme_primary', primary);
   safeSet('hub_theme_primary_hover', primaryHover);
 }
+
 function toggleDarkMode() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   safeSet('hub_theme_mode', next);
+  updateThemeIcon(next);
 }
 
-// APPLY PERSISTED THEMES
+// APPLY PERSISTED THEMES & ADMIN STATE
 (function initPersistedTheme() {
   const savedMode = safeGet('hub_theme_mode', 'light');
   document.documentElement.setAttribute('data-theme', savedMode);
+  updateThemeIcon(savedMode);
   const savedPrimary = safeGet('hub_theme_primary', '#155dfc');
   const savedHover = safeGet('hub_theme_primary_hover', '#1447e6');
   if (savedPrimary) {
     document.documentElement.style.setProperty('--primary', savedPrimary);
     document.documentElement.style.setProperty('--primary-hover', savedHover);
   }
+  applyAdminModeUI();
 })();
 
 // 10-RANK XP SYSTEM EXACT SPECIFICATION
@@ -1570,7 +1619,7 @@ function checkFullAccess() {
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
-    renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry();
+    renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('mainDashboard').style.display = 'none';
@@ -1594,6 +1643,10 @@ window.addEventListener('load', initClerk);
 
 // NAVIGATION
 function goToTab(tabId) {
+  if (tabId === 'students_admin' && !isOwnerAdmin) {
+    alert('🔒 Access Denied: Student Telemetry is strictly restricted to site owner.');
+    return;
+  }
   stopStethoscopeAudio();
   document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1604,7 +1657,34 @@ function goToTab(tabId) {
   if (tabId === 'students_admin') renderStudentTelemetry();
 }
 
-// 1. MANAGE SECTIONS & CUSTOM SECTIONS
+// 1. MANAGE ALL SECTIONS (BUILT-IN + CUSTOM)
+const defaultBuiltinSections = [
+  { id: 'overview', title: 'Overview', icon: '📊', isBuiltin: true },
+  { id: 'focus', title: 'Focus Room', icon: '⏳', isBuiltin: true },
+  { id: 'qbank', title: 'Question Bank', icon: '🎯', isBuiltin: true },
+  { id: 'videos', title: 'Lectures', icon: '🎥', isBuiltin: true },
+  { id: 'stethoscope', title: 'Stethoscope Lab', icon: '🩺', isBuiltin: true },
+  { id: 'antibiotics', title: 'Antibiotic Ladder', icon: '💊', isBuiltin: true },
+  { id: 'mnemonics', title: 'Mnemonic Vault', icon: '🧠', isBuiltin: true },
+  { id: 'whiteboard', title: 'Clinical Canvas', icon: '🎨', isBuiltin: true },
+  { id: 'oral', title: 'Oral Rounds Sim', icon: '🗣️', isBuiltin: true },
+  { id: 'flashcards', title: 'Flashcards', icon: '🗂️', isBuiltin: true },
+  { id: 'cheatsheet', title: 'Medical Directory', icon: '🔍', isBuiltin: true },
+  { id: 'planner', title: 'Study Roadmap', icon: '📅', isBuiltin: true },
+  { id: 'qa', title: 'Q&A with Dr. Mohammad', icon: '💬', isBuiltin: true },
+  { id: 'analytics', title: 'Analytics', icon: '📈', isBuiltin: true }
+];
+
+let sectionVisibilityMap = safeGet('hub_section_visibility_v1', {});
+
+function applySectionsVisibility() {
+  defaultBuiltinSections.forEach(sec => {
+    const isHidden = sectionVisibilityMap[sec.id] === false;
+    const navEl = document.getElementById('nav-' + sec.id);
+    if (navEl) navEl.style.display = isHidden ? 'none' : 'flex';
+  });
+}
+
 let customSections = safeGet('hub_custom_sections_v2', [
   {
     id: 'sec_path_atlas',
@@ -1619,32 +1699,75 @@ let customSections = safeGet('hub_custom_sections_v2', [
 ]);
 
 function openManageSectionsModal() {
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
   const container = document.getElementById('manageSectionsList');
   if (!container) return;
   container.innerHTML = '';
   
+  // 1. Built-in Sections
+  const builtinHeader = document.createElement('div');
+  builtinHeader.style.cssText = 'font-size:12px; font-weight:700; color:var(--muted-foreground); text-transform:uppercase; margin-top:4px;';
+  builtinHeader.textContent = 'Standard Platform Sections:';
+  container.appendChild(builtinHeader);
+
+  defaultBuiltinSections.forEach(sec => {
+    const isVisible = sectionVisibilityMap[sec.id] !== false;
+    const item = document.createElement('div');
+    item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:9px 14px; border-radius:var(--radius-md);`;
+    item.innerHTML = `
+      <div>
+        <strong>${escapeHTML(sec.icon)} ${escapeHTML(sec.title)}</strong>
+        <div style="font-size:11.5px; color:var(--muted-foreground);">${isVisible ? '✓ Visible to students' : '🚫 Hidden from navigation'}</div>
+      </div>
+      <div>
+        <button class="btn btn-outline" style="width:auto; padding:5px 12px; font-size:11.5px;" onclick="toggleSectionVisibility('${sec.id}')">
+          ${isVisible ? 'Hide Section' : 'Show Section'}
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+
+  // 2. Custom Dynamic Sections
+  const customHeader = document.createElement('div');
+  customHeader.style.cssText = 'font-size:12px; font-weight:700; color:var(--muted-foreground); text-transform:uppercase; margin-top:10px;';
+  customHeader.textContent = 'Custom Created Sections:';
+  container.appendChild(customHeader);
+
   if (customSections.length === 0) {
-    container.innerHTML = '<div style="color:var(--muted-foreground); font-size:13px;">No custom sections yet. Click "+ Add New Section" to create one!</div>';
+    const emptyDiv = document.createElement('div');
+    emptyDiv.style.cssText = 'color:var(--muted-foreground); font-size:12px;';
+    emptyDiv.textContent = 'No custom sections added yet.';
+    container.appendChild(emptyDiv);
   } else {
     customSections.forEach((sec, idx) => {
       const item = document.createElement('div');
-      item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:12px 16px; border-radius:var(--radius-md);`;
+      item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:9px 14px; border-radius:var(--radius-md);`;
       item.innerHTML = `
         <div>
           <strong>${escapeHTML(sec.icon)} ${escapeHTML(sec.title)}</strong>
-          <div style="font-size:12px; color:var(--muted-foreground);">${escapeHTML(sec.desc)} (${sec.items.length} items)</div>
+          <div style="font-size:11.5px; color:var(--muted-foreground);">${escapeHTML(sec.desc)} (${sec.items.length} items)</div>
         </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px;" onclick="renameCustomSection('${sec.id}')">✏️ Rename</button>
-          <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete</button>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px;" onclick="renameCustomSection('${sec.id}')">✏️ Rename</button>
+          <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete</button>
         </div>
       `;
       container.appendChild(item);
     });
   }
+
   document.getElementById('manageSectionsModal').style.display = 'flex';
 }
 function closeManageSectionsModal() { document.getElementById('manageSectionsModal').style.display = 'none'; }
+
+function toggleSectionVisibility(secId) {
+  const current = sectionVisibilityMap[secId] !== false;
+  sectionVisibilityMap[secId] = !current;
+  safeSet('hub_section_visibility_v1', sectionVisibilityMap);
+  applySectionsVisibility();
+  openManageSectionsModal();
+}
 
 function renameCustomSection(secId) {
   const sec = customSections.find(s => s.id === secId);
@@ -1705,10 +1828,10 @@ function renderCustomSections() {
     sec.items.forEach((item, itemIdx) => {
       itemsHtml += `
         <div class="custom-card">
-          <h3 style="font-size:16px; margin-bottom:6px;">${escapeHTML(item.title)}</h3>
-          <p style="font-size:13px; color:var(--muted-foreground); margin-bottom:12px;">${escapeHTML(item.desc)}</p>
+          <h3 style="font-size:15.5px; margin-bottom:5px;">${escapeHTML(item.title)}</h3>
+          <p style="font-size:12.5px; color:var(--muted-foreground); margin-bottom:10px;">${escapeHTML(item.desc)}</p>
           ${item.link ? `<a href="${escapeHTML(item.link)}" target="_blank" class="attached-file-badge">🔗 Open Attached Resource</a>` : ''}
-          <button class="btn-del-item" onclick="deleteCustomSectionItem('${sec.id}', ${itemIdx})">✕</button>
+          <button class="btn-del-item admin-only" onclick="deleteCustomSectionItem('${sec.id}', ${itemIdx})">✕</button>
         </div>
       `;
     });
@@ -1719,14 +1842,14 @@ function renderCustomSections() {
           <h2 class="panel-title">${escapeHTML(sec.icon)} ${escapeHTML(sec.title)}</h2>
           <p class="panel-subtitle">${escapeHTML(sec.desc)}</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="addCustomSectionItem('${sec.id}')">➕ + Add Content / File</button>
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete Section</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="addCustomSectionItem('${sec.id}')">➕ + Add Content / File</button>
+          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete Section</button>
         </div>
       </div>
 
-      <div class="custom-section-grid" style="margin-top:20px;">
-        ${itemsHtml || '<div style="color:var(--muted-foreground); font-size:14px; grid-column: 1/-1;">No items in this section yet. Click "+ Add Content / File" to populate it!</div>'}
+      <div class="custom-section-grid" style="margin-top:18px;">
+        ${itemsHtml || '<div style="color:var(--muted-foreground); font-size:13px; grid-column: 1/-1;">No items in this section yet. Click "+ Add Content / File" to populate it!</div>'}
       </div>
     `;
     mainContainer.appendChild(panel);
@@ -1866,7 +1989,7 @@ function setAmbientSound(soundId) {
       if (desktopPlayer) {
         desktopPlayer.src = customSnd.data;
         desktopPlayer.volume = currentAmbientVolume;
-        desktopPlayer.play().catch(e => console.log('Audio playback permission:', e));
+        desktopPlayer.play().catch(e => console.log('Audio playback:', e));
       }
     } else if (customSnd.type === 'synth_rain') {
       playSynthRain();
@@ -2008,6 +2131,7 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
 ]);
 
 function openManageExamsModal() {
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
   const container = document.getElementById('manageExamsList');
   if (!container) return;
   container.innerHTML = '';
@@ -2015,15 +2139,15 @@ function openManageExamsModal() {
   customQuizzes.forEach(q => {
     const qCount = q.questions ? q.questions.length : (q.questionsCount || 10);
     const item = document.createElement('div');
-    item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:12px 16px; border-radius:var(--radius-md);`;
+    item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:10px 14px; border-radius:var(--radius-md);`;
     item.innerHTML = `
       <div>
         <strong>${escapeHTML(q.title)}</strong>
-        <div style="font-size:12px; color:var(--muted-foreground);">${qCount} Questions • ${escapeHTML(q.category || 'General')} • ${q.solved ? '✓ Solved' : '⏳ Pending'}</div>
+        <div style="font-size:11.5px; color:var(--muted-foreground);">${qCount} Questions • ${escapeHTML(q.category || 'General')} • ${q.solved ? '✓ Solved' : '⏳ Pending'}</div>
       </div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px;" onclick="resetQuizAttempt('${q.id}')">↺ Reset Attempt</button>
-        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px; color:#ef4444;" onclick="deleteAdminQuiz('${q.id}')">🗑️ Delete</button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px;" onclick="resetQuizAttempt('${q.id}')">↺ Reset</button>
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px; color:#ef4444;" onclick="deleteAdminQuiz('${q.id}')">🗑️ Delete</button>
       </div>
     `;
     container.appendChild(item);
@@ -2063,14 +2187,14 @@ function renderQuizzes() {
     card.innerHTML = `
       <div>
         <span class="status-badge ${q.solved ? 'status-done' : 'status-pending'}">${q.solved ? '✓ Solved (+100 XP)' : 'Interactive Exam'}</span>
-        <h3 style="font-size:17px; margin: 10px 0 6px 0;">${escapeHTML(q.title)}</h3>
-        <p style="font-size:13px; color:var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(q.desc)}</p>
+        <h3 style="font-size:16.5px; margin: 9px 0 5px 0;">${escapeHTML(q.title)}</h3>
+        <p style="font-size:12.5px; color:var(--muted-foreground); margin-bottom: 14px;">${escapeHTML(q.desc)}</p>
       </div>
       <div>
-        <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:12px;">📝 ${qCount} Questions • ${escapeHTML(q.tag || 'Assessment')}</div>
+        <div style="font-size:11.5px; color:var(--muted-foreground); margin-bottom:10px;">📝 ${qCount} Questions • ${escapeHTML(q.tag || 'Assessment')}</div>
         <button class="btn btn-primary" onclick="startNativeQuiz('${q.id}')">🚀 Start Interactive Exam</button>
       </div>
-      <button class="btn-del-item" title="Delete Exam" onclick="deleteAdminQuiz('${q.id}')">✕</button>
+      <button class="btn-del-item admin-only" title="Delete Exam" onclick="deleteAdminQuiz('${q.id}')">✕</button>
     `;
     container.appendChild(card);
   });
@@ -2303,18 +2427,18 @@ function submitInAppExam() {
     }
     
     const reviewItem = document.createElement('div');
-    reviewItem.style.cssText = `background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;`;
+    reviewItem.style.cssText = `background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px;`;
     
     const userChoiceText = userChoice !== undefined ? q.options[userChoice] : 'Skipped / Unanswered';
     const correctChoiceText = q.options[q.correctIndex] || 'Correct choice';
     
     reviewItem.innerHTML = `
-      <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: ${isCorrect ? '#16a34a' : '#ef4444'};">
+      <div style="font-weight: 700; font-size: 13.5px; margin-bottom: 5px; color: ${isCorrect ? '#16a34a' : '#ef4444'};">
         ${isCorrect ? '✓ Correct' : '✕ Incorrect'} — Question ${qIdx + 1}
       </div>
-      <div style="font-size: 13.5px; font-weight: 600; margin-bottom: 8px;">${escapeHTML(q.question)}</div>
-      <div style="font-size: 13px; margin-bottom: 4px;"><strong>Your Answer:</strong> <span style="color:${isCorrect ? '#16a34a' : '#ef4444'}">${escapeHTML(userChoiceText)}</span></div>
-      ${!isCorrect ? `<div style="font-size: 13px; color: #16a34a; margin-bottom: 6px;"><strong>Correct Answer:</strong> ${escapeHTML(correctChoiceText)}</div>` : ''}
+      <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">${escapeHTML(q.question)}</div>
+      <div style="font-size: 12.5px; margin-bottom: 3px;"><strong>Your Answer:</strong> <span style="color:${isCorrect ? '#16a34a' : '#ef4444'}">${escapeHTML(userChoiceText)}</span></div>
+      ${!isCorrect ? `<div style="font-size: 12.5px; color: #16a34a; margin-bottom: 5px;"><strong>Correct Answer:</strong> ${escapeHTML(correctChoiceText)}</div>` : ''}
       <div class="mcq-explanation-box">💡 <strong>Clinical Explanation:</strong> ${escapeHTML(q.explanation || 'High yield medical pearl.')}</div>
     `;
     reviewContainer.appendChild(reviewItem);
@@ -2332,7 +2456,7 @@ function submitInAppExam() {
   addXP(100);
 }
 
-// ULTRA-SMART BILINGUAL ARABIC & ENGLISH MCQ PARSER
+// ULTRA-ACCURATE BILINGUAL ARABIC & ENGLISH MCQ PARSER
 let extractedMcqList = [];
 function openAdminMcqExtractorModal() {
   extractedMcqList = [];
@@ -2556,7 +2680,7 @@ function saveNewAdminContent() {
   safeSet('hub_quizzes_custom_v3', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 
-// 4. LECTURES & PLAYLISTS (WITH COMPLETE EMBEDDED PLAYLIST PLAYER)
+// 4. LECTURES & PLAYLISTS
 let videoCategories = safeGet('hub_video_categories', [
   'Cardiology', 'Neurology', 'Nephrology', 'Pulmonology', 'Pharmacology', 'Pathology', 'Biochemistry', 'Surgery'
 ]);
@@ -2655,7 +2779,7 @@ function renderVideos() {
         <div class="video-action-circle ${v.completed ? 'completed' : ''}" onclick="toggleVideoComplete('${v.id}')" title="${v.completed ? 'Completed (+50 XP) - Click to unmark' : 'Click to mark as Completed (+50 XP)'}">
           ${v.completed ? '✓' : '○'}
         </div>
-        <div class="video-action-circle" onclick="openAttachFileModal('${v.id}')" title="Attach file / summary notes to this lecture">
+        <div class="video-action-circle admin-only" onclick="openAttachFileModal('${v.id}')" title="Attach file / summary notes to this lecture">
           📎
         </div>
       </div>
@@ -2675,13 +2799,13 @@ function renderVideos() {
           ` : ''}
         </div>
 
-        <div style="display:flex; gap:8px; margin-top:10px;">
-          <button class="btn btn-outline" style="font-size:12px; padding:8px 12px;" onclick="openAttachFileModal('${v.id}')">📎 + Attach Notes</button>
-          <button class="btn btn-primary" style="font-size:12px; padding:8px 12px;" onclick="toggleVideoComplete('${v.id}')">${v.completed ? 'Completed ✓' : 'Mark Complete (+50 XP)'}</button>
+        <div style="display:flex; gap:6px; margin-top:8px;">
+          <button class="btn btn-outline admin-only" style="font-size:11.5px; padding:7px 10px;" onclick="openAttachFileModal('${v.id}')">📎 + Attach Notes</button>
+          <button class="btn btn-primary" style="font-size:11.5px; padding:7px 10px;" onclick="toggleVideoComplete('${v.id}')">${v.completed ? 'Completed ✓' : 'Mark Complete (+50 XP)'}</button>
         </div>
       </div>
 
-      <button class="btn-del-item" title="Delete Lecture" onclick="deleteAdminVideo('${v.id}')">✕</button>
+      <button class="btn-del-item admin-only" title="Delete Lecture" onclick="deleteAdminVideo('${v.id}')">✕</button>
     `;
     container.appendChild(card);
   });
@@ -2788,7 +2912,7 @@ function deleteAdminVideo(id) {
   renderVideos();
 }
 
-// 5. FLASHCARDS & FILE AUTO-EXTRACTOR (FIXED OVERFLOW & CLEAN SPLIT)
+// 5. FLASHCARDS & FILE AUTO-EXTRACTOR (CLEAN QUESTION STEM FRONT & RIGHT ANSWER ONLY BACK)
 let customFlashcards = safeGet('hub_fc_custom_v2', [
   { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
   { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
@@ -2913,43 +3037,47 @@ function extractFlashcardsFromText() {
   
   extractedFcList = [];
 
-  // Robust multi-question pre-processor for flashcards
-  let text = rawText;
-  const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-  arabicDigits.forEach((digit, i) => { text = text.replace(new RegExp(digit, 'g'), i); });
+  // First, parse as MCQs to extract stem and the EXACT correct answer
+  const parsedMCQs = parseMcqText(rawText);
+  
+  if (parsedMCQs.length > 0) {
+    parsedMCQs.forEach(mcq => {
+      const rightOptionText = mcq.options[mcq.correctIndex] || mcq.options[0] || 'Correct answer';
+      const cleanStem = mcq.question.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
+      extractedFcList.push({
+        cat: cat,
+        q: cleanStem,
+        a: `✓ ${rightOptionText}` + (mcq.explanation ? `\n\n💡 Pearl: ${mcq.explanation}` : '')
+      });
+    });
+  } else {
+    // If not standard MCQ, split on lines or Q&A patterns
+    let text = rawText;
+    const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    arabicDigits.forEach((digit, i) => { text = text.replace(new RegExp(digit, 'g'), i); });
+    text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__FC_Q_START__ $1. ');
+    text = text.replace(/(?:\s+|\n|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '\n__FC_A_START__ ');
 
-  // Separate numbered stems even inline in PDF text
-  text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__FC_Q_START__ $1. ');
-  text = text.replace(/(?:\s+|\n|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '\n__OPT__ $1) ');
-  text = text.replace(/(?:\s+|\n|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '\n__FC_A_START__ ');
-
-  const blocks = text.split(/__FC_Q_START__/);
-  blocks.forEach(block => {
-    const trimmed = block.trim();
-    if (!trimmed || trimmed.length < 4) return;
-
-    let q = '', a = '';
-    if (trimmed.includes('__FC_A_START__')) {
-      const parts = trimmed.split('__FC_A_START__');
-      q = parts[0].replace(/__OPT__/g, '\n').trim();
-      a = parts[1].trim();
-    } else {
-      const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
-      if (lines.length >= 2) {
-        q = lines[0].replace(/^[\d\.\:\)\-\s]+/, '').trim();
-        a = lines.slice(1).join('\n').replace(/__OPT__/g, '').trim();
+    const blocks = text.split(/__FC_Q_START__/);
+    blocks.forEach(block => {
+      const trimmed = block.trim();
+      if (!trimmed || trimmed.length < 4) return;
+      let q = '', a = '';
+      if (trimmed.includes('__FC_A_START__')) {
+        const parts = trimmed.split('__FC_A_START__');
+        q = parts[0].trim(); a = parts[1].trim();
       } else {
-        q = trimmed.replace(/^[\d\.\:\)\-\s]+/, '').trim();
-        a = "High-yield board concept / Review details in notes.";
+        const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
+        if (lines.length >= 2) {
+          q = lines[0]; a = lines.slice(1).join('\n');
+        } else {
+          q = trimmed; a = "High-yield medical concept.";
+        }
       }
-    }
-    
-    // Clean stem number redundancy
-    q = q.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
-    if (q) {
-      extractedFcList.push({ cat, q, a });
-    }
-  });
+      q = q.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
+      if (q) extractedFcList.push({ cat, q, a });
+    });
+  }
 
   setElText('fcExtractStatus', `✅ ${extractedFcList.length} Flashcards successfully extracted!`);
 }
@@ -2965,7 +3093,7 @@ function publishExtractedFlashcards() {
   alert(`🎉 Successfully added ${extractedFcList.length} flashcards into your deck!`);
 }
 
-// 6. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, SHAPES, PHOTOS)
+// 6. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, STICKIES, SHAPES, PHOTOS)
 let wbCanvas = null, wbCtx = null, wbMode = 'draw', isWbDrawing = false, wbColor = '#155dfc', wbWidth = 3;
 
 function initWhiteboard() {
@@ -3024,7 +3152,7 @@ function resizeWhiteboard() {
   if (!wrapper || !wbCanvas) return;
   const temp = wbCanvas.toDataURL();
   wbCanvas.width = wrapper.clientWidth || 800;
-  wbCanvas.height = wrapper.clientHeight || 520;
+  wbCanvas.height = wrapper.clientHeight || 500;
   const img = new Image();
   img.onload = () => { if (wbCtx) wbCtx.drawImage(img, 0, 0); };
   img.src = temp;
@@ -3037,7 +3165,7 @@ function setWbEraser() { wbColor = '#ffffff'; wbWidth = 24; wbMode = 'draw'; }
 function clearCanvas() {
   if (wbCtx && wbCanvas) {
     wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
-    document.querySelectorAll('.canvas-overlay-text, .canvas-sticky-note').forEach(el => el.remove());
+    document.querySelectorAll('.canvas-sticky-note').forEach(el => el.remove());
   }
 }
 
@@ -3055,7 +3183,7 @@ function addStickyNotePrompt() {
   const wrapper = document.getElementById('canvasWrapper');
   const sticky = document.createElement('div');
   sticky.className = 'canvas-sticky-note';
-  sticky.style.cssText = `position:absolute; top:40px; left:40px; width:180px; min-height:100px; background:#fef08a; color:#854d0e; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.15); font-size:13px; font-weight:600; cursor:move; z-index:10; resize:both; overflow:auto;`;
+  sticky.style.cssText = `position:absolute; top:40px; left:40px; width:180px; min-height:90px; background:#fef08a; color:#854d0e; padding:10px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.15); font-size:12.5px; font-weight:600; cursor:move; z-index:10; resize:both; overflow:auto;`;
   sticky.innerHTML = `
     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
       <span>📌 Note</span>
@@ -3073,11 +3201,11 @@ function handleWbImageUpload(e) {
   reader.onload = (evt) => {
     const img = new Image();
     img.onload = () => {
-      const maxW = 340, maxH = 260;
+      const maxW = 320, maxH = 240;
       let w = img.width, h = img.height;
       if (w > maxW) { h = (maxW / w) * h; w = maxW; }
       if (h > maxH) { w = (maxH / h) * w; h = maxH; }
-      wbCtx.drawImage(img, 40, 40, w, h);
+      wbCtx.drawImage(img, 30, 30, w, h);
     };
     img.src = evt.target.result;
   };
@@ -3096,8 +3224,9 @@ function saveCanvasImage() {
 function setRingProgress(fillId, pct) {
   const circle = document.getElementById(fillId);
   if (!circle) return;
-  const circumference = 2 * Math.PI * 60; // 377
+  const circumference = 2 * Math.PI * 55; // 345
   const offset = circumference - (Math.min(100, Math.max(0, pct)) / 100) * circumference;
+  circle.style.strokeDasharray = circumference;
   circle.style.strokeDashoffset = offset;
 }
 
@@ -3133,7 +3262,7 @@ function renderAnalyticsRings() {
   setElText('ringWrongSub', `${wrongCount} Pending Mistakes`);
 }
 
-// 8. Q&A ENGINE (WITH ADMIN INTERACTION & FULL STUDENT INFO)
+// 8. Q&A ENGINE
 let customQaList = safeGet('hub_qa_list_v2', [
   {
     id: 1,
@@ -3157,10 +3286,10 @@ function renderQA() {
     card.className = 'qa-msg';
     card.innerHTML = `
       <div class="qa-msg-header">
-        <div style="display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; align-items:center; gap:6px;">
           <span class="qa-author-badge">👤 ${escapeHTML(q.studentName || 'Student')}</span>
           <span style="font-size:11px; color:var(--primary); font-weight:600;">${escapeHTML(q.studentRank || 'Med Student')}</span>
-          <span style="font-size:11px; color:var(--muted-foreground);">${escapeHTML(q.studentEmail || '')}</span>
+          <span class="admin-only" style="font-size:11px; color:var(--muted-foreground);">${escapeHTML(q.studentEmail || '')}</span>
         </div>
         <span>${escapeHTML(q.date)}</span>
       </div>
@@ -3173,9 +3302,9 @@ function renderQA() {
         </div>
       ` : ''}
 
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button class="btn btn-outline" style="width:auto; padding:5px 12px; font-size:11.5px;" onclick="adminReplyQA(${idx})">💬 Admin Reply / Edit</button>
-        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:11.5px; color:#ef4444;" onclick="deleteQA(${idx})">🗑️ Delete</button>
+      <div class="admin-only" style="display:flex; gap:6px; margin-top:8px;">
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11px;" onclick="adminReplyQA(${idx})">💬 Admin Reply / Edit</button>
+        <button class="btn btn-outline" style="width:auto; padding:4px 8px; font-size:11px; color:#ef4444;" onclick="deleteQA(${idx})">🗑️ Delete</button>
       </div>
     `;
     container.appendChild(card);
@@ -3230,7 +3359,7 @@ function deleteQA(index) {
   renderQA();
 }
 
-// 9. STUDENT TELEMETRY & PRIVACY DIRECTORY (ADMIN ONLY)
+// 9. STUDENT TELEMETRY & PRIVACY DIRECTORY (OWNER ONLY)
 function renderStudentTelemetry() {
   const tbody = document.getElementById('studentTelemetryBody');
   if (!tbody) return;
@@ -3252,8 +3381,8 @@ function renderStudentTelemetry() {
   const row = document.createElement('tr');
   row.innerHTML = `
     <td>
-      <div style="display:flex; align-items:center; gap:10px;">
-        <img src="${photo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid var(--primary);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <img src="${photo}" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1.5px solid var(--primary);">
         <div>
           <strong>${escapeHTML(displayName)}</strong>
           <div style="font-size:11px; color:var(--muted-foreground);">Active Student</div>
@@ -3306,11 +3435,11 @@ function renderSteth() {
     card.innerHTML = `
       <div>
         <span class="video-tag">${escapeHTML(s.cat)}</span>
-        <h3 style="font-size: 17px; margin-bottom: 6px;">${escapeHTML(s.title)}</h3>
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(s.desc)}</p>
+        <h3 style="font-size: 16px; margin-bottom: 5px;">${escapeHTML(s.title)}</h3>
+        <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">${escapeHTML(s.desc)}</p>
       </div>
       <button class="steth-btn-play" id="btnSteth_${s.id}" onclick="toggleStethoscope('${s.type}', '${s.id}')">🔊 Listen to Sound</button>
-      <button class="btn-del-item" title="Delete Sound" onclick="deleteSteth('${s.id}')">✕</button>
+      <button class="btn-del-item admin-only" title="Delete Sound" onclick="deleteSteth('${s.id}')">✕</button>
     `;
     container.appendChild(card);
   });
@@ -3383,10 +3512,10 @@ function renderAbx() {
     card.innerHTML = `
       <div>
         <span class="abx-tag" style="${a.tagStyle}">${escapeHTML(a.tag)}</span>
-        <h4 style="font-size: 16px; margin-top:4px;">${escapeHTML(a.title)}</h4>
-        <p style="font-size: 13px; color:var(--muted-foreground);">${escapeHTML(a.desc)}</p>
+        <h4 style="font-size: 15px; margin-top:3px;">${escapeHTML(a.title)}</h4>
+        <p style="font-size: 12.5px; color:var(--muted-foreground);">${escapeHTML(a.desc)}</p>
       </div>
-      <button class="btn-del-item" title="Delete Tier" onclick="deleteAbx('${a.id}')">✕</button>
+      <button class="btn-del-item admin-only" title="Delete Tier" onclick="deleteAbx('${a.id}')">✕</button>
     `;
     container.appendChild(card);
   });
@@ -3412,9 +3541,9 @@ function renderMnemonics() {
     let linesHtml = m.lines.map(line => `<div class="mnemonic-line">${escapeHTML(line)}</div>`).join('');
     card.innerHTML = `
       <span class="video-tag">${escapeHTML(m.cat)}</span>
-      <h3 style="font-size: 18px; margin: 4px 0 8px 0;">${escapeHTML(m.title)}</h3>
+      <h3 style="font-size: 17px; margin: 3px 0 7px 0;">${escapeHTML(m.title)}</h3>
       <div class="mnemonic-letter-box">${linesHtml}</div>
-      <button class="btn-del-item" title="Delete Mnemonic" onclick="deleteMnemonic('${m.id}')">✕</button>
+      <button class="btn-del-item admin-only" title="Delete Mnemonic" onclick="deleteMnemonic('${m.id}')">✕</button>
     `;
     container.appendChild(card);
   });
@@ -3494,7 +3623,7 @@ function renderDirectory() {
       <td>${escapeHTML(d.range)}</td>
       <td><span class="video-tag" style="margin:0;">${escapeHTML(d.cat)}</span></td>
       <td>${escapeHTML(d.pearl)}</td>
-      <td><button class="btn-del-item" style="position:static; font-size:14px;" onclick="deleteDir('${escapeHTML(d.param)}')">✕</button></td>
+      <td class="admin-only"><button class="btn-del-item" style="position:static; font-size:14px;" onclick="deleteDir('${escapeHTML(d.param)}')">✕</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -3513,6 +3642,7 @@ function filterMedicalDirectory() {
 
 // 15. UNIVERSAL ADD MODAL
 function openUniversalAddModal(type) {
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
   document.getElementById('universalModalType').value = type;
   const titleEl = document.getElementById('universalModalTitle');
   const fields = document.getElementById('universalModalFields');
@@ -3522,13 +3652,13 @@ function openUniversalAddModal(type) {
     titleEl.textContent = '⚙️ Add New Stethoscope Sound';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Title:</label>
-      <input type="text" id="stethTitle" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Mitral Stenosis">
+      <input type="text" id="stethTitle" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Mitral Stenosis">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Category:</label>
-      <input type="text" id="stethCat" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Cardiology • Murmur">
+      <input type="text" id="stethCat" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Cardiology • Murmur">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Description:</label>
-      <input type="text" id="stethDesc" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Diastolic rumble at apex.">
+      <input type="text" id="stethDesc" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Diastolic rumble at apex.">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Sound Simulator Engine Type:</label>
-      <select id="stethSoundType" class="search-input-box" style="margin-top:4px; margin-bottom:12px;">
+      <select id="stethSoundType" class="search-input-box" style="margin-top:4px; margin-bottom:10px;">
         <option value="as">Aortic Stenosis (Crescendo murmur)</option>
         <option value="mr">Mitral Regurgitation (Blowing murmur)</option>
         <option value="wheeze">Wheezing (Continuous musical)</option>
@@ -3539,13 +3669,13 @@ function openUniversalAddModal(type) {
     titleEl.textContent = '⚙️ Add New Antibiotic Tier';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Tier Tag:</label>
-      <input type="text" id="abxTag" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Tier 4: Carbapenems">
+      <input type="text" id="abxTag" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Tier 4: Carbapenems">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Drugs:</label>
-      <input type="text" id="abxTitle" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Imipenem, Meropenem">
+      <input type="text" id="abxTitle" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Imipenem, Meropenem">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Clinical Coverage Description:</label>
-      <input type="text" id="abxDesc" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="Covers Pseudomonas & anaerobes.">
+      <input type="text" id="abxDesc" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="Covers Pseudomonas & anaerobes.">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Color Theme:</label>
-      <select id="abxColor" class="search-input-box" style="margin-top:4px; margin-bottom:12px;">
+      <select id="abxColor" class="search-input-box" style="margin-top:4px; margin-bottom:10px;">
         <option value="blue">Blue (Standard)</option>
         <option value="green">Green (Mild)</option>
         <option value="red">Red (Heavy / Critical)</option>
@@ -3555,43 +3685,43 @@ function openUniversalAddModal(type) {
     titleEl.textContent = '⚙️ Add New Mnemonic';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Title (e.g. CRAB):</label>
-      <input type="text" id="mnTitle" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. CRAB (Multiple Myeloma signs)">
+      <input type="text" id="mnTitle" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. CRAB (Multiple Myeloma signs)">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Category:</label>
-      <input type="text" id="mnCat" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Hematology">
+      <input type="text" id="mnCat" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Hematology">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Breakdown (comma separated):</label>
-      <textarea id="mnLines" class="search-input-box" style="margin-top:4px; margin-bottom:12px; height: 90px;" placeholder="Calcium, Renal failure, Anemia, Bone lesions"></textarea>
+      <textarea id="mnLines" class="search-input-box" style="margin-top:4px; margin-bottom:10px; height: 80px;" placeholder="Calcium, Renal failure, Anemia, Bone lesions"></textarea>
     `;
   } else if (type === 'oral') {
     titleEl.textContent = '⚙️ Add New Oral Question';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Question Text:</label>
-      <input type="text" id="oralQ" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. What is the hallmark sign of Cushings Triad?">
+      <input type="text" id="oralQ" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. What is the hallmark sign of Cushings Triad?">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Answer Text:</label>
-      <textarea id="oralA" class="search-input-box" style="margin-top:4px; margin-bottom:12px; height: 80px;" placeholder="Hypertension, Bradycardia, Irregular respiration."></textarea>
+      <textarea id="oralA" class="search-input-box" style="margin-top:4px; margin-bottom:10px; height: 75px;" placeholder="Hypertension, Bradycardia, Irregular respiration."></textarea>
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Category Tag:</label>
-      <input type="text" id="oralTagInput" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Neurosurgery • +50 XP">
+      <input type="text" id="oralTagInput" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Neurosurgery • +50 XP">
     `;
   } else if (type === 'flashcard') {
     titleEl.textContent = '⚙️ Add New Flashcard';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Category:</label>
-      <input type="text" id="fcCatInput" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Physiology">
-      <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Question:</label>
-      <input type="text" id="fcQ" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Rate limiting enzyme of glycolysis?">
-      <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Answer:</label>
-      <textarea id="fcA" class="search-input-box" style="margin-top:4px; margin-bottom:12px; height: 80px;" placeholder="PFK-1 (Phosphofructokinase-1)"></textarea>
+      <input type="text" id="fcCatInput" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Physiology">
+      <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Question / Term (Card Front):</label>
+      <input type="text" id="fcQ" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Rate limiting enzyme of glycolysis?">
+      <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Right Answer (Card Back):</label>
+      <textarea id="fcA" class="search-input-box" style="margin-top:4px; margin-bottom:10px; height: 75px;" placeholder="PFK-1 (Phosphofructokinase-1)"></textarea>
     `;
   } else if (type === 'directory') {
     titleEl.textContent = '⚙️ Add New Directory Reference';
     fields.innerHTML = `
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Parameter Name:</label>
-      <input type="text" id="dirParam" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Serum Calcium">
+      <input type="text" id="dirParam" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Serum Calcium">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Normal Range:</label>
-      <input type="text" id="dirRange" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. 8.5 - 10.2 mg/dL">
+      <input type="text" id="dirRange" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. 8.5 - 10.2 mg/dL">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Category:</label>
-      <input type="text" id="dirCat" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="e.g. Electrolytes">
+      <input type="text" id="dirCat" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="e.g. Electrolytes">
       <label style="font-size:12px; color:var(--muted-foreground); font-weight:600;">Clinical Pearl:</label>
-      <input type="text" id="dirPearl" class="search-input-box" style="margin-top:4px; margin-bottom:12px;" placeholder="Correct for albumin levels!">
+      <input type="text" id="dirPearl" class="search-input-box" style="margin-top:4px; margin-bottom:10px;" placeholder="Correct for albumin levels!">
     `;
   }
   document.getElementById('universalAddModal').style.display = 'flex';
@@ -3706,11 +3836,11 @@ function renderPlanner() {
   tasks.forEach(t => {
     const item = document.createElement('div'); item.className = 'task-item ' + (t.done ? 'completed' : '');
     item.innerHTML = `
-      <div style="display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="toggleTask(${Number(t.id)})">
+      <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="toggleTask(${Number(t.id)})">
         <div class="checkbox">${t.done ? '✓' : ''}</div>
         <div>
           ${t.time ? `<span style="font-size:11px; font-weight:600; color:var(--primary);">${escapeHTML(t.time)}</span>` : ''}
-          <div class="task-label" style="font-size:14px;">${escapeHTML(t.goal)}</div>
+          <div class="task-label" style="font-size:13.5px;">${escapeHTML(t.goal)}</div>
         </div>
       </div>
       <button style="background:none; border:none; color:var(--muted-foreground); cursor:pointer;" onclick="deleteTask(${Number(t.id)})">✕</button>
@@ -3750,6 +3880,7 @@ function updateCountdownTimer() {
 }
 setInterval(updateCountdownTimer, 1000);
 function openAdminModal() {
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
   const d = new Date(targetExamTimestamp);
   document.getElementById('adminTargetDate').value = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
   document.getElementById('adminAnnounceTitle').value = safeGet('hub_ann_title', '📢 Board Exam Countdown & Updates');
