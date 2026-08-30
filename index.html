@@ -139,7 +139,7 @@
   .view-panel.active { display: block; animation: fadeIn 0.15s ease-in; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .panel-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: gap; gap: 12px; }
+  .panel-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
   .panel-title { font-size: 26px; font-weight: 700; color: var(--foreground); }
   .panel-subtitle { font-size: 14px; color: var(--muted-foreground); margin-top: 4px; }
 
@@ -188,7 +188,7 @@
   /* FOCUS ROOM */
   .focus-room-container { max-width: 680px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 36px; text-align: center; }
   .timer-display { font-size: 68px; font-weight: 800; letter-spacing: 2px; color: var(--foreground); margin: 20px 0; }
-  .timer-mode-buttons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
+  .timer-mode-buttons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
   .mode-btn { padding: 8px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--muted-foreground); font-size: 13px; font-weight: 600; cursor: pointer; }
   .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
   .sound-selector-box { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; align-items: center; }
@@ -345,9 +345,7 @@
     <h3 style="font-size: 18px; margin-bottom: 14px;" id="universalModalTitle">⚙️ Add New Item</h3>
     <input type="hidden" id="universalModalType">
     
-    <div id="universalModalFields">
-      <!-- Dynamic inputs -->
-    </div>
+    <div id="universalModalFields"></div>
 
     <div style="display: flex; gap: 10px; margin-top: 20px;">
       <button class="btn btn-primary" onclick="saveUniversalAdd()">Save Item Live 🚀</button>
@@ -492,7 +490,7 @@
       <div class="focus-hero-card">
         <div>
           <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">🎧 Ready for Deep Clinical Study?</h3>
-          <p style="font-size: 13.5px; color: var(--muted-foreground);">Start a 25-minute Pomodoro study block with ambient medical rain & alpha focus waves.</p>
+          <p style="font-size: 13.5px; color: var(--muted-foreground);">Start a custom Pomodoro study block with ambient medical rain & alpha focus waves.</p>
         </div>
         <div class="circular-focus-btn" onclick="goToTab('focus')">
           <span style="font-size: 24px; margin-bottom: 2px;">⏳</span>
@@ -534,15 +532,18 @@
       <div class="panel-header" style="text-align: center;">
         <div style="width:100%;">
           <h2 class="panel-title">⏳ Focus Study Room & Ambient Sounds</h2>
-          <p class="panel-subtitle">Deep work timer with relaxing ambient sounds to maximize memory retention.</p>
+          <p class="panel-subtitle">Deep work timer with customizable duration and ambient study sounds.</p>
         </div>
       </div>
 
       <div class="focus-room-container">
         <div class="timer-mode-buttons">
           <button class="mode-btn active" id="btnModePomodoro" onclick="setPomodoroMode('pomodoro')">25m Focus</button>
+          <button class="mode-btn" id="btnMode45" onclick="setPomodoroMode('deep')">45m Deep Work</button>
+          <button class="mode-btn" id="btnMode60" onclick="setPomodoroMode('marathon')">60m Marathon</button>
           <button class="mode-btn" id="btnModeShort" onclick="setPomodoroMode('short')">5m Break</button>
           <button class="mode-btn" id="btnModeLong" onclick="setPomodoroMode('long')">15m Break</button>
+          <button class="mode-btn" style="border: 1.5px dashed var(--primary); color: var(--primary);" onclick="setCustomFocusTime()">⚙️ Set Custom Time</button>
         </div>
 
         <div class="timer-display" id="pomodoroDisplay">25:00</div>
@@ -1432,16 +1433,64 @@ function saveUniversalAdd() {
   closeUniversalAddModal(); alert('🎉 Item Published Live!');
 }
 
+// THEME & ACCENT COLOR ENGINE
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  safeSet('hub_theme_mode', next);
+  const btn = document.querySelector('.theme-toggle-btn');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+function setAccentColor(primary, hover) {
+  document.documentElement.style.setProperty('--primary', primary);
+  document.documentElement.style.setProperty('--primary-hover', hover);
+  document.documentElement.style.setProperty('--primary-tint', primary + '18');
+  safeSet('hub_theme_accent', { primary, hover });
+  document.querySelectorAll('.color-dot').forEach(d => {
+    d.classList.toggle('active', d.getAttribute('onclick')?.includes(primary));
+  });
+}
+
+function initTheme() {
+  const savedTheme = safeGet('hub_theme_mode', 'light');
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const btn = document.querySelector('.theme-toggle-btn');
+  if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+  const savedAccent = safeGet('hub_theme_accent', null);
+  if (savedAccent && savedAccent.primary && savedAccent.hover) {
+    setAccentColor(savedAccent.primary, savedAccent.hover);
+  }
+}
+initTheme();
+
 // 11. POMODORO & AMBIENT AUDIO
 let pomodoroTimer = null, pomodoroSecondsLeft = 25 * 60, isPomodoroRunning = false, currentPomodoroMode = 'pomodoro';
 function setPomodoroMode(mode) {
-  currentPomodoroMode = mode; document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  if (mode === 'pomodoro') { document.getElementById('btnModePomodoro').classList.add('active'); pomodoroSecondsLeft = 25 * 60; }
-  else if (mode === 'short') { document.getElementById('btnModeShort').classList.add('active'); pomodoroSecondsLeft = 5 * 60; }
-  else if (mode === 'long') { document.getElementById('btnModeLong').classList.add('active'); pomodoroSecondsLeft = 15 * 60; }
+  currentPomodoroMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'pomodoro') { document.getElementById('btnModePomodoro')?.classList.add('active'); pomodoroSecondsLeft = 25 * 60; }
+  else if (mode === 'deep') { document.getElementById('btnMode45')?.classList.add('active'); pomodoroSecondsLeft = 45 * 60; }
+  else if (mode === 'marathon') { document.getElementById('btnMode60')?.classList.add('active'); pomodoroSecondsLeft = 60 * 60; }
+  else if (mode === 'short') { document.getElementById('btnModeShort')?.classList.add('active'); pomodoroSecondsLeft = 5 * 60; }
+  else if (mode === 'long') { document.getElementById('btnModeLong')?.classList.add('active'); pomodoroSecondsLeft = 15 * 60; }
   if (isPomodoroRunning) togglePomodoro();
   updatePomodoroDisplay();
 }
+
+function setCustomFocusTime() {
+  const mins = prompt("⏱️ Enter your desired Focus Time in minutes (e.g. 30, 50, 90):", "50");
+  if (!mins || isNaN(mins)) return;
+  const val = Math.max(1, Math.min(300, parseInt(mins)));
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  if (isPomodoroRunning) togglePomodoro();
+  pomodoroSecondsLeft = val * 60;
+  updatePomodoroDisplay();
+  alert(`✅ Custom study timer set to ${val} minutes!`);
+}
+
 function updatePomodoroDisplay() {
   const mins = String(Math.floor(pomodoroSecondsLeft / 60)).padStart(2, '0'), secs = String(pomodoroSecondsLeft % 60).padStart(2, '0');
   setElText('pomodoroDisplay', `${mins}:${secs}`);
