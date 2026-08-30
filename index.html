@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+code = r'''<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -65,7 +65,7 @@
     --primary-tint: rgba(21, 93, 252, 0.2);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
   /* OWNER ONLY SYSTEM VISIBILITY */
@@ -886,10 +886,7 @@
       </div>
       
       <!-- OWNER ADMIN PORTAL TOGGLE -->
-      <div class="admin-toggle-badge" onclick="toggleAdminPasscodePrompt()">
-        <span id="adminStatusLabel">🔒 Student Mode</span>
-        <span style="font-size:10px; color:var(--primary); font-weight:700;">🔑 Owner Access</span>
-      </div>
+
     </div>
   </aside>
 
@@ -1429,46 +1426,59 @@ const memoryStore = {};
 function safeGet(key, defaultVal) { try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : defaultVal; } catch(e) { return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal; } }
 function safeSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { memoryStore[key] = val; } }
 
-// OWNER / ADMIN MODE CONTROLS
-let isOwnerAdmin = safeGet('hub_is_admin_mode', false);
+// ==================== OWNER / ADMIN SECURITY LOGIC ====================
+const OWNER_EMAIL = "mohammadaldaliaob@gmail.com";
+const OWNER_PASSCODE = "271968drdali2006";
+
+let isOwnerAdmin = false;
 
 function applyAdminModeUI() {
-  if (isOwnerAdmin) {
-    document.body.classList.add('is-admin-mode');
-    setElText('adminStatusLabel', '👑 Owner Mode Active');
-    const badge = document.querySelector('.admin-toggle-badge');
-    if (badge) badge.style.borderColor = '#eab308';
+  document.body.classList.toggle('is-admin-mode', isOwnerAdmin);
+}
+
+function getClerkUserEmail() {
+  if (!window.Clerk || !window.Clerk.user) return '';
+  if (window.Clerk.user.primaryEmailAddress && window.Clerk.user.primaryEmailAddress.emailAddress) {
+    return window.Clerk.user.primaryEmailAddress.emailAddress;
+  }
+  if (window.Clerk.user.emailAddresses && window.Clerk.user.emailAddresses.length > 0) {
+    return window.Clerk.user.emailAddresses[0].emailAddress;
+  }
+  return '';
+}
+
+function verifyOwnerOnSignIn() {
+  const userEmail = getClerkUserEmail().trim().toLowerCase();
+  
+  if (userEmail === OWNER_EMAIL.toLowerCase()) {
+    const isAlreadyVerified = sessionStorage.getItem('hub_owner_session_unlocked') === 'true';
+    if (isAlreadyVerified) {
+      isOwnerAdmin = true;
+      applyAdminModeUI();
+    } else {
+      setTimeout(() => {
+        const pin = prompt('👑 Welcome Dr. Mohammad!
+Enter Owner Passcode:');
+        if (pin === OWNER_PASSCODE || pin === 'drdalia2026') {
+          isOwnerAdmin = true;
+          sessionStorage.setItem('hub_owner_session_unlocked', 'true');
+          applyAdminModeUI();
+          alert('👑 Owner Mode Unlocked! All administrative controls and Student Telemetry are now active.');
+        } else {
+          isOwnerAdmin = false;
+          applyAdminModeUI();
+          if (pin !== null) alert('❌ Incorrect passcode. Running in regular Student Mode.');
+        }
+      }, 400);
+    }
   } else {
-    document.body.classList.remove('is-admin-mode');
-    setElText('adminStatusLabel', '🔒 Student Mode');
-    const badge = document.querySelector('.admin-toggle-badge');
-    if (badge) badge.style.borderColor = 'var(--border)';
+    // Regular students are strictly in Student Mode
+    isOwnerAdmin = false;
+    sessionStorage.removeItem('hub_owner_session_unlocked');
+    applyAdminModeUI();
   }
 }
 
-function toggleAdminPasscodePrompt() {
-  if (isOwnerAdmin) {
-    if (confirm('Switch back to regular Student View? (Hides all admin buttons & telemetry)')) {
-      isOwnerAdmin = false;
-      safeSet('hub_is_admin_mode', false);
-      applyAdminModeUI();
-      if (document.getElementById('view-students_admin')?.classList.contains('active')) {
-        goToTab('overview');
-      }
-      alert('Switched to Student Mode.');
-    }
-  } else {
-    const pin = prompt('🔑 Enter Owner Admin Passcode to unlock admin tools & telemetry:');
-    if (pin === 'drdalia2026' || pin === 'admin2026' || pin === 'owner2026') {
-      isOwnerAdmin = true;
-      safeSet('hub_is_admin_mode', true);
-      applyAdminModeUI();
-      alert('🎉 Welcome Dr. Mohammad! Owner / Admin mode unlocked.');
-    } else if (pin !== null) {
-      alert('❌ Incorrect passcode. Access restricted to site owner.');
-    }
-  }
-}
 
 // THEME & ACCENT COLOR
 function updateThemeIcon(mode) {
@@ -1619,6 +1629,7 @@ function checkFullAccess() {
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
+    verifyOwnerOnSignIn();
     renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
@@ -3897,4 +3908,4 @@ function saveAdminCountdown() {
 }
 </script>
 </body>
-</html>
+</html>'''
