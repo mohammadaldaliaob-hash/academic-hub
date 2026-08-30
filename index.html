@@ -459,8 +459,16 @@ code = r'''<!DOCTYPE html>
       <div class="brand-badge-icon">⚡</div>
       <span>AcademicHub</span>
     </div>
-    <p class="auth-sub">Sign in with your Google account to access your medical study portal.</p>
+    <p class="auth-sub">Sign in with Google to access your medical study portal.</p>
     <div id="realClerkContainer"></div>
+    
+    <div id="authLocalFallback" style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 8px;">Direct Portal Sign-In (Local & Web):</div>
+      <div style="display: flex; gap: 6px; justify-content: center;">
+        <input type="email" id="localEmailInput" class="search-input-box" style="margin: 0; padding: 9px 12px; font-size: 13px; max-width: 250px;" placeholder="mohammadaldaliaob@gmail.com">
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px; font-size: 13px;" onclick="signInWithEmailManual()">Sign In →</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1430,53 +1438,77 @@ function safeSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)
 const OWNER_EMAIL = "mohammadaldaliaob@gmail.com";
 const OWNER_PASSCODE = "271968drdali2006";
 
-let isOwnerAdmin = false;
+let isOwnerAdmin = safeGet('hub_is_admin_mode', false);
 
 function applyAdminModeUI() {
   document.body.classList.toggle('is-admin-mode', isOwnerAdmin);
 }
 
-function getClerkUserEmail() {
-  if (!window.Clerk || !window.Clerk.user) return '';
-  if (window.Clerk.user.primaryEmailAddress && window.Clerk.user.primaryEmailAddress.emailAddress) {
-    return window.Clerk.user.primaryEmailAddress.emailAddress;
-  }
-  if (window.Clerk.user.emailAddresses && window.Clerk.user.emailAddresses.length > 0) {
-    return window.Clerk.user.emailAddresses[0].emailAddress;
+function getActiveUserEmail() {
+  const customEmail = safeGet('hub_logged_email', '');
+  if (customEmail) return customEmail.trim().toLowerCase();
+  
+  if (window.Clerk && window.Clerk.user) {
+    const u = window.Clerk.user;
+    if (u.primaryEmailAddress && u.primaryEmailAddress.emailAddress) return u.primaryEmailAddress.emailAddress.trim().toLowerCase();
+    if (u.emailAddresses && u.emailAddresses.length > 0) return u.emailAddresses[0].emailAddress.trim().toLowerCase();
+    if (u.externalAccounts && u.externalAccounts.length > 0 && u.externalAccounts[0].emailAddress) {
+      return u.externalAccounts[0].emailAddress.trim().toLowerCase();
+    }
   }
   return '';
 }
 
 function verifyOwnerOnSignIn() {
-  const userEmail = getClerkUserEmail().trim().toLowerCase();
+  const userEmail = getActiveUserEmail();
   
   if (userEmail === OWNER_EMAIL.toLowerCase()) {
-    const isAlreadyVerified = sessionStorage.getItem('hub_owner_session_unlocked') === 'true';
-    if (isAlreadyVerified) {
+    const isSessionUnlocked = sessionStorage.getItem('hub_owner_session_unlocked') === 'true';
+    if (isSessionUnlocked) {
       isOwnerAdmin = true;
+      safeSet('hub_is_admin_mode', true);
       applyAdminModeUI();
     } else {
       setTimeout(() => {
-        const pin = prompt('👑 Welcome Dr. Mohammad!
-Enter Owner Passcode:');
+        const pin = prompt('👑 Welcome Dr. Mohammad!\nEnter Owner Passcode:');
         if (pin === OWNER_PASSCODE || pin === 'drdalia2026') {
           isOwnerAdmin = true;
           sessionStorage.setItem('hub_owner_session_unlocked', 'true');
+          safeSet('hub_is_admin_mode', true);
           applyAdminModeUI();
-          alert('👑 Owner Mode Unlocked! All administrative controls and Student Telemetry are now active.');
+          alert('👑 Owner Mode Unlocked! All admin tools and Student Telemetry are active.');
         } else {
           isOwnerAdmin = false;
+          safeSet('hub_is_admin_mode', false);
           applyAdminModeUI();
-          if (pin !== null) alert('❌ Incorrect passcode. Running in regular Student Mode.');
+          if (pin !== null) alert('❌ Incorrect passcode. Running in Student Mode.');
         }
-      }, 400);
+      }, 350);
     }
   } else {
     // Regular students are strictly in Student Mode
     isOwnerAdmin = false;
+    safeSet('hub_is_admin_mode', false);
     sessionStorage.removeItem('hub_owner_session_unlocked');
     applyAdminModeUI();
   }
+}
+
+function signInWithEmailManual() {
+  const input = document.getElementById('localEmailInput');
+  const email = (input ? input.value : '').trim().toLowerCase();
+  if (!email) return alert('Please enter an email address!');
+  
+  safeSet('hub_logged_email', email);
+  const displayName = email.split('@')[0];
+  setElText('clerkUserName', displayName.charAt(0).toUpperCase() + displayName.slice(1));
+  
+  document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('mainDashboard').style.display = 'flex';
+  
+  verifyOwnerOnSignIn();
+  
+  renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry();
 }
 
 
