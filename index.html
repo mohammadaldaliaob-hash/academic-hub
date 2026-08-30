@@ -301,12 +301,62 @@
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
   .btn-del-item { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; }
 
-  /* INTERACTIVE MCQ RUNNER STYLES */
-  .mcq-option-list { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  /* DROPZONE UPLOAD STYLES */
+  .dropzone-area {
+    border: 2px dashed var(--primary); background: var(--primary-tint); border-radius: var(--radius-lg);
+    padding: 28px 18px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 14px;
+  }
+  .dropzone-area:hover, .dropzone-area.dragover {
+    background: rgba(21, 93, 252, 0.15); border-color: var(--primary-hover); transform: scale(1.01);
+  }
+  .dropzone-icon { font-size: 38px; margin-bottom: 8px; }
+  .dropzone-title { font-size: 15px; font-weight: 700; color: var(--foreground); margin-bottom: 4px; }
+  .dropzone-desc { font-size: 12.5px; color: var(--muted-foreground); }
+
+  /* MCQ RUNNER 2-COLUMN LAYOUT WITH QUESTION PALETTE */
+  .mcq-runner-layout { display: flex; gap: 20px; min-height: 440px; }
+  @media (max-width: 768px) { .mcq-runner-layout { flex-direction: column; } }
+
+  .mcq-palette-sidebar {
+    width: 175px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 16px; display: flex; flex-direction: column;
+  }
+  .mcq-palette-header {
+    font-size: 11.5px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .mcq-palette-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; overflow-y: auto; max-height: 320px; padding-right: 4px; padding-bottom: 6px;
+  }
+
+  /* QUESTION CIRCLES */
+  .mcq-q-circle {
+    width: 32px; height: 32px; border-radius: 50%; background: #ffffff; border: 1.5px solid var(--border-hover);
+    color: var(--foreground); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s ease; user-select: none;
+  }
+  [data-theme="dark"] .mcq-q-circle { background: #1e293b; border-color: #334155; }
+  .mcq-q-circle:hover { border-color: var(--primary); transform: scale(1.08); }
+  .mcq-q-circle.active { box-shadow: 0 0 0 2.5px var(--primary); border-color: var(--primary); font-weight: 800; }
+  
+  /* CIRCLE COLORS AS REQUESTED BY USER */
+  .mcq-q-circle.correct { background: #16a34a !important; border-color: #16a34a !important; color: #ffffff !important; }
+  .mcq-q-circle.wrong { background: #ef4444 !important; border-color: #ef4444 !important; color: #ffffff !important; }
+  .mcq-q-circle.skipped { background: #ffffff !important; border-color: #cbd5e1 !important; color: var(--muted-foreground) !important; }
+  [data-theme="dark"] .mcq-q-circle.skipped { background: #1e293b !important; border-color: #475569 !important; }
+
+  .mcq-palette-legend {
+    margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--muted-foreground);
+  }
+  .mcq-legend-item { display: flex; align-items: center; gap: 6px; }
+  .mcq-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .mcq-main-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+
+  /* INTERACTIVE MCQ OPTION CARDS */
+  .mcq-option-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
   .mcq-option-card {
-    display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: var(--radius-md);
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-md);
     border: 1.5px solid var(--border); background: var(--card-bg); cursor: pointer; transition: all 0.15s ease;
-    font-size: 14px; font-weight: 500; text-align: left; color: var(--foreground);
+    font-size: 13.5px; font-weight: 500; text-align: left; color: var(--foreground); line-height: 1.4;
   }
   .mcq-option-card:hover { border-color: var(--primary); background: var(--primary-tint); }
   .mcq-option-card.selected { border-color: var(--primary); background: var(--primary-tint); font-weight: 600; color: var(--primary); }
@@ -320,8 +370,8 @@
   .mcq-option-card.correct .mcq-option-radio { border-color: #16a34a; background: #16a34a; color: white; }
   .mcq-option-card.wrong .mcq-option-radio { border-color: #ef4444; background: #ef4444; color: white; }
   .mcq-explanation-box {
-    margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--background);
-    border-left: 4px solid var(--primary); font-size: 13.5px; text-align: left; line-height: 1.5; color: var(--foreground);
+    margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--background);
+    border-left: 4px solid var(--primary); font-size: 13px; text-align: left; line-height: 1.5; color: var(--foreground);
   }
 
   @media (max-width: 768px) {
@@ -363,73 +413,127 @@
   </div>
 </div>
 
-<!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL -->
+<!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL WITH LEFT QUESTION PALETTE -->
 <div class="modal-overlay" id="inAppQuizModal">
-  <div class="auth-card" style="max-width: 640px; text-align: left; max-height: 90vh; overflow-y: auto; position: relative;">
+  <div class="auth-card" style="max-width: 820px; width: 100%; text-align: left; max-height: 92vh; overflow-y: auto; position: relative;">
     <button class="btn-del-item" style="font-size: 20px; top: 16px; right: 16px;" onclick="closeInAppQuizModal()">✕</button>
     
     <!-- QUIZ HEADER -->
-    <div style="margin-bottom: 16px;">
-      <span class="video-tag" id="examRunnerCategory">Medical Assessment</span>
-      <h3 style="font-size: 20px; margin: 6px 0;" id="examRunnerTitle">Exam Title</h3>
-      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted-foreground); margin-bottom: 6px;">
-        <span id="examRunnerProgressText">Question 1 of 10</span>
-        <span id="examRunnerScoreLive">+100 XP Upon Completion</span>
+    <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <span class="video-tag" id="examRunnerCategory" style="margin-bottom:0;">Medical Assessment</span>
+        <span id="examRunnerScoreLive" style="font-size:12px; font-weight:700; color:var(--primary);">+100 XP Upon Completion</span>
       </div>
+      <h3 style="font-size: 20px; margin: 6px 0 8px 0;" id="examRunnerTitle">Exam Title</h3>
       <div class="progress-bar-bg" style="margin-bottom: 0;">
-        <div class="progress-bar-fill" id="examRunnerProgressBar" style="width: 10%;"></div>
+        <div class="progress-bar-fill" id="examRunnerProgressBar" style="width: 0%;"></div>
       </div>
     </div>
 
-    <!-- QUESTION CONTENT -->
+    <!-- 2-COLUMN EXAM LAYOUT (LEFT PALETTE + RIGHT QUESTION) -->
     <div id="examRunnerQuestionContainer">
-      <h4 style="font-size: 16px; line-height: 1.5; color: var(--foreground); margin-bottom: 16px;" id="examQuestionStem">Question text here...</h4>
-      
-      <div class="mcq-option-list" id="examOptionList"></div>
+      <div class="mcq-runner-layout">
+        
+        <!-- LEFT SIDE: NUMBERED QUESTION CIRCLES PALETTE -->
+        <div class="mcq-palette-sidebar">
+          <div class="mcq-palette-header">
+            <span>Questions</span>
+            <span id="paletteProgressCount">0/0</span>
+          </div>
+
+          <!-- QUESTION CIRCLES GRID -->
+          <div class="mcq-palette-grid" id="examPaletteGrid">
+            <!-- Dynamic Circles (1, 2, 3...) -->
+          </div>
+
+          <!-- PALETTE LEGEND -->
+          <div class="mcq-palette-legend">
+            <div class="mcq-legend-item">
+              <div class="mcq-legend-dot" style="background:#16a34a;"></div>
+              <span>Correct Answer</span>
+            </div>
+            <div class="mcq-legend-item">
+              <div class="mcq-legend-dot" style="background:#ef4444;"></div>
+              <span>Wrong Answer</span>
+            </div>
+            <div class="mcq-legend-item">
+              <div class="mcq-legend-dot" style="background:#cbd5e1; border:1px solid #94a3b8;"></div>
+              <span>Skipped / Unanswered</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: ACTIVE QUESTION & CHOICES -->
+        <div class="mcq-main-content">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+              <span id="examRunnerProgressText" style="font-size:12.5px; font-weight:700; color:var(--muted-foreground);">Question 1 of 10</span>
+              <button class="btn btn-outline" style="width:auto; padding:4px 12px; font-size:12px;" onclick="skipExamQuestion()">⏭ Skip / Pass</button>
+            </div>
+            
+            <h4 style="font-size: 15.5px; line-height: 1.5; color: var(--foreground); margin-bottom: 12px;" id="examQuestionStem">Question text here...</h4>
+            
+            <div class="mcq-option-list" id="examOptionList">
+              <!-- Choices A, B, C, D -->
+            </div>
+
+            <!-- CLINICAL EXPLANATION BOX -->
+            <div id="examLiveExplanation" class="mcq-explanation-box" style="display:none;"></div>
+          </div>
+
+          <!-- QUESTION FOOTER NAV & ACTIONS -->
+          <div style="display: flex; gap: 8px; justify-content: space-between; align-items:center; margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; flex-wrap:wrap;">
+            <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" id="btnExamPrev" onclick="navExamQuestion(-1)">← Previous</button>
+            
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-primary" style="width: auto; padding: 9px 18px; background: #0284c7;" id="btnCheckAnswer" onclick="checkCurrentAnswer()">👁️ See / Check Answer</button>
+              <button class="btn btn-primary" style="width: auto; padding: 9px 20px;" id="btnExamNext" onclick="navExamQuestion(1)">Next Question →</button>
+              <button class="btn btn-primary" style="width: auto; padding: 9px 22px; display:none; background: #16a34a;" id="btnExamSubmit" onclick="submitInAppExam()">Finish Exam ✓</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <!-- EXAM RESULT SUMMARY (Shown upon completion) -->
     <div id="examRunnerResultsContainer" style="display:none; text-align:center; padding: 10px 0;">
-      <div style="font-size: 48px; margin-bottom: 10px;" id="examResultEmoji">🎉</div>
-      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;" id="examResultHeading">Exam Completed!</h3>
+      <div style="font-size: 48px; margin-bottom: 8px;" id="examResultEmoji">🎉</div>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 4px;" id="examResultHeading">Exam Completed!</h3>
       <p style="font-size: 15px; color: var(--muted-foreground); margin-bottom: 16px;" id="examResultScoreText">You scored 8/10 (80%)</p>
       
-      <div id="examDetailedReview" style="max-height: 320px; overflow-y: auto; text-align:left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="examDetailedReview" style="max-height: 340px; overflow-y: auto; text-align:left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;"></div>
 
       <button class="btn btn-primary" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
-    </div>
-
-    <!-- FOOTER NAV BUTTONS -->
-    <div id="examRunnerFooterNav" style="display: flex; gap: 10px; justify-content: space-between; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
-      <button class="btn btn-outline" style="width: auto; padding: 10px 20px;" id="btnExamPrev" onclick="navExamQuestion(-1)">← Previous</button>
-      <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" id="btnExamNext" onclick="navExamQuestion(1)">Next Question →</button>
-      <button class="btn btn-primary" style="width: auto; padding: 10px 24px; display:none; background: #16a34a;" id="btnExamSubmit" onclick="submitInAppExam()">Finish & Submit Exam ✓</button>
     </div>
   </div>
 </div>
 
-<!-- ADMIN MCQ FILE & TEXT AUTO-EXTRACTOR MODAL -->
+<!-- ADMIN MCQ FILE DRAG & DROP AUTO-EXTRACTOR MODAL -->
 <div class="modal-overlay" id="adminMcqExtractorModal">
   <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
-    <h3 style="font-size: 18px; margin-bottom: 4px;">📝 MCQ File & Text Auto-Extractor</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Upload an MCQ file or paste questions. The extractor parses all questions, options (A, B, C, D), and answers into a native interactive exam!</p>
+    <h3 style="font-size: 18px; margin-bottom: 4px;">📝 Drag & Drop MCQ File Extractor</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag and drop any MCQ file from your C: or D: disk. The AI extractor parses all questions, choices, and answers into a native interactive exam!</p>
     
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Exam Title:</label>
-    <input type="text" id="newMcqTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology: High-Yield Arrhythmias & Murmurs">
-
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subject / Category:</label>
-    <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology • Board Review">
-
-    <div style="margin-bottom: 14px;">
-      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Option A: Upload MCQ File (.txt, .json, .csv):</label>
-      <input type="file" id="mcqFileInput" accept=".txt,.json,.csv" class="search-input-box" style="margin-top: 4px; padding: 8px 12px;" onchange="handleMcqFileUpload(event)">
+    <!-- DRAG & DROP FILE ZONE -->
+    <div class="dropzone-area" id="mcqDropZone" onclick="document.getElementById('mcqFileInput').click()">
+      <div class="dropzone-icon">📁</div>
+      <div class="dropzone-title">Drag & Drop MCQ File Here</div>
+      <div class="dropzone-desc">or Click to select file from C: or D: disk (.txt, .json, .csv, .md, .docx)</div>
+      <input type="file" id="mcqFileInput" accept=".txt,.json,.csv,.md,.doc,.docx" style="display:none;" onchange="handleMcqFileUpload(event)">
     </div>
 
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Option B: Or Paste MCQ Text Directly:</label>
-    <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px; height: 150px; font-family: monospace; font-size: 12.5px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Exam Title:</label>
+    <input type="text" id="newMcqTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Cardiology: High-Yield Arrhythmias & Murmurs">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subject / Category:</label>
+    <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Cardiology • Board Review">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Extracted / Pasted MCQ Text:</label>
+    <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 130px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-      <button class="btn btn-outline" style="width: auto; padding: 8px 16px;" onclick="extractMcqFromText()">⚡ Auto-Extract Questions</button>
+      <button class="btn btn-outline" style="width: auto; padding: 7px 14px; font-size: 12px;" onclick="extractMcqFromText()">⚡ Re-Extract Questions</button>
       <span id="mcqExtractStatus" style="font-size: 12px; font-weight: 600; color: var(--primary);">0 Questions detected</span>
     </div>
 
@@ -1169,10 +1273,12 @@ function deleteAdminQuiz(id) {
   renderQuizzes();
 }
 
-// NATIVE IN-APP QUIZ RUNNER
+// NATIVE IN-APP QUIZ RUNNER WITH LEFT QUESTION PALETTE
 let activeExam = null;
 let activeExamIndex = 0;
 let userExamAnswers = {};
+let questionStatusMap = {}; // questionIndex => 'correct' | 'wrong' | 'skipped'
+let revealedExplanations = {}; // questionIndex => boolean
 
 function startNativeQuiz(quizId) {
   const quiz = customQuizzes.find(q => q.id === quizId);
@@ -1185,11 +1291,12 @@ function startNativeQuiz(quizId) {
   activeExam = quiz;
   activeExamIndex = 0;
   userExamAnswers = {};
+  questionStatusMap = {};
+  revealedExplanations = {};
   
   setElText('examRunnerTitle', quiz.title);
   setElText('examRunnerCategory', quiz.tag || 'Interactive Assessment');
   document.getElementById('examRunnerQuestionContainer').style.display = 'block';
-  document.getElementById('examRunnerFooterNav').style.display = 'flex';
   document.getElementById('examRunnerResultsContainer').style.display = 'none';
   
   renderExamQuestion();
@@ -1198,6 +1305,38 @@ function startNativeQuiz(quizId) {
 
 function closeInAppQuizModal() {
   document.getElementById('inAppQuizModal').style.display = 'none';
+}
+
+function renderPaletteGrid() {
+  if (!activeExam || !activeExam.questions) return;
+  const grid = document.getElementById('examPaletteGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  
+  let answeredCount = 0;
+  activeExam.questions.forEach((q, idx) => {
+    const circle = document.createElement('div');
+    const status = questionStatusMap[idx]; // 'correct' | 'wrong' | 'skipped' | undefined
+    
+    let statusClass = '';
+    if (status === 'correct') { statusClass = 'correct'; answeredCount++; }
+    else if (status === 'wrong') { statusClass = 'wrong'; answeredCount++; }
+    else if (status === 'skipped') { statusClass = 'skipped'; }
+    
+    circle.className = `mcq-q-circle ${statusClass} ${activeExamIndex === idx ? 'active' : ''}`;
+    circle.textContent = (idx + 1);
+    circle.title = `Go to Question ${idx + 1}`;
+    circle.onclick = () => jumpToQuestion(idx);
+    grid.appendChild(circle);
+  });
+
+  setElText('paletteProgressCount', `${answeredCount}/${activeExam.questions.length}`);
+}
+
+function jumpToQuestion(index) {
+  if (!activeExam || index < 0 || index >= activeExam.questions.length) return;
+  activeExamIndex = index;
+  renderExamQuestion();
 }
 
 function renderExamQuestion() {
@@ -1216,11 +1355,22 @@ function renderExamQuestion() {
   optContainer.innerHTML = '';
   
   const selectedChoice = userExamAnswers[activeExamIndex];
+  const isRevealed = !!revealedExplanations[activeExamIndex];
   
   q.options.forEach((optText, idx) => {
     const card = document.createElement('div');
     const isSelected = selectedChoice === idx;
-    card.className = 'mcq-option-card ' + (isSelected ? 'selected' : '');
+    const isCorrectOption = idx === q.correctIndex;
+    
+    let optClass = 'mcq-option-card ';
+    if (isRevealed) {
+      if (isCorrectOption) optClass += 'correct ';
+      else if (isSelected && !isCorrectOption) optClass += 'wrong ';
+    } else {
+      if (isSelected) optClass += 'selected ';
+    }
+    
+    card.className = optClass;
     const letter = ['A', 'B', 'C', 'D', 'E', 'F'][idx] || (idx + 1);
     card.innerHTML = `
       <div class="mcq-option-radio">${isSelected ? '●' : letter}</div>
@@ -1229,6 +1379,25 @@ function renderExamQuestion() {
     card.onclick = () => selectExamOption(idx);
     optContainer.appendChild(card);
   });
+
+  // Clinical Explanation box
+  const expBox = document.getElementById('examLiveExplanation');
+  if (expBox) {
+    if (isRevealed) {
+      const isUserCorrect = selectedChoice === q.correctIndex;
+      expBox.innerHTML = `
+        <div style="font-weight:700; margin-bottom:4px; color:${isUserCorrect ? '#16a34a' : '#ef4444'};">
+          ${isUserCorrect ? '✓ Correct Answer!' : '✕ Incorrect'}
+        </div>
+        <strong>Clinical Pearl:</strong> ${escapeHTML(q.explanation || 'High-yield board concept.')}
+      `;
+      expBox.style.display = 'block';
+    } else {
+      expBox.style.display = 'none';
+    }
+  }
+
+  renderPaletteGrid();
   
   document.getElementById('btnExamPrev').style.visibility = activeExamIndex === 0 ? 'hidden' : 'visible';
   if (activeExamIndex === total - 1) {
@@ -1243,6 +1412,35 @@ function renderExamQuestion() {
 function selectExamOption(optionIdx) {
   userExamAnswers[activeExamIndex] = optionIdx;
   renderExamQuestion();
+}
+
+function checkCurrentAnswer() {
+  if (!activeExam) return;
+  const q = activeExam.questions[activeExamIndex];
+  const userChoice = userExamAnswers[activeExamIndex];
+  
+  if (userChoice === undefined) {
+    alert('Please pick an option (A, B, C, D) first, or click "Skip / Pass"!');
+    return;
+  }
+  
+  revealedExplanations[activeExamIndex] = true;
+  
+  if (userChoice === q.correctIndex) {
+    questionStatusMap[activeExamIndex] = 'correct'; // Circle turns Green
+  } else {
+    questionStatusMap[activeExamIndex] = 'wrong'; // Circle turns Red
+  }
+  
+  renderExamQuestion();
+}
+
+function skipExamQuestion() {
+  if (!activeExam) return;
+  if (questionStatusMap[activeExamIndex] === undefined) {
+    questionStatusMap[activeExamIndex] = 'skipped'; // Circle remains White
+  }
+  navExamQuestion(1);
 }
 
 function navExamQuestion(delta) {
@@ -1270,7 +1468,7 @@ function submitInAppExam() {
     const reviewItem = document.createElement('div');
     reviewItem.style.cssText = `background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;`;
     
-    const userChoiceText = userChoice !== undefined ? q.options[userChoice] : 'No answer selected';
+    const userChoiceText = userChoice !== undefined ? q.options[userChoice] : 'Skipped / Unanswered';
     const correctChoiceText = q.options[q.correctIndex] || 'Correct choice';
     
     reviewItem.innerHTML = `
@@ -1291,14 +1489,13 @@ function submitInAppExam() {
   setElText('examResultHeading', scorePct >= 70 ? 'Congratulations! Exam Passed!' : 'Exam Completed — Review Below!');
   
   document.getElementById('examRunnerQuestionContainer').style.display = 'none';
-  document.getElementById('examRunnerFooterNav').style.display = 'none';
   document.getElementById('examRunnerResultsContainer').style.display = 'block';
   
   solveQuiz(activeExam.id);
   addXP(100);
 }
 
-// ADMIN MCQ FILE & TEXT AUTO-EXTRACTOR
+// ADMIN MCQ FILE DRAG & DROP AND TEXT AUTO-EXTRACTOR
 let extractedMcqList = [];
 
 function openAdminMcqExtractorModal() {
@@ -1308,18 +1505,48 @@ function openAdminMcqExtractorModal() {
   document.getElementById('newMcqCat').value = '';
   document.getElementById('mcqFileInput').value = '';
   setElText('mcqExtractStatus', '0 Questions detected');
+  initDropZone();
   document.getElementById('adminMcqExtractorModal').style.display = 'flex';
 }
 function closeAdminMcqExtractorModal() {
   document.getElementById('adminMcqExtractorModal').style.display = 'none';
 }
 
+function initDropZone() {
+  const dropZone = document.getElementById('mcqDropZone');
+  if (!dropZone) return;
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); }, false);
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover'); }, false);
+  });
+  dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files && files.length > 0) processUploadedFile(files[0]);
+  }, false);
+}
+
 function handleMcqFileUpload(e) {
   const file = e.target.files[0];
+  if (file) processUploadedFile(file);
+}
+
+function processUploadedFile(file) {
   if (!file) return;
+  
+  // Auto populate title if blank
+  const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+  const titleInput = document.getElementById('newMcqTitle');
+  if (titleInput && !titleInput.value) {
+    titleInput.value = nameWithoutExt.charAt(0).toUpperCase() + nameWithoutExt.slice(1);
+  }
+  
   const reader = new FileReader();
   reader.onload = function(evt) {
-    document.getElementById('mcqTextInput').value = evt.target.result;
+    const content = evt.target.result;
+    document.getElementById('mcqTextInput').value = content;
     extractMcqFromText();
   };
   reader.readAsText(file);
@@ -1327,7 +1554,8 @@ function handleMcqFileUpload(e) {
 
 function parseMcqText(rawText) {
   const questions = [];
-  const blocks = rawText.split(/(?=\n\s*(?:(?:Q\s*)?\d+[\.\:\)]|\bQuestion\s+\d+[\.\:\)]))/i);
+  // Split by question markers like "1.", "Q1:", "Question 1:", or double newlines with numbers
+  const blocks = rawText.split(/(?=\n\s*(?:(?:Q\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*))/i);
   
   blocks.forEach(block => {
     const trimmed = block.trim();
@@ -1335,16 +1563,19 @@ function parseMcqText(rawText) {
     const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
     if (lines.length < 2) return;
     
-    let stem = lines[0].replace(/^(?:(?:Q\s*)?\d+[\.\:\)]|\bQuestion\s+\d+[\.\:\)])\s*/i, '').trim();
+    let stem = lines[0].replace(/^(?:(?:Q\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*)/i, '').trim();
     let options = [];
     let correctIndex = 0;
     let explanation = '';
     
     lines.forEach((line) => {
-      const optMatch = line.match(/^([A-Da-d])[\)\.\:\-]\s*(.+)$/);
+      // Option A), A., A:, (A), a)
+      const optMatch = line.match(/^\(?([A-Da-d])[\)\.\:\-]\s*(.+)$/);
       if (optMatch) {
         options.push(line);
       }
+      
+      // Answer / Correct / Key: A
       const ansMatch = line.match(/^(?:Answer|Ans|Correct|Key)[\:\s]+([A-Da-d1-4])/i);
       if (ansMatch) {
         const char = ansMatch[1].toUpperCase();
@@ -1353,12 +1584,15 @@ function parseMcqText(rawText) {
         else if (char === 'C' || char === '3') correctIndex = 2;
         else if (char === 'D' || char === '4') correctIndex = 3;
       }
-      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note)[\:\s]+(.+)$/i);
+      
+      // Explanation / Rationale / Pearl
+      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note|Reason)[\:\s]+(.+)$/i);
       if (expMatch) {
         explanation = expMatch[1].trim();
       }
     });
     
+    // Fallback if options not prefixed with A/B/C/D
     if (options.length === 0 && lines.length >= 5) {
       options = lines.slice(1, 5);
     }
@@ -1378,7 +1612,7 @@ function parseMcqText(rawText) {
 
 function extractMcqFromText() {
   const text = document.getElementById('mcqTextInput').value;
-  if (!text.trim()) return alert('Please enter or upload some MCQ text first!');
+  if (!text.trim()) return alert('Please drag and drop a file or paste MCQ text first!');
   extractedMcqList = parseMcqText(text);
   setElText('mcqExtractStatus', `✅ ${extractedMcqList.length} Questions successfully extracted!`);
 }
@@ -1386,7 +1620,7 @@ function extractMcqFromText() {
 function publishExtractedExam() {
   if (extractedMcqList.length === 0) extractMcqFromText();
   if (extractedMcqList.length === 0) {
-    return alert('No questions detected! Please format your MCQs with A) B) C) D) and Answer: A.');
+    return alert('No questions detected! Make sure questions have choices A, B, C, D and Answer: A.');
   }
   const title = document.getElementById('newMcqTitle').value.trim() || `Diagnostic Exam (${extractedMcqList.length} MCQs)`;
   const cat = document.getElementById('newMcqCat').value.trim() || 'Clinical Review';
@@ -1394,7 +1628,7 @@ function publishExtractedExam() {
   const newQuiz = {
     id: 'quiz_' + Date.now(),
     title: title,
-    desc: `${extractedMcqList.length} Interactive Board Exam Questions with instantaneous scoring and explanations.`,
+    desc: `${extractedMcqList.length} Questions extracted from file with live question palette & explanations.`,
     tag: `${cat} • +100 XP`,
     category: cat,
     questionsCount: extractedMcqList.length,
@@ -1407,7 +1641,7 @@ function publishExtractedExam() {
   safeSet('hub_quizzes_custom_v3', customQuizzes);
   closeAdminMcqExtractorModal();
   renderQuizzes();
-  alert(`🎉 Published "${title}" with ${extractedMcqList.length} interactive MCQs live!`);
+  alert(`🎉 Successfully published "${title}" with ${extractedMcqList.length} interactive MCQs live!`);
 }
 
 function openAdminContentModal() { document.getElementById('adminContentModal').style.display = 'flex'; }
