@@ -248,7 +248,7 @@
   .btn-outline { background: var(--card-bg); border: 1px solid var(--border); color: var(--foreground); }
   .btn-outline:hover { background: var(--border); }
 
-  /* VIDEO MASTERCLASSES & PLAYLISTS */
+  /* VIDEO MASTERCLASSES (LECTURES) */
   .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
   .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
@@ -256,7 +256,23 @@
   .video-body { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
   .video-tag { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-tint); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
   .video-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
-  .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px; }
+  .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px; }
+
+  /* VIDEO COMPLETE CHECK CIRCLE */
+  .video-complete-circle {
+    position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6); border: 2px solid #ffffff; color: #ffffff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-size: 16px; font-weight: 800; transition: all 0.2s;
+  }
+  .video-complete-circle.completed { background: #16a34a; border-color: #16a34a; }
+
+  /* ATTACHED FILE BADGE */
+  .attached-file-badge {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--radius-md);
+    background: var(--primary-tint); border: 1px solid var(--primary); color: var(--primary);
+    font-size: 12px; font-weight: 600; text-decoration: none; margin-bottom: 12px; width: fit-content;
+  }
+  .attached-file-badge:hover { background: var(--primary); color: white; }
 
   /* SEARCH DIRECTORY */
   .search-input-box {
@@ -286,7 +302,7 @@
 
   .progress-bar-bg { background: var(--border); height: 8px; border-radius: var(--radius-full); overflow: hidden; margin-bottom: 20px; }
   .progress-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.3s ease; }
-  .day-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .day-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
   .day-tab { padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; background: var(--card-bg); border: 1px solid var(--border); color: var(--muted-foreground); cursor: pointer; }
   .day-tab.active { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
   .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 8px; }
@@ -346,7 +362,7 @@
   .mcq-q-circle:hover { border-color: var(--primary); transform: scale(1.08); }
   .mcq-q-circle.active { box-shadow: 0 0 0 2.5px var(--primary); border-color: var(--primary); font-weight: 800; }
   
-  /* CIRCLE COLORS AS REQUESTED BY USER */
+  /* CIRCLE COLORS */
   .mcq-q-circle.correct { background: #16a34a !important; border-color: #16a34a !important; color: #ffffff !important; }
   .mcq-q-circle.wrong { background: #ef4444 !important; border-color: #ef4444 !important; color: #ffffff !important; }
   .mcq-q-circle.skipped { background: #ffffff !important; border-color: #cbd5e1 !important; color: var(--muted-foreground) !important; }
@@ -383,6 +399,10 @@
     border-left: 4px solid var(--primary); font-size: 13px; text-align: left; line-height: 1.5; color: var(--foreground);
   }
 
+  /* CUSTOM SECTION VIEW CARDS */
+  .custom-section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .custom-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); padding: 22px; position: relative; }
+
   @media (max-width: 768px) {
     .dashboard-wrapper { flex-direction: column; }
     .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
@@ -402,8 +422,65 @@
       <span>AcademicHub</span>
     </div>
     <p class="auth-sub">Sign in with your Google account to access your medical study portal.</p>
-    
     <div id="realClerkContainer"></div>
+  </div>
+</div>
+
+<!-- CREATE DYNAMIC SECTION MODAL (ADMIN) -->
+<div class="modal-overlay" id="createSectionModal">
+  <div class="auth-card" style="max-width: 480px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">➕ Create New Section</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Add any custom subject, atlas, or study tool directly to your platform navigation menu!</p>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Title:</label>
+    <input type="text" id="newSectionTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Pathology Gross Atlas, ECG Files, Surgery Protocols">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Icon / Emoji:</label>
+    <input type="text" id="newSectionIcon" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. 🔬, 📑, 🫀, 🧬, 🩺, 💉" value="📑">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Subtitle / Description:</label>
+    <input type="text" id="newSectionDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="e.g. High-yield clinical case files and study materials.">
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveNewCustomSection()">Create Section Live 🚀</button>
+      <button class="btn btn-outline" onclick="closeCreateSectionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TOPIC / CATEGORY MODAL -->
+<div class="modal-overlay" id="addTopicModal">
+  <div class="auth-card" style="max-width: 440px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">🏷️ Add New Topic / Category</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Create a new subject filter tab for Lectures and Playlists.</p>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Topic Name:</label>
+    <input type="text" id="newTopicName" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="e.g. Biochemistry, Surgery, Pediatrics, Emergency">
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveNewTopic()">Add Topic Tab 🚀</button>
+      <button class="btn btn-outline" onclick="closeAddTopicModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ATTACH FILE / NOTES TO VIDEO MODAL -->
+<div class="modal-overlay" id="attachVideoFileModal">
+  <div class="auth-card" style="max-width: 460px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">📎 Attach Material to Lecture</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Attach summary slides, PDF notes, or study links directly to this video.</p>
+    <input type="hidden" id="attachVideoId">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File / Note Title:</label>
+    <input type="text" id="attachFileName" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Lecture Slides & High-Yield Summary PDF">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File URL / Google Drive Link:</label>
+    <input type="url" id="attachFileUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="https://drive.google.com/file/... or any link">
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveAttachedFile()">Save Material 🚀</button>
+      <button class="btn btn-outline" onclick="closeAttachFileModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -412,7 +489,6 @@
   <div class="auth-card" style="max-width: 480px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 14px;" id="universalModalTitle">⚙️ Add New Item</h3>
     <input type="hidden" id="universalModalType">
-    
     <div id="universalModalFields"></div>
 
     <div style="display: flex; gap: 10px; margin-top: 20px;">
@@ -501,7 +577,7 @@
       </div>
     </div>
 
-    <!-- EXAM RESULT SUMMARY (Shown upon completion) -->
+    <!-- EXAM RESULT SUMMARY -->
     <div id="examRunnerResultsContainer" style="display:none; text-align:center; padding: 10px 0;">
       <div style="font-size: 48px; margin-bottom: 8px;" id="examResultEmoji">🎉</div>
       <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 4px;" id="examResultHeading">Exam Completed!</h3>
@@ -518,7 +594,7 @@
 <div class="modal-overlay" id="adminMcqExtractorModal">
   <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
     <h3 style="font-size: 18px; margin-bottom: 4px;">📝 Drag & Drop MCQ File Extractor</h3>
-    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag and drop any MCQ file from your C: or D: disk. The AI extractor parses all questions, choices, and answers into a native interactive exam!</p>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag & drop any MCQ file from C: or D: disk (PDF, Word, TXT). Auto-extracts questions, stems, choices, and answers into a native interactive exam!</p>
     
     <!-- DRAG & DROP FILE ZONE -->
     <div class="dropzone-area" id="mcqDropZone" onclick="document.getElementById('mcqFileInput').click()">
@@ -529,10 +605,10 @@
     </div>
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Exam Title:</label>
-    <input type="text" id="newMcqTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Cardiology: High-Yield Arrhythmias & Murmurs">
+    <input type="text" id="newMcqTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Molecular Genetics & Biochemistry MCQ">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subject / Category:</label>
-    <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Cardiology • Board Review">
+    <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Biochemistry • Genetics">
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Extracted / Pasted MCQ Text:</label>
     <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 130px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
@@ -549,7 +625,38 @@
   </div>
 </div>
 
-<!-- ADMIN ADD QUIZ / FILE MODAL -->
+<!-- FLASHCARDS DRAG & DROP FILE AUTO-EXTRACTOR MODAL -->
+<div class="modal-overlay" id="adminFlashcardExtractorModal">
+  <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <h3 style="font-size: 18px; margin-bottom: 4px;">🗂️ Drag & Drop Flashcards File Extractor</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Drag & drop any PDF, Word doc, or text file containing medical terms & definitions or Q&A pairs to instantly generate flashcards!</p>
+    
+    <div class="dropzone-area" id="fcDropZone" onclick="document.getElementById('fcFileInput').click()">
+      <div class="dropzone-icon">📁</div>
+      <div class="dropzone-title">Drag & Drop Flashcard File Here</div>
+      <div class="dropzone-desc">or Click to select file from C: or D: disk (PDF, Word .docx, .txt)</div>
+      <input type="file" id="fcFileInput" accept=".pdf,.txt,.json,.csv,.md,.doc,.docx" style="display:none;" onchange="handleFcFileUpload(event)">
+    </div>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category / Subject:</label>
+    <input type="text" id="newFcCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;" placeholder="e.g. Clinical Pharmacology, Pathology High-Yield">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">File Text / Raw Notes:</label>
+    <textarea id="fcTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px; height: 130px; font-family: monospace; font-size: 12px; resize: vertical;" placeholder="Q: What is the mechanism of Metformin?&#10;A: Activates AMP-activated protein kinase (AMPK) to reduce hepatic gluconeogenesis.&#10;&#10;Q: Reed-Sternberg cells?&#10;A: Hodgkin Lymphoma."></textarea>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+      <button class="btn btn-outline" style="width: auto; padding: 7px 14px; font-size: 12px;" onclick="extractFlashcardsFromText()">⚡ Re-Extract Flashcards</button>
+      <span id="fcExtractStatus" style="font-size: 12px; font-weight: 600; color: var(--primary);">0 Flashcards detected</span>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="publishExtractedFlashcards()">Add Flashcards to Deck 🚀</button>
+      <button class="btn btn-outline" onclick="closeAdminFlashcardExtractorModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN ADD QUIZ / EXTERNAL FORM MODAL -->
 <div class="modal-overlay" id="adminContentModal">
   <div class="auth-card" style="max-width: 460px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Add Quiz or Study File</h3>
@@ -577,15 +684,21 @@
 <div class="modal-overlay" id="adminVideoModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
     <h3 style="font-size: 18px; margin-bottom: 14px;">🎥 Add Video Lecture or YouTube Playlist</h3>
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title (e.g. Ninja Nerd Cardiology Series):</label>
-    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Ninja Nerd: Cardiology & ECG Masterclass">
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category / Subject Tag:</label>
-    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology • Complete Playlist">
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
+    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Comprehensive Cardiology & ECG Masterclass">
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category / Topic Tab:</label>
+    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology, Neurology, Surgery, Pharmacology">
+    
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
     <input type="text" id="newVidDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Full series covering ECG interpretation, cardiac cycle, and murmurs">
+    
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube Video or Playlist URL:</label>
-    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px;" placeholder="https://www.youtube.com/playlist?list=... or https://youtu.be/...">
-    <div style="font-size: 11px; color: var(--muted-foreground); margin-bottom: 18px;">💡 Paste ANY YouTube playlist link or single video link — it embeds automatically!</div>
+    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="https://www.youtube.com/playlist?list=... or https://youtu.be/...">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Optional Attached Material (PDF / Notes URL):</label>
+    <input type="url" id="newVidAttachment" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;" placeholder="Optional Google Drive or PDF link">
+
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewAdminVideo()">Add to Site 🚀</button>
       <button class="btn btn-outline" onclick="closeAdminVideoModal()">Cancel</button>
@@ -632,7 +745,7 @@
         <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
       </div>
 
-      <nav class="nav-menu">
+      <nav class="nav-menu" id="sidebarNavMenu">
         <div class="nav-item active" onclick="goToTab('overview')"><span>📊</span> Overview</div>
         <div class="nav-item" onclick="goToTab('focus')"><span>⏳</span> Focus Room</div>
         <div class="nav-item" onclick="goToTab('qbank')"><span>🎯</span> Question Bank</div>
@@ -647,6 +760,14 @@
         <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
         <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Mohammad</div>
         <div class="nav-item" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
+
+        <!-- DYNAMIC CUSTOM SECTIONS INSERTED HERE -->
+        <div id="dynamicNavItems"></div>
+
+        <!-- + ADD SECTION BUTTON (ADMIN) -->
+        <div class="nav-item" onclick="openCreateSectionModal()" style="border: 1.5px dashed var(--primary); color: var(--primary); justify-content: center; font-weight: 700; margin-top: 10px;">
+          <span>➕</span> Add New Section
+        </div>
       </nav>
     </div>
 
@@ -661,7 +782,7 @@
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="main-content">
+  <main class="main-content" id="mainContentContainer">
 
     <!-- 1. OVERVIEW -->
     <div id="view-overview" class="view-panel active">
@@ -778,7 +899,6 @@
         </div>
       </div>
 
-      <!-- SEARCH & SUBJECT FILTER TABS -->
       <input type="text" id="qbankSearchInput" class="search-input-box" placeholder="🔍 Search question banks, exams, or clinical topics..." oninput="filterQuizzes()">
 
       <div class="day-tabs" style="margin-bottom: 20px;">
@@ -787,6 +907,7 @@
         <button class="day-tab" onclick="filterQuizCategory('Nephrology', this)">Nephrology</button>
         <button class="day-tab" onclick="filterQuizCategory('Pharmacology', this)">Pharmacology</button>
         <button class="day-tab" onclick="filterQuizCategory('Pathology', this)">Pathology</button>
+        <button class="day-tab" onclick="filterQuizCategory('Biochemistry', this)">Biochemistry</button>
       </div>
 
       <div class="qbank-grid" id="qbankGridContainer"></div>
@@ -796,26 +917,20 @@
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">Medical Lectures & Ninja Nerd Playlists</h2>
-          <p class="panel-subtitle">High-yield clinical lectures & full playlist series curated by Dr. Mohammad.</p>
+          <h2 class="panel-title">Medical Lectures & Video Masterclasses</h2>
+          <p class="panel-subtitle">Curated clinical lectures & complete video series with attached slides and study materials.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="loadNinjaNerdPresets()">⚡ Load Ninja Nerd Full Playlists</button>
-          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminVideoModal()">⚙️ + Add Video or Playlist (Admin)</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAddTopicModal()">🏷️ + Add Topic / Category</button>
+          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminVideoModal()">🎥 + Add Video or Playlist (Admin)</button>
         </div>
       </div>
 
-      <!-- SEARCH & SUBJECT FILTER TABS -->
       <input type="text" id="videoSearchInput" class="search-input-box" placeholder="🔍 Search lectures or playlists by title, topic, or system..." oninput="filterVideos()">
 
-      <div class="day-tabs" style="margin-bottom: 20px;">
-        <button class="day-tab active" onclick="filterVideoCategory('all', this)">All Topics</button>
-        <button class="day-tab" onclick="filterVideoCategory('Cardiology', this)">Cardiology</button>
-        <button class="day-tab" onclick="filterVideoCategory('Neurology', this)">Neurology</button>
-        <button class="day-tab" onclick="filterVideoCategory('Nephrology', this)">Nephrology</button>
-        <button class="day-tab" onclick="filterVideoCategory('Pulmonology', this)">Pulmonology</button>
-        <button class="day-tab" onclick="filterVideoCategory('Pharmacology', this)">Pharmacology</button>
-        <button class="day-tab" onclick="filterVideoCategory('Pathology', this)">Pathology</button>
+      <!-- DYNAMIC TOPIC FILTER TABS -->
+      <div class="day-tabs" id="videoCategoryTabsContainer">
+        <!-- Rendered dynamically -->
       </div>
 
       <div class="video-grid" id="videoGridContainer"></div>
@@ -847,7 +962,7 @@
       <div class="abx-ladder" id="abxLadderContainer"></div>
     </div>
 
-    <!-- 7. MNEMONIC VAULT -->
+    <!-- 7. MNEMONICS VAULT -->
     <div id="view-mnemonics" class="view-panel">
       <div class="panel-header">
         <div>
@@ -921,7 +1036,10 @@
           <h2 class="panel-title">High-Yield Flashcard Deck</h2>
           <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Flashcard (Admin)</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; margin-top:10px;">
+          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Flashcards from File / PDF</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
+        </div>
       </div>
 
       <div class="flashcard-wrapper">
@@ -1071,7 +1189,7 @@ function checkFullAccess() {
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
-    renderQuizzes(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard();
+    renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('mainDashboard').style.display = 'none';
@@ -1128,10 +1246,129 @@ function goToTab(tabId) {
   const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`); if (nav) nav.classList.add('active');
 }
 
-// 1. QUESTION BANK & NATIVE MCQ ENGINE
-let currentQuizCategoryFilter = 'all';
-let currentQuizSearchQuery = '';
+// 1. DYNAMIC CUSTOM SECTIONS CREATOR (ADMIN)
+let customSections = safeGet('hub_custom_sections_v2', [
+  {
+    id: 'sec_path_atlas',
+    title: 'Pathology Gross Atlas',
+    icon: '🔬',
+    desc: 'High-yield gross pathology specimens & histopathology high-power slides.',
+    items: [
+      { id: 1, title: 'Nutmeg Liver (Chronic Hepatic Congestion)', desc: 'Congestion of central veins and necrosis secondary to right-sided heart failure.', link: 'https://en.wikipedia.org/wiki/Nutmeg_liver' },
+      { id: 2, title: 'Bread-and-Butter Pericarditis', desc: 'Fibrinous pericarditis characteristic of acute rheumatic fever and uremia.', link: '' }
+    ]
+  }
+]);
 
+function openCreateSectionModal() {
+  document.getElementById('newSectionTitle').value = '';
+  document.getElementById('newSectionDesc').value = '';
+  document.getElementById('newSectionIcon').value = '📑';
+  document.getElementById('createSectionModal').style.display = 'flex';
+}
+function closeCreateSectionModal() {
+  document.getElementById('createSectionModal').style.display = 'none';
+}
+
+function saveNewCustomSection() {
+  const title = document.getElementById('newSectionTitle').value.trim();
+  const icon = document.getElementById('newSectionIcon').value.trim() || '📑';
+  const desc = document.getElementById('newSectionDesc').value.trim() || 'Custom study workspace.';
+  if (!title) return alert('Please enter a section title!');
+
+  const secId = 'sec_' + Date.now();
+  customSections.push({ id: secId, title, icon, desc, items: [] });
+  safeSet('hub_custom_sections_v2', customSections);
+  closeCreateSectionModal();
+  renderCustomSections();
+  goToTab('custom_' + secId);
+  alert(`🎉 Created section "${title}" successfully!`);
+}
+
+function renderCustomSections() {
+  const navContainer = document.getElementById('dynamicNavItems');
+  const mainContainer = document.getElementById('mainContentContainer');
+  if (!navContainer || !mainContainer) return;
+
+  navContainer.innerHTML = '';
+  document.querySelectorAll('.custom-view-panel').forEach(el => el.remove());
+
+  customSections.forEach(sec => {
+    const nav = document.createElement('div');
+    nav.className = 'nav-item';
+    nav.setAttribute('onclick', `goToTab('custom_${sec.id}')`);
+    nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
+    navContainer.appendChild(nav);
+
+    const panel = document.createElement('div');
+    panel.id = `view-custom_${sec.id}`;
+    panel.className = 'view-panel custom-view-panel';
+    
+    let itemsHtml = '';
+    sec.items.forEach((item, itemIdx) => {
+      itemsHtml += `
+        <div class="custom-card">
+          <h3 style="font-size:16px; margin-bottom:6px;">${escapeHTML(item.title)}</h3>
+          <p style="font-size:13px; color:var(--muted-foreground); margin-bottom:12px;">${escapeHTML(item.desc)}</p>
+          ${item.link ? `<a href="${escapeHTML(item.link)}" target="_blank" class="attached-file-badge">🔗 Open Attached Resource</a>` : ''}
+          <button class="btn-del-item" onclick="deleteCustomSectionItem('${sec.id}', ${itemIdx})">✕</button>
+        </div>
+      `;
+    });
+
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">${escapeHTML(sec.icon)} ${escapeHTML(sec.title)}</h2>
+          <p class="panel-subtitle">${escapeHTML(sec.desc)}</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="addCustomSectionItem('${sec.id}')">➕ + Add Content / File</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete Section</button>
+        </div>
+      </div>
+
+      <div class="custom-section-grid" style="margin-top:20px;">
+        ${itemsHtml || '<div style="color:var(--muted-foreground); font-size:14px; grid-column: 1/-1;">No items in this section yet. Click "+ Add Content / File" to populate it!</div>'}
+      </div>
+    `;
+
+    mainContainer.appendChild(panel);
+  });
+}
+
+function addCustomSectionItem(secId) {
+  const sec = customSections.find(s => s.id === secId);
+  if (!sec) return;
+  const title = prompt(`Enter item title for "${sec.title}":`);
+  if (!title) return;
+  const desc = prompt("Enter description or clinical notes:") || "";
+  const link = prompt("Enter optional URL / PDF link (or leave blank):") || "";
+  
+  sec.items.push({ id: Date.now(), title, desc, link });
+  safeSet('hub_custom_sections_v2', customSections);
+  renderCustomSections();
+  goToTab('custom_' + secId);
+}
+
+function deleteCustomSectionItem(secId, itemIdx) {
+  const sec = customSections.find(s => s.id === secId);
+  if (!sec) return;
+  sec.items.splice(itemIdx, 1);
+  safeSet('hub_custom_sections_v2', customSections);
+  renderCustomSections();
+  goToTab('custom_' + secId);
+}
+
+function deleteCustomSection(secId) {
+  if (!confirm('Are you sure you want to delete this entire section?')) return;
+  customSections = customSections.filter(s => s.id !== secId);
+  safeSet('hub_custom_sections_v2', customSections);
+  renderCustomSections();
+  goToTab('overview');
+}
+
+// 2. QUESTION BANK & ROBUST MCQ PARSER
 let customQuizzes = safeGet('hub_quizzes_custom_v3', [
   {
     id: 'quiz_cardio_1',
@@ -1147,10 +1384,10 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
         id: 1,
         question: "A 64-year-old male presents to the ED with acute palpitations and fatigue. His ECG reveals an 'irregularly irregular' rhythm with absent P waves and a narrow QRS complex. Blood pressure is 128/78 mmHg. Which of the following is the most appropriate initial therapy for rate control?",
         options: [
-          "A) Oral or IV Beta-blocker (e.g. Metoprolol) or Non-DHP Calcium Channel Blocker (Diltiazem)",
-          "B) Immediate Synchronized Electrical Cardioversion at 200J",
-          "C) Intravenous Adenosine 6 mg rapid push",
-          "D) Intravenous Atropine 0.5 mg"
+          "Oral or IV Beta-blocker (e.g. Metoprolol) or Non-DHP Calcium Channel Blocker (Diltiazem)",
+          "Immediate Synchronized Electrical Cardioversion at 200J",
+          "Intravenous Adenosine 6 mg rapid push",
+          "Intravenous Atropine 0.5 mg"
         ],
         correctIndex: 0,
         explanation: "In hemodynamically stable Atrial Fibrillation with rapid ventricular response, initial therapy is rate control using Beta-blockers (Metoprolol/Esmolol) or non-dihydropyridine calcium channel blockers (Diltiazem/Verapamil). Electrical cardioversion is reserved for unstable patients (hypotension, altered mental status, chest pain)."
@@ -1159,10 +1396,10 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
         id: 2,
         question: "A 72-year-old female presents with recurrent syncopal episodes while gardening. Physical exam reveals a harsh, late-peaking crescendo-decrescendo systolic ejection murmur at the right 2nd intercostal space that radiates to the carotid arteries. What is the most likely underlying diagnosis?",
         options: [
-          "A) Mitral Regurgitation",
-          "B) Severe Calcific Aortic Stenosis",
-          "C) Aortic Regurgitation",
-          "D) Hypertrophic Cardiomyopathy"
+          "Mitral Regurgitation",
+          "Severe Calcific Aortic Stenosis",
+          "Aortic Regurgitation",
+          "Hypertrophic Cardiomyopathy"
         ],
         correctIndex: 1,
         explanation: "A harsh crescendo-decrescendo systolic murmur at the right upper sternal border radiating to the carotids with a delayed, weak carotid pulse (pulsus parvus et tardus) and syncope is the classic presentation of severe Aortic Stenosis."
@@ -1171,10 +1408,10 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
         id: 3,
         question: "A 58-year-old male presents with severe crushing retrosternal chest pain radiating to his left jaw. ECG reveals 3 mm ST-segment elevations in leads II, III, and aVF with reciprocal ST depressions in lead aVL. Which coronary artery is most likely occluded?",
         options: [
-          "A) Left Anterior Descending Artery (LAD)",
-          "B) Left Circumflex Artery (LCx)",
-          "C) Right Coronary Artery (RCA)",
-          "D) Left Main Coronary Artery (LMCA)"
+          "Left Anterior Descending Artery (LAD)",
+          "Left Circumflex Artery (LCx)",
+          "Right Coronary Artery (RCA)",
+          "Left Main Coronary Artery (LMCA)"
         ],
         correctIndex: 2,
         explanation: "ST elevations in the inferior leads (II, III, aVF) indicate an acute Inferior STEMI, which is most commonly caused by acute thrombotic occlusion of the Right Coronary Artery (RCA) in 85-90% of individuals."
@@ -1195,10 +1432,10 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
         id: 1,
         question: "An unresponsive 24-year-old patient is brought to the emergency department. Arterial Blood Gas reveals: pH 7.18, PaCO2 24 mmHg, HCO3- 9 mEq/L. Serum electrolytes: Na+ 140 mEq/L, K+ 4.8 mEq/L, Cl- 98 mEq/L, Glucose 480 mg/dL. Urine is strongly positive for ketones. What is the primary acid-base disturbance?",
         options: [
-          "A) Normal Anion Gap Metabolic Acidosis",
-          "B) High Anion Gap Metabolic Acidosis (Anion Gap = 33) secondary to Diabetic Ketoacidosis",
-          "C) Primary Respiratory Acidosis with metabolic compensation",
-          "D) Mixed Metabolic Alkalosis and Respiratory Alkalosis"
+          "Normal Anion Gap Metabolic Acidosis",
+          "High Anion Gap Metabolic Acidosis (Anion Gap = 33) secondary to Diabetic Ketoacidosis",
+          "Primary Respiratory Acidosis with metabolic compensation",
+          "Mixed Metabolic Alkalosis and Respiratory Alkalosis"
         ],
         correctIndex: 1,
         explanation: "Anion Gap = Na+ - (Cl- + HCO3-) = 140 - (98 + 9) = 33 mEq/L (Normal is 8-12). An elevated anion gap (>12) with low pH and low bicarbonate in the presence of hyperglycemia and ketonuria establishes High Anion Gap Metabolic Acidosis due to DKA (MUDPILES mnemonic)."
@@ -1207,10 +1444,10 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
         id: 2,
         question: "A 9-year-old boy presents with cola-colored urine, periorbital edema, and blood pressure of 145/95 mmHg two weeks after recovering from a bacterial skin infection (impetigo). Urinalysis shows dysmorphic red blood cells and RBC casts. What is the classic immunofluorescence microscopy finding?",
         options: [
-          "A) Linear IgG deposition along the glomerular basement membrane",
-          "B) Granular 'starry-sky' / lumpy-bumpy subepithelial humps of IgG, IgM, and C3",
-          "C) Normal glomeruli on light microscopy with podocyte effacement on electron microscopy",
-          "D) Mesangial IgA immune complex deposition"
+          "Linear IgG deposition along the glomerular basement membrane",
+          "Granular 'starry-sky' / lumpy-bumpy subepithelial humps of IgG, IgM, and C3",
+          "Normal glomeruli on light microscopy with podocyte effacement on electron microscopy",
+          "Mesangial IgA immune complex deposition"
         ],
         correctIndex: 1,
         explanation: "Post-streptococcal glomerulonephritis (PSGN) typically occurs 1-4 weeks after streptococcal pharyngitis or impetigo, presenting with nephritic syndrome (RBC casts, hypertension, edema) and granular 'lumpy-bumpy' subepithelial immune complex deposits of IgG and C3 on immunofluorescence."
@@ -1282,8 +1519,8 @@ function deleteAdminQuiz(id) {
 let activeExam = null;
 let activeExamIndex = 0;
 let userExamAnswers = {};
-let questionStatusMap = {}; // questionIndex => 'correct' | 'wrong' | 'skipped'
-let revealedExplanations = {}; // questionIndex => boolean
+let questionStatusMap = {};
+let revealedExplanations = {};
 
 function startNativeQuiz(quizId) {
   const quiz = customQuizzes.find(q => q.id === quizId);
@@ -1321,7 +1558,7 @@ function renderPaletteGrid() {
   let answeredCount = 0;
   activeExam.questions.forEach((q, idx) => {
     const circle = document.createElement('div');
-    const status = questionStatusMap[idx]; // 'correct' | 'wrong' | 'skipped' | undefined
+    const status = questionStatusMap[idx];
     
     let statusClass = '';
     if (status === 'correct') { statusClass = 'correct'; answeredCount++; }
@@ -1354,6 +1591,7 @@ function renderExamQuestion() {
   const bar = document.getElementById('examRunnerProgressBar');
   if (bar) bar.style.width = pct + '%';
   
+  // Clean question stem without duplicate numbers
   setElText('examQuestionStem', `${activeExamIndex + 1}. ${q.question}`);
   
   const optContainer = document.getElementById('examOptionList');
@@ -1379,13 +1617,12 @@ function renderExamQuestion() {
     const letter = ['A', 'B', 'C', 'D', 'E', 'F'][idx] || (idx + 1);
     card.innerHTML = `
       <div class="mcq-option-radio">${isSelected ? '●' : letter}</div>
-      <div style="flex:1;">${escapeHTML(optText)}</div>
+      <div style="flex:1;"><strong>${letter})</strong> ${escapeHTML(optText)}</div>
     `;
     card.onclick = () => selectExamOption(idx);
     optContainer.appendChild(card);
   });
 
-  // Clinical Explanation box
   const expBox = document.getElementById('examLiveExplanation');
   if (expBox) {
     if (isRevealed) {
@@ -1432,9 +1669,9 @@ function checkCurrentAnswer() {
   revealedExplanations[activeExamIndex] = true;
   
   if (userChoice === q.correctIndex) {
-    questionStatusMap[activeExamIndex] = 'correct'; // Circle turns Green
+    questionStatusMap[activeExamIndex] = 'correct';
   } else {
-    questionStatusMap[activeExamIndex] = 'wrong'; // Circle turns Red
+    questionStatusMap[activeExamIndex] = 'wrong';
   }
   
   renderExamQuestion();
@@ -1443,7 +1680,7 @@ function checkCurrentAnswer() {
 function skipExamQuestion() {
   if (!activeExam) return;
   if (questionStatusMap[activeExamIndex] === undefined) {
-    questionStatusMap[activeExamIndex] = 'skipped'; // Circle remains White
+    questionStatusMap[activeExamIndex] = 'skipped';
   }
   navExamQuestion(1);
 }
@@ -1500,7 +1737,7 @@ function submitInAppExam() {
   addXP(100);
 }
 
-// ADMIN MCQ FILE DRAG & DROP AND TEXT AUTO-EXTRACTOR
+// ADMIN MCQ DRAG & DROP AND ULTRA-SMART PARSER
 let extractedMcqList = [];
 
 function openAdminMcqExtractorModal() {
@@ -1548,7 +1785,9 @@ async function extractTextFromPDF(arrayBuffer) {
     const page = await pdf.getPage(pageNum);
     const textContent = await page.getTextContent();
     const pageText = textContent.items.map(item => item.str).join(' ');
-    fullText += pageText + '\n\n';
+    fullText += pageText + '
+
+';
   }
   return fullText;
 }
@@ -1565,7 +1804,6 @@ async function extractTextFromDocx(arrayBuffer) {
 async function processUploadedFile(file) {
   if (!file) return;
   
-  // Auto populate title from file name
   const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   const titleInput = document.getElementById('newMcqTitle');
   if (titleInput && !titleInput.value) {
@@ -1576,22 +1814,21 @@ async function processUploadedFile(file) {
   const isDocx = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc');
 
   if (isPdf) {
-    setElText('mcqExtractStatus', '⏳ Reading & extracting PDF text...');
+    setElText('mcqExtractStatus', '⏳ Extracting PDF text...');
     const reader = new FileReader();
     reader.onload = async function(evt) {
       try {
         const text = await extractTextFromPDF(evt.target.result);
         if (!text.trim()) {
-          setElText('mcqExtractStatus', '⚠️ No readable text found in PDF');
-          alert('This PDF seems to contain scanned images without text layer. If so, please copy/paste the questions into the text box below.');
+          setElText('mcqExtractStatus', '⚠️ No text layer detected');
+          alert('This PDF seems to contain scanned images. If so, please copy/paste the questions directly into the box.');
           return;
         }
         document.getElementById('mcqTextInput').value = text;
         extractMcqFromText();
       } catch (err) {
         console.error('PDF extract error:', err);
-        setElText('mcqExtractStatus', '❌ Error extracting PDF');
-        alert('Could not parse PDF. Please paste the question text directly into the box.');
+        setElText('mcqExtractStatus', '❌ Error reading PDF');
       }
     };
     reader.readAsArrayBuffer(file);
@@ -1619,7 +1856,7 @@ async function processUploadedFile(file) {
   }
 }
 
-// BILINGUAL ARABIC & ENGLISH MCQ PARSER
+// ULTRA-SMART BILINGUAL ARABIC & ENGLISH MCQ PARSER
 function parseMcqText(rawText) {
   if (!rawText) return [];
   
@@ -1630,70 +1867,99 @@ function parseMcqText(rawText) {
     text = text.replace(new RegExp(digit, 'g'), i);
   });
 
+  // Pre-process: insert line breaks before Question starts even if inline like "...snRNA 2. Which of..."
+  text = text.replace(/(?:\s+|
+|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '
+
+__Q_START__ $1. ');
+
+  // Insert line breaks before Option markers like " a) ", " b) ", " A) ", " (a) ", " أ) ", " ب) "
+  text = text.replace(/(?:\s+|
+|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '
+__OPT_START__ $1) ');
+
+  // Insert line breaks before Answers and Explanations
+  text = text.replace(/(?:\s+|
+|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '
+__ANS_START__ ');
+  text = text.replace(/(?:\s+|
+|^)(?:Explanation|Rationale|Pearl|Note|Reason|التفسير|الشرح|التعليل|ملاحظة|تفسير|شرح)[\:\s]+/gi, '
+__EXP_START__ ');
+
+  const rawBlocks = text.split(/__Q_START__/);
   const questions = [];
 
-  // Split into question blocks (supports English "1.", "Q1:", "Question 1:" and Arabic "س1:", "سؤال 1:")
-  const blocks = text.split(/(?=(?:^|\n|\s{3,})(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*))/i);
-  
-  blocks.forEach(block => {
+  rawBlocks.forEach((block) => {
     const trimmed = block.trim();
     if (!trimmed || trimmed.length < 5) return;
-    
-    // Split into lines or handle inline options
-    let lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
-    if (lines.length === 1) {
-      // If PDF text extracted into a single line, split by options A) B) C) D) or أ) ب) ج) د)
-      const inlineSplit = lines[0].split(/(?=\s+(?:[A-Da-dأ-د][\)\.\:\-]\s*|\([A-Da-dأ-د]\)\s*))/);
-      if (inlineSplit.length >= 3) lines = inlineSplit.map(s => s.trim());
-    }
-    if (lines.length < 2) return;
-    
-    // Extract Question Stem
-    let stem = lines[0].replace(/^(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*)/i, '').trim();
-    let options = [];
-    let correctIndex = 0;
-    let explanation = '';
-    
-    lines.forEach((line) => {
-      // Option Match: A), B), C), D) or أ), ب), ج), د) or 1), 2), 3), 4)
-      const optMatch = line.match(/^[\(\[]?([A-Da-dأ-د1-4])[\)\]\.\:\-]\s*(.+)$/);
-      if (optMatch && !line.match(/^(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|سؤال|س\d)/i)) {
-        options.push(line);
+
+    const lines = trimmed.split('
+').map(l => l.trim()).filter(l => l);
+    if (lines.length === 0) return;
+
+    let stemLines = [];
+    let optionLines = [];
+    let answerLine = '';
+    let explanationLine = '';
+
+    let parsingOptions = false;
+    lines.forEach(line => {
+      if (line.startsWith('__ANS_START__')) {
+        answerLine = line.replace('__ANS_START__', '').trim();
+      } else if (line.startsWith('__EXP_START__')) {
+        explanationLine = line.replace('__EXP_START__', '').trim();
+      } else if (line.startsWith('__OPT_START__')) {
+        parsingOptions = true;
+        optionLines.push(line.replace('__OPT_START__', '').trim());
+      } else {
+        if (!parsingOptions) {
+          stemLines.push(line);
+        } else if (optionLines.length > 0) {
+          optionLines[optionLines.length - 1] += ' ' + line;
+        }
       }
-      
-      // Answer Key: Answer: A or الإجابة: أ / الجواب: ب
-      const ansMatch = line.match(/^(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+[\(\[]?([A-Da-dأ-د1-4])/i);
+    });
+
+    let stem = stemLines.join(' ').trim();
+    // Strip leading numbers from stem so we never get "1. 1 1. Which of..."
+    stem = stem.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|Question\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
+
+    // Clean options so we never get "A) a) t-RNA"
+    let options = [];
+    optionLines.forEach(opt => {
+      const clean = opt.replace(/^[\(\[]?[A-Ea-eأ-د1-5][\)\]\.\:\-\s]+/i, '').trim();
+      if (clean) options.push(clean);
+    });
+
+    // Fallback if options were not marked with letters
+    if (options.length === 0 && lines.length >= 4) {
+      options = lines.slice(1, 5);
+    }
+
+    let correctIndex = 0;
+    if (answerLine) {
+      const ansMatch = answerLine.match(/[\(\[]?([A-Ea-eأ-د1-5])/);
       if (ansMatch) {
         const char = ansMatch[1].toUpperCase();
         if (char === 'A' || char === '1' || char === 'أ' || char === 'ا') correctIndex = 0;
         else if (char === 'B' || char === '2' || char === 'ب') correctIndex = 1;
         else if (char === 'C' || char === '3' || char === 'ج') correctIndex = 2;
         else if (char === 'D' || char === '4' || char === 'د') correctIndex = 3;
+        else if (char === 'E' || char === '5' || char === 'ه' || char === 'هـ') correctIndex = 4;
       }
-      
-      // Explanation: Explanation: ... or التفسير: ... / الشرح: ...
-      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note|Reason|التفسير|الشرح|التعليل|ملاحظة|تفسير|شرح)[\:\s]+(.+)$/i);
-      if (expMatch) {
-        explanation = expMatch[1].trim();
-      }
-    });
-    
-    // Fallback if options were not prefixed by letters
-    if (options.length === 0 && lines.length >= 5) {
-      options = lines.slice(1, 5);
     }
-    
+
     if (stem && options.length >= 2) {
       questions.push({
         id: Date.now() + Math.random(),
         question: stem,
         options: options,
         correctIndex: correctIndex,
-        explanation: explanation || 'High-yield clinical correlation / معلومة طبية هامة.'
+        explanation: explanationLine || 'High-yield clinical correlation / معلومة طبية هامة.'
       });
     }
   });
-  
+
   return questions;
 }
 
@@ -1707,7 +1973,7 @@ function extractMcqFromText() {
 function publishExtractedExam() {
   if (extractedMcqList.length === 0) extractMcqFromText();
   if (extractedMcqList.length === 0) {
-    return alert('No questions detected! Please check your file or paste formatted questions.');
+    return alert('No questions detected! Please verify that questions are numbered (e.g. 1. Question stem) and have choices (a, b, c, d).');
   }
   const title = document.getElementById('newMcqTitle').value.trim() || `Diagnostic Exam (${extractedMcqList.length} MCQs)`;
   const cat = document.getElementById('newMcqCat').value.trim() || 'Clinical Review';
@@ -1715,7 +1981,7 @@ function publishExtractedExam() {
   const newQuiz = {
     id: 'quiz_' + Date.now(),
     title: title,
-    desc: `${extractedMcqList.length} Questions extracted from file with live question palette & explanations.`,
+    desc: `${extractedMcqList.length} Questions extracted from file with numbered palette and live answer checking.`,
     tag: `${cat} • +100 XP`,
     category: cat,
     questionsCount: extractedMcqList.length,
@@ -1740,62 +2006,90 @@ function saveNewAdminContent() {
   safeSet('hub_quizzes_custom_v3', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 
-// 2. LECTURES & FULL NINJA NERD PLAYLIST SUITE
+
+// 3. LECTURES & PLAYLISTS ENGINE
 let currentVideoCategoryFilter = 'all';
 let currentVideoSearchQuery = '';
 
-const ninjaNerdOfficialPlaylists = [
+let videoCategories = safeGet('hub_video_categories', [
+  'Cardiology', 'Neurology', 'Nephrology', 'Pulmonology', 'Pharmacology', 'Pathology', 'Biochemistry', 'Surgery'
+]);
+
+let customVideos = safeGet('hub_videos_custom_v3', [
   {
-    id: 'nn_cardio',
-    title: 'Ninja Nerd: Cardiology & ECG Masterclass (Full Playlist)',
-    tag: 'Cardiology • Complete Playlist',
+    id: 'vid_cardio_master',
+    title: 'Cardiology & ECG Masterclass (Complete Playlist)',
+    tag: 'Cardiology • Complete Series',
     category: 'Cardiology',
-    desc: 'Full series covering ECG interpretation, cardiac cycle, arrhythmias, murmurs, and heart failure.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJjyCkyAeoZzYw1e9KzGqC1o'
+    desc: 'Comprehensive clinical lectures covering ECG interpretation, cardiac cycle, arrhythmias, murmurs, and heart failure.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJjyCkyAeoZzYw1e9KzGqC1o',
+    completed: false,
+    attachedFile: { name: 'Cardiology & ECG Pearls.pdf', url: 'https://drive.google.com' }
   },
   {
-    id: 'nn_neuro',
-    title: 'Ninja Nerd: Neurology & Neuroanatomy Complete Series',
-    tag: 'Neurology • Complete Playlist',
+    id: 'vid_neuro_master',
+    title: 'Neurology & Neuroanatomy Complete Series',
+    tag: 'Neurology • Complete Series',
     category: 'Neurology',
     desc: 'Cranial nerves, motor & sensory pathways, stroke syndromes, basal ganglia, and neurological exams.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJgXbO0L3wEwhvH5L8z9_9k'
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJgXbO0L3wEwhvH5L8z9_9k',
+    completed: false,
+    attachedFile: null
   },
   {
-    id: 'nn_renal',
-    title: 'Ninja Nerd: Nephrology, GFR & Acid-Base Balance Series',
-    tag: 'Nephrology • Complete Playlist',
+    id: 'vid_renal_master',
+    title: 'Nephrology, GFR & Acid-Base Balance Series',
+    tag: 'Nephrology • Complete Series',
     category: 'Nephrology',
     desc: 'Renal tubular transport, RAAS, RTA types 1-4, acid-base disorders, and dialysis indications.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJj7lS2q5_5ZJ1c9eN8u7y6X'
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJj7lS2q5_5ZJ1c9eN8u7y6X',
+    completed: false,
+    attachedFile: null
   },
   {
-    id: 'nn_pulm',
-    title: 'Ninja Nerd: Pulmonology & Respiratory Physiology Series',
-    tag: 'Pulmonology • Complete Playlist',
-    category: 'Pulmonology',
-    desc: 'V/Q mismatch, obstructive vs restrictive lung diseases, ARDS, and arterial blood gas interpretation.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJi4v8vQ8d4c3f5u3a8b2w7Z'
-  },
-  {
-    id: 'nn_pharma',
-    title: 'Ninja Nerd: High-Yield Clinical Pharmacology Series',
-    tag: 'Pharmacology • Complete Playlist',
+    id: 'vid_pharma_master',
+    title: 'High-Yield Clinical Pharmacology Series',
+    tag: 'Pharmacology • Complete Series',
     category: 'Pharmacology',
     desc: 'Autonomic drugs, antibiotics, antiarrhythmics, anticoagulants, antihypertensives, and toxicity.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJh8i8Y_7a6q3e9d8e5f2g1h'
-  },
-  {
-    id: 'nn_path',
-    title: 'Ninja Nerd: General Pathology & Cellular Injury Series',
-    tag: 'Pathology • Complete Playlist',
-    category: 'Pathology',
-    desc: 'Cellular adaptations, necrosis vs apoptosis, acute & chronic inflammation, and neoplasia.',
-    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJg8d5b4c3e2f1a9e8d7c6b5'
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJh8i8Y_7a6q3e9d8e5f2g1h',
+    completed: false,
+    attachedFile: null
   }
-];
+]);
 
-let customVideos = safeGet('hub_videos_custom_v2', ninjaNerdOfficialPlaylists);
+function renderVideoTabs() {
+  const container = document.getElementById('videoCategoryTabsContainer');
+  if (!container) return;
+  container.innerHTML = `<button class="day-tab ${currentVideoCategoryFilter === 'all' ? 'active' : ''}" onclick="filterVideoCategory('all', this)">All Topics</button>`;
+  
+  videoCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = `day-tab ${currentVideoCategoryFilter === cat ? 'active' : ''}`;
+    btn.textContent = cat;
+    btn.onclick = () => filterVideoCategory(cat, btn);
+    container.appendChild(btn);
+  });
+}
+
+function openAddTopicModal() {
+  document.getElementById('newTopicName').value = '';
+  document.getElementById('addTopicModal').style.display = 'flex';
+}
+function closeAddTopicModal() {
+  document.getElementById('addTopicModal').style.display = 'none';
+}
+function saveNewTopic() {
+  const name = document.getElementById('newTopicName').value.trim();
+  if (!name) return alert('Enter topic name!');
+  if (!videoCategories.includes(name)) {
+    videoCategories.push(name);
+    safeSet('hub_video_categories', videoCategories);
+  }
+  closeAddTopicModal();
+  renderVideoTabs();
+  filterVideoCategory(name);
+}
 
 function renderVideos() {
   const container = document.getElementById('videoGridContainer');
@@ -1812,19 +2106,69 @@ function renderVideos() {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.innerHTML = `
+      <!-- COMPLETE MARK CIRCLE -->
+      <div class="video-complete-circle ${v.completed ? 'completed' : ''}" onclick="toggleVideoComplete('${v.id}')" title="${v.completed ? 'Completed (Click to uncheck)' : 'Click to mark as Completed'}">
+        ${v.completed ? '✓' : ''}
+      </div>
+
       <div class="video-embed-box"><iframe src="${escapeHTML(v.url)}" allowfullscreen></iframe></div>
+      
       <div class="video-body">
         <div>
           <span class="video-tag">${escapeHTML(v.tag)}</span>
           <h4 class="video-title">${escapeHTML(v.title)}</h4>
           <p class="video-desc">${escapeHTML(v.desc)}</p>
+
+          ${v.attachedFile ? `
+            <a href="${escapeHTML(v.attachedFile.url)}" target="_blank" class="attached-file-badge">
+              📁 ${escapeHTML(v.attachedFile.name || 'Lecture Notes / Slides PDF')}
+            </a>
+          ` : ''}
         </div>
-        <button class="btn btn-outline" onclick="addXP(50); alert('🎉 Video / Playlist session completed! +50 XP.');">Mark as Completed ✓</button>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn btn-outline" style="font-size:12px; padding:8px 12px;" onclick="openAttachFileModal('${v.id}')">📎 + Attach File/Notes</button>
+          <button class="btn btn-primary" style="font-size:12px; padding:8px 12px;" onclick="toggleVideoComplete('${v.id}')">${v.completed ? 'Completed ✓' : 'Mark Completed'}</button>
+        </div>
       </div>
+
       <button class="btn-del-item" title="Delete Lecture" onclick="deleteAdminVideo('${v.id}')">✕</button>
     `;
     container.appendChild(card);
   });
+}
+
+function toggleVideoComplete(id) {
+  const vid = customVideos.find(v => v.id === id);
+  if (!vid) return;
+  vid.completed = !vid.completed;
+  if (vid.completed) addXP(50);
+  safeSet('hub_videos_custom_v3', customVideos);
+  renderVideos();
+}
+
+function openAttachFileModal(videoId) {
+  document.getElementById('attachVideoId').value = videoId;
+  document.getElementById('attachFileName').value = '';
+  document.getElementById('attachFileUrl').value = '';
+  document.getElementById('attachVideoFileModal').style.display = 'flex';
+}
+function closeAttachFileModal() {
+  document.getElementById('attachVideoFileModal').style.display = 'none';
+}
+function saveAttachedFile() {
+  const vidId = document.getElementById('attachVideoId').value;
+  const name = document.getElementById('attachFileName').value.trim() || 'Lecture Materials PDF';
+  const url = document.getElementById('attachFileUrl').value.trim() || 'https://drive.google.com';
+  
+  const vid = customVideos.find(v => v.id === vidId);
+  if (vid) {
+    vid.attachedFile = { name, url };
+    safeSet('hub_videos_custom_v3', customVideos);
+    renderVideos();
+    closeAttachFileModal();
+    alert('🎉 Material attached to lecture successfully!');
+  }
 }
 
 function filterVideos() {
@@ -1834,20 +2178,9 @@ function filterVideos() {
 
 function filterVideoCategory(cat, btn) {
   currentVideoCategoryFilter = cat;
-  document.querySelectorAll('#view-videos .day-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#videoCategoryTabsContainer .day-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderVideos();
-}
-
-function loadNinjaNerdPresets() {
-  ninjaNerdOfficialPlaylists.forEach(preset => {
-    if (!customVideos.some(v => v.id === preset.id)) {
-      customVideos.push(preset);
-    }
-  });
-  safeSet('hub_videos_custom_v2', customVideos);
-  renderVideos();
-  alert('⚡ All Ninja Nerd official playlists loaded and ready to play!');
 }
 
 function parseYouTubeEmbedUrl(inputUrl) {
@@ -1868,22 +2201,207 @@ function parseYouTubeEmbedUrl(inputUrl) {
 function openAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'flex'; }
 function closeAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'none'; }
 function saveNewAdminVideo() {
-  const title = document.getElementById('newVidTitle').value.trim(), tag = document.getElementById('newVidTag').value.trim(), desc = document.getElementById('newVidDesc').value.trim();
+  const title = document.getElementById('newVidTitle').value.trim();
+  const tag = document.getElementById('newVidTag').value.trim() || 'Lecture';
+  const desc = document.getElementById('newVidDesc').value.trim() || 'Clinical lecture series.';
+  const attachUrl = document.getElementById('newVidAttachment').value.trim();
   let url = document.getElementById('newVidUrl').value.trim();
-  if (!title || !url) return alert('Fill title and video URL!');
+
+  if (!title || !url) return alert('Please enter title and YouTube URL!');
   const embedUrl = parseYouTubeEmbedUrl(url);
-  customVideos.unshift({ id: 'vid_' + Date.now(), title, tag: tag || 'Lecture', category: tag, desc: desc || 'Clinical playlist lecture.', url: embedUrl });
-  safeSet('hub_videos_custom_v2', customVideos); closeAdminVideoModal(); renderVideos();
+
+  customVideos.unshift({
+    id: 'vid_' + Date.now(),
+    title,
+    tag: `${tag} • Playlist`,
+    category: tag,
+    desc,
+    url: embedUrl,
+    completed: false,
+    attachedFile: attachUrl ? { name: 'Attached Notes / Slides', url: attachUrl } : null
+  });
+
+  if (!videoCategories.includes(tag)) {
+    videoCategories.push(tag);
+    safeSet('hub_video_categories', videoCategories);
+    renderVideoTabs();
+  }
+
+  safeSet('hub_videos_custom_v3', customVideos);
+  closeAdminVideoModal();
+  renderVideos();
   alert('🎉 Video / Playlist Published Live!');
 }
+
 function deleteAdminVideo(id) {
   if (!confirm('Delete this video/playlist?')) return;
   customVideos = customVideos.filter(v => v.id !== id);
-  safeSet('hub_videos_custom_v2', customVideos); renderVideos();
+  safeSet('hub_videos_custom_v3', customVideos);
+  renderVideos();
 }
 
-// 3. STETHOSCOPE AUSCULTATION SIMULATOR
-let currentStethOsc = null, currentStethInterval = null;
+
+// 4. FLASHCARDS & FILE AUTO-EXTRACTOR
+let customFlashcards = safeGet('hub_fc_custom_v2', [
+  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
+  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
+  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." }
+]);
+let currentCardIndex = 0;
+let extractedFcList = [];
+
+function renderFlashcard() {
+  if (customFlashcards.length === 0) {
+    setElText('fcCategory', 'Empty Deck');
+    setElText('fcQuestion', 'No flashcards yet. Click "+ Extract Flashcards from File" or "+ Add Single Card" to populate!');
+    setElText('fcAnswer', 'No answer');
+    setElText('statFlashcards', '0%');
+    return;
+  }
+  if (currentCardIndex >= customFlashcards.length) currentCardIndex = 0;
+  const card = customFlashcards[currentCardIndex];
+  const fc = document.getElementById('activeFlashcard');
+  if (fc) fc.classList.remove('flipped');
+  setElText('fcCategory', card.cat || 'Medical Concept');
+  setElText('fcQuestion', card.q);
+  setElText('fcAnswer', card.a);
+  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / customFlashcards.length) * 100) + '%');
+}
+function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
+function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % customFlashcards.length; renderFlashcard(); }
+function prevCard() { currentCardIndex = (currentCardIndex - 1 + customFlashcards.length) % customFlashcards.length; renderFlashcard(); }
+function deleteFlashcard() {
+  if (customFlashcards.length === 0) return;
+  if (!confirm('Delete this flashcard?')) return;
+  customFlashcards = customFlashcards.filter((fc, idx) => idx !== currentCardIndex);
+  safeSet('hub_fc_custom_v2', customFlashcards);
+  renderFlashcard();
+}
+
+function openAdminFlashcardExtractorModal() {
+  extractedFcList = [];
+  document.getElementById('fcTextInput').value = '';
+  document.getElementById('newFcCat').value = '';
+  document.getElementById('fcFileInput').value = '';
+  setElText('fcExtractStatus', '0 Flashcards detected');
+  initFcDropZone();
+  document.getElementById('adminFlashcardExtractorModal').style.display = 'flex';
+}
+function closeAdminFlashcardExtractorModal() {
+  document.getElementById('adminFlashcardExtractorModal').style.display = 'none';
+}
+
+function initFcDropZone() {
+  const dropZone = document.getElementById('fcDropZone');
+  if (!dropZone) return;
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); }, false);
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover'); }, false);
+  });
+  dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files && files.length > 0) processFcUploadedFile(files[0]);
+  }, false);
+}
+
+function handleFcFileUpload(e) {
+  const file = e.target.files[0];
+  if (file) processFcUploadedFile(file);
+}
+
+async function processFcUploadedFile(file) {
+  if (!file) return;
+  const isPdf = file.name.toLowerCase().endsWith('.pdf');
+  const isDocx = file.name.toLowerCase().endsWith('.docx');
+
+  if (isPdf) {
+    setElText('fcExtractStatus', '⏳ Reading PDF...');
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      try {
+        const text = await extractTextFromPDF(evt.target.result);
+        document.getElementById('fcTextInput').value = text;
+        extractFlashcardsFromText();
+      } catch (err) {
+        setElText('fcExtractStatus', '❌ Error extracting PDF');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else if (isDocx) {
+    setElText('fcExtractStatus', '⏳ Reading Word Doc...');
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      try {
+        const text = await extractTextFromDocx(evt.target.result);
+        document.getElementById('fcTextInput').value = text;
+        extractFlashcardsFromText();
+      } catch (err) {
+        reader.readAsText(file);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      document.getElementById('fcTextInput').value = evt.target.result;
+      extractFlashcardsFromText();
+    };
+    reader.readAsText(file);
+  }
+}
+
+function extractFlashcardsFromText() {
+  const text = document.getElementById('fcTextInput').value;
+  if (!text.trim()) return alert('Paste text or drop a file first!');
+  const cat = document.getElementById('newFcCat').value.trim() || 'Medical Deck';
+  
+  extractedFcList = [];
+  const blocks = text.split(/(?=(?:^|
+)(?:Q\s*[\:\.]|Question\s*[\:\.]|س\s*[\:\.]|\d+[\.\:\)]))/i);
+  
+  blocks.forEach(block => {
+    const trimmed = block.trim();
+    if (!trimmed) return;
+    
+    let q = '', a = '';
+    const ansSplit = trimmed.split(/(?:^|
+|\s{2,})(?:A\s*[\:\.]|Answer\s*[\:\.]|الجواب\s*[\:\.]|الإجابة\s*[\:\.]|\-\>|\=\>)/i);
+    
+    if (ansSplit.length >= 2) {
+      q = ansSplit[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|Question\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
+      a = ansSplit[1].trim();
+    } else {
+      const lines = trimmed.split('
+').map(l => l.trim()).filter(l => l);
+      if (lines.length >= 2) {
+        q = lines[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|Question\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
+        a = lines.slice(1).join(' ').trim();
+      }
+    }
+    
+    if (q && a) {
+      extractedFcList.push({ cat, q, a });
+    }
+  });
+
+  setElText('fcExtractStatus', `✅ ${extractedFcList.length} Flashcards successfully extracted!`);
+}
+
+function publishExtractedFlashcards() {
+  if (extractedFcList.length === 0) extractFlashcardsFromText();
+  if (extractedFcList.length === 0) return alert('No flashcards detected! Make sure you have Q: ... and A: ... pairs.');
+
+  customFlashcards.unshift(...extractedFcList);
+  safeSet('hub_fc_custom_v2', customFlashcards);
+  closeAdminFlashcardExtractorModal();
+  renderFlashcard();
+  alert(`🎉 Successfully added ${extractedFcList.length} flashcards into your deck!`);
+}
+
+// 5. STETHOSCOPE AUSCULTATION SIMULATOR
 let customSteth = safeGet('hub_steth_custom_v1', [
   { id: 'as', cat: 'Cardiology • Murmur', title: 'Aortic Stenosis', desc: 'Harsh crescendo-decrescendo systolic ejection murmur.', type: 'as' },
   { id: 'mr', cat: 'Cardiology • Murmur', title: 'Mitral Regurgitation', desc: 'Holosystolic high-pitched blowing murmur at apex.', type: 'mr' },
@@ -1961,7 +2479,7 @@ function deleteSteth(id) {
   safeSet('hub_steth_custom_v1', customSteth); renderSteth();
 }
 
-// 4. ANTIBIOTIC LADDER
+// 6. ANTIBIOTIC LADDER
 let customAbx = safeGet('hub_abx_custom_v1', [
   { id: 'abx1', tag: 'Tier 1: Penicillins', tagStyle: 'background:#dbeafe; color:#1e40af;', title: 'Amoxicillin, Ampicillin, Penicillin G/V', desc: 'Covers: Strep pharyngitis, Enterococcus, Syphilis, Listeria.' },
   { id: 'abx2', tag: 'Tier 2: Cephalosporins (1st - 4th Gen)', tagStyle: 'background:#e0e7ff; color:#3730a3;', title: 'Cefazolin (1st) ➔ Ceftriaxone (3rd) ➔ Cefepime (4th - Pseudomonas)', desc: 'Covers: Surgical prophylaxis, Meningitis, Community Pneumonia, Pyelonephritis.' },
@@ -1991,7 +2509,7 @@ function deleteAbx(id) {
   safeSet('hub_abx_custom_v1', customAbx); renderAbx();
 }
 
-// 5. MNEMONICS VAULT
+// 7. MNEMONICS VAULT
 let customMnemonics = safeGet('hub_mnemonics_custom_v1', [
   { id: 'm1', cat: 'Nephrology • Acid-Base', title: 'MUDPILES (High Anion Gap Metabolic Acidosis)', lines: ['Methanol', 'Uremia (Renal Failure)', 'Diabetic Ketoacidosis (DKA)', 'Propylene Glycol', 'Isoniazid / Iron', 'Lactic Acidosis', 'Ethylene Glycol (Oxalate crystals)', 'Salicylates (Aspirin toxicity)'] },
   { id: 'm2', cat: 'Psychiatry • Mood', title: 'SIGECAPS (Major Depressive Disorder)', lines: ['Sleep disturbances', 'Interest loss (Anhedonia)', 'Guilt or worthlessness', 'Energy low (Fatigue)', 'Concentration impaired', 'Appetite / weight change', 'Psychomotor agitation/retardation', 'Suicidal ideation'] }
@@ -2025,7 +2543,7 @@ function filterMnemonics() {
   });
 }
 
-// 6. CLINICAL CANVAS WHITEBOARD
+// 8. CLINICAL CANVAS WHITEBOARD
 let wbCanvas = null, wbCtx = null, isDrawing = false, wbCurrentColor = '#155dfc', wbCurrentWidth = 3;
 function initWhiteboard() {
   wbCanvas = document.getElementById('medCanvas'); if (!wbCanvas) return;
@@ -2048,10 +2566,10 @@ function saveCanvasImage() {
   const link = document.createElement('a'); link.download = 'Medical_Notes_Sketch.png'; link.href = wbCanvas.toDataURL(); link.click();
 }
 
-// 7. ORAL ROUNDS SIMULATOR
+// 9. ORAL ROUNDS SIMULATOR
 let customOralQuestions = safeGet('hub_oral_custom_v1', [
   { id: 'o1', q: "Student! What is the immediate first-line drug and route for Acute Anaphylaxis?", a: "Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!", tag: "Emergency Medicine • +50 XP" },
-  { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Inconinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
+  { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Incontinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
   { id: 'o3', q: "What is the initial medication regimen for Acute Coronary Syndrome (ACS)?", a: "MONA: Morphine, Oxygen (if sat <90%), Nitroglycerin, and Aspirin (324 mg chewed).", tag: "Cardiology • +50 XP" }
 ]);
 let currentOralIdx = 0, oralTimerInt = null;
@@ -2093,33 +2611,7 @@ function nextOralQuestion() {
   if (oralTimerInt) clearInterval(oralTimerInt);
 }
 
-// 8. FLASHCARDS
-let customFlashcards = safeGet('hub_fc_custom_v1', [
-  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
-  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
-  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." }
-]);
-let currentCardIndex = 0;
-function renderFlashcard() {
-  if (customFlashcards.length === 0) return;
-  if (currentCardIndex >= customFlashcards.length) currentCardIndex = 0;
-  const card = customFlashcards[currentCardIndex];
-  const fc = document.getElementById('activeFlashcard');
-  if (fc) fc.classList.remove('flipped');
-  setElText('fcCategory', card.cat); setElText('fcQuestion', card.q); setElText('fcAnswer', card.a);
-  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / customFlashcards.length) * 100) + '%');
-}
-function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
-function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % customFlashcards.length; renderFlashcard(); }
-function prevCard() { currentCardIndex = (currentCardIndex - 1 + customFlashcards.length) % customFlashcards.length; renderFlashcard(); }
-function deleteFlashcard() {
-  if (customFlashcards.length === 0) return;
-  if (!confirm('Delete this flashcard?')) return;
-  customFlashcards = customFlashcards.filter((fc, idx) => idx !== currentCardIndex);
-  safeSet('hub_fc_custom_v1', customFlashcards); renderFlashcard();
-}
-
-// 9. MEDICAL DIRECTORY
+// 10. MEDICAL DIRECTORY
 let customDirectory = safeGet('hub_dir_custom_v1', [
   { param: 'Serum Potassium (K+)', range: '3.5 - 5.0 mEq/L', cat: 'Electrolytes', pearl: 'Key for cardiac membrane potential & ECG changes.' },
   { param: 'Serum Sodium (Na+)', range: '135 - 145 mEq/L', cat: 'Electrolytes', pearl: 'Major determinant of extracellular fluid volume.' },
@@ -2154,7 +2646,7 @@ function filterMedicalDirectory() {
   });
 }
 
-// 10. UNIVERSAL ADMIN CONTENT MODAL
+// 11. UNIVERSAL ADD MODAL
 function openUniversalAddModal(type) {
   document.getElementById('universalModalType').value = type;
   const titleEl = document.getElementById('universalModalTitle');
@@ -2270,7 +2762,7 @@ function saveUniversalAdd() {
     const cat = document.getElementById('fcCatInput').value.trim() || 'General', q = document.getElementById('fcQ').value.trim(), a = document.getElementById('fcA').value.trim();
     if (!q || !a) return alert('Fill question & answer!');
     customFlashcards.push({ cat, q, a });
-    safeSet('hub_fc_custom_v1', customFlashcards); renderFlashcard();
+    safeSet('hub_fc_custom_v2', customFlashcards); renderFlashcard();
   } else if (type === 'directory') {
     const param = document.getElementById('dirParam').value.trim(), range = document.getElementById('dirRange').value.trim(), cat = document.getElementById('dirCat').value.trim() || 'General', pearl = document.getElementById('dirPearl').value.trim();
     if (!param || !range) return alert('Fill parameter name & range!');
@@ -2280,40 +2772,7 @@ function saveUniversalAdd() {
   closeUniversalAddModal(); alert('🎉 Item Published Live!');
 }
 
-// THEME & ACCENT COLOR ENGINE
-function toggleDarkMode() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  safeSet('hub_theme_mode', next);
-  const btn = document.querySelector('.theme-toggle-btn');
-  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
-}
-
-function setAccentColor(primary, hover) {
-  document.documentElement.style.setProperty('--primary', primary);
-  document.documentElement.style.setProperty('--primary-hover', hover);
-  document.documentElement.style.setProperty('--primary-tint', primary + '18');
-  safeSet('hub_theme_accent', { primary, hover });
-  document.querySelectorAll('.color-dot').forEach(d => {
-    d.classList.toggle('active', d.getAttribute('onclick')?.includes(primary));
-  });
-}
-
-function initTheme() {
-  const savedTheme = safeGet('hub_theme_mode', 'light');
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const btn = document.querySelector('.theme-toggle-btn');
-  if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-  const savedAccent = safeGet('hub_theme_accent', null);
-  if (savedAccent && savedAccent.primary && savedAccent.hover) {
-    setAccentColor(savedAccent.primary, savedAccent.hover);
-  }
-}
-initTheme();
-
-// 11. POMODORO & AMBIENT AUDIO
+// 12. POMODORO
 let pomodoroTimer = null, pomodoroSecondsLeft = 25 * 60, isPomodoroRunning = false, currentPomodoroMode = 'pomodoro';
 function setPomodoroMode(mode) {
   currentPomodoroMode = mode;
@@ -2385,7 +2844,7 @@ function setAmbientSound(type) {
   }
 }
 
-// 12. PLANNER
+// 13. PLANNER
 let currentDay = 'mon';
 const initialTasks = {
   mon: [{ id: 1, goal: "Cellular Pathology: Video Lecture", time: "04:00 PM", done: false }],
@@ -2432,7 +2891,7 @@ function setDay(day, btn) {
   if (btn) btn.classList.add('active'); renderPlanner();
 }
 
-// 13. COUNTDOWN & ANNOUNCEMENT
+// 14. COUNTDOWN & ANNOUNCEMENT
 let targetExamTimestamp = safeGet('hub_exam_target_ts', Date.now() + (45 * 24 * 60 * 60 * 1000));
 function updateCountdownTimer() {
   const diff = targetExamTimestamp - Date.now(), digitsEl = document.getElementById('examCountdown');
@@ -2457,7 +2916,7 @@ function saveAdminCountdown() {
   closeAdminModal(); updateCountdownTimer();
 }
 
-// 14. Q&A
+// 15. Q&A
 function renderQA() {
   const container = document.getElementById('qaThreadList'); if (!container) return;
   container.innerHTML = '';
