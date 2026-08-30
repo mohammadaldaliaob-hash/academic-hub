@@ -886,10 +886,7 @@
       </div>
       
       <!-- OWNER ADMIN PORTAL TOGGLE -->
-      <div class="admin-toggle-badge" onclick="toggleAdminPasscodePrompt()">
-        <span id="adminStatusLabel">🔒 Student Mode</span>
-        <span style="font-size:10px; color:var(--primary); font-weight:700;">🔑 Owner Access</span>
-      </div>
+
     </div>
   </aside>
 
@@ -1615,9 +1612,21 @@ function checkFullAccess() {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
     const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
+    const userEmail = (Clerk.user.primaryEmailAddress?.emailAddress || '').toLowerCase();
     setElText('clerkUserName', displayName);
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
+
+    // Auto-prompt owner if owner email logs in and not yet unlocked
+    if (userEmail === OWNER_EMAIL.toLowerCase()) {
+      if (!isOwnerAdmin) {
+        setTimeout(promptOwnerVerification, 400);
+      }
+    } else {
+      // Regular students are strictly in Student Mode
+      isOwnerAdmin = false;
+      safeSet('hub_is_admin_mode', false);
+    }
 
     renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
