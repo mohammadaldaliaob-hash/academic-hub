@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+code = r'''<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -65,7 +65,7 @@
     --primary-tint: rgba(21, 93, 252, 0.2);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
 
   /* OWNER ONLY SYSTEM VISIBILITY */
@@ -1612,21 +1612,18 @@ function checkFullAccess() {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
     const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    const userEmail = (Clerk.user.primaryEmailAddress?.emailAddress || '').toLowerCase();
     setElText('clerkUserName', displayName);
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
-    // Auto-prompt owner if owner email logs in and not yet unlocked
-    if (userEmail === OWNER_EMAIL.toLowerCase()) {
-      if (!isOwnerAdmin) {
-        setTimeout(promptOwnerVerification, 400);
-      }
-    } else {
-      // Regular students are strictly in Student Mode
-      isOwnerAdmin = false;
-      safeSet('hub_is_admin_mode', false);
-    }
+    // Reliable Owner Auto-Recognition & Passcode Verification
+    verifyOwnerOnSignIn();
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('mainDashboard').style.display = 'flex';
+    const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
+    setElText('clerkUserName', displayName);
+    const userBtnContainer = document.getElementById('clerkUserButton');
+    if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
     renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
@@ -3901,9 +3898,4 @@ function saveAdminCountdown() {
   const dateInput = document.getElementById('adminTargetDate').value, titleInput = document.getElementById('adminAnnounceTitle').value, descInput = document.getElementById('adminAnnounceDesc').value;
   if (dateInput) { targetExamTimestamp = new Date(dateInput).getTime(); safeSet('hub_exam_target_ts', targetExamTimestamp); }
   if (titleInput) { safeSet('hub_ann_title', titleInput); setElText('displayAnnounceTitle', titleInput); }
-  if (descInput) { safeSet('hub_ann_desc', descInput); setElText('displayAnnounceDesc', descInput); }
-  closeAdminModal(); updateCountdownTimer();
-}
-</script>
-</body>
-</html>
+  if (descI
