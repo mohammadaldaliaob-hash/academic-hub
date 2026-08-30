@@ -1616,15 +1616,6 @@ function checkFullAccess() {
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
-    // Reliable Owner Auto-Recognition & Passcode Verification
-    verifyOwnerOnSignIn();
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('mainDashboard').style.display = 'flex';
-    const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    setElText('clerkUserName', displayName);
-    const userBtnContainer = document.getElementById('clerkUserButton');
-    if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
-
     renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
