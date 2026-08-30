@@ -19,6 +19,15 @@
   type="text/javascript"
 ></script>
 
+<!-- PDF.js & Mammoth.js for Instant Client-Side PDF & DOCX Extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
+
 <!-- Vercel Web Analytics -->
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -442,9 +451,7 @@
           </div>
 
           <!-- QUESTION CIRCLES GRID -->
-          <div class="mcq-palette-grid" id="examPaletteGrid">
-            <!-- Dynamic Circles (1, 2, 3...) -->
-          </div>
+          <div class="mcq-palette-grid" id="examPaletteGrid"></div>
 
           <!-- PALETTE LEGEND -->
           <div class="mcq-palette-legend">
@@ -473,9 +480,7 @@
             
             <h4 style="font-size: 15.5px; line-height: 1.5; color: var(--foreground); margin-bottom: 12px;" id="examQuestionStem">Question text here...</h4>
             
-            <div class="mcq-option-list" id="examOptionList">
-              <!-- Choices A, B, C, D -->
-            </div>
+            <div class="mcq-option-list" id="examOptionList"></div>
 
             <!-- CLINICAL EXPLANATION BOX -->
             <div id="examLiveExplanation" class="mcq-explanation-box" style="display:none;"></div>
@@ -519,8 +524,8 @@
     <div class="dropzone-area" id="mcqDropZone" onclick="document.getElementById('mcqFileInput').click()">
       <div class="dropzone-icon">📁</div>
       <div class="dropzone-title">Drag & Drop MCQ File Here</div>
-      <div class="dropzone-desc">or Click to select file from C: or D: disk (.txt, .json, .csv, .md, .docx)</div>
-      <input type="file" id="mcqFileInput" accept=".txt,.json,.csv,.md,.doc,.docx" style="display:none;" onchange="handleMcqFileUpload(event)">
+      <div class="dropzone-desc">or Click to select file from C: or D: disk (PDF, Word .docx, .txt, .json)</div>
+      <input type="file" id="mcqFileInput" accept=".pdf,.txt,.json,.csv,.md,.doc,.docx" style="display:none;" onchange="handleMcqFileUpload(event)">
     </div>
 
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Exam Title:</label>
@@ -1533,66 +1538,147 @@ function handleMcqFileUpload(e) {
   if (file) processUploadedFile(file);
 }
 
-function processUploadedFile(file) {
+// CLIENT-SIDE PDF TEXT EXTRACTOR
+async function extractTextFromPDF(arrayBuffer) {
+  if (!window.pdfjsLib) throw new Error('PDF.js not loaded');
+  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
+  let fullText = '';
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map(item => item.str).join(' ');
+    fullText += pageText + '\n\n';
+  }
+  return fullText;
+}
+
+// CLIENT-SIDE WORD (.docx) TEXT EXTRACTOR
+async function extractTextFromDocx(arrayBuffer) {
+  if (window.mammoth) {
+    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+    return result.value;
+  }
+  throw new Error('Mammoth not loaded');
+}
+
+async function processUploadedFile(file) {
   if (!file) return;
   
-  // Auto populate title if blank
+  // Auto populate title from file name
   const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   const titleInput = document.getElementById('newMcqTitle');
   if (titleInput && !titleInput.value) {
     titleInput.value = nameWithoutExt.charAt(0).toUpperCase() + nameWithoutExt.slice(1);
   }
-  
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    const content = evt.target.result;
-    document.getElementById('mcqTextInput').value = content;
-    extractMcqFromText();
-  };
-  reader.readAsText(file);
+
+  const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+  const isDocx = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc');
+
+  if (isPdf) {
+    setElText('mcqExtractStatus', '⏳ Reading & extracting PDF text...');
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      try {
+        const text = await extractTextFromPDF(evt.target.result);
+        if (!text.trim()) {
+          setElText('mcqExtractStatus', '⚠️ No readable text found in PDF');
+          alert('This PDF seems to contain scanned images without text layer. If so, please copy/paste the questions into the text box below.');
+          return;
+        }
+        document.getElementById('mcqTextInput').value = text;
+        extractMcqFromText();
+      } catch (err) {
+        console.error('PDF extract error:', err);
+        setElText('mcqExtractStatus', '❌ Error extracting PDF');
+        alert('Could not parse PDF. Please paste the question text directly into the box.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else if (isDocx) {
+    setElText('mcqExtractStatus', '⏳ Reading Word document...');
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      try {
+        const text = await extractTextFromDocx(evt.target.result);
+        document.getElementById('mcqTextInput').value = text;
+        extractMcqFromText();
+      } catch (err) {
+        console.error('Word extract error:', err);
+        reader.readAsText(file);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      document.getElementById('mcqTextInput').value = evt.target.result;
+      extractMcqFromText();
+    };
+    reader.readAsText(file);
+  }
 }
 
+// BILINGUAL ARABIC & ENGLISH MCQ PARSER
 function parseMcqText(rawText) {
+  if (!rawText) return [];
+  
+  // 1. Normalize Arabic numbers (١, ٢, ٣...) to standard numbers (1, 2, 3...)
+  const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  let text = rawText;
+  arabicDigits.forEach((digit, i) => {
+    text = text.replace(new RegExp(digit, 'g'), i);
+  });
+
   const questions = [];
-  // Split by question markers like "1.", "Q1:", "Question 1:", or double newlines with numbers
-  const blocks = rawText.split(/(?=\n\s*(?:(?:Q\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*))/i);
+
+  // Split into question blocks (supports English "1.", "Q1:", "Question 1:" and Arabic "س1:", "سؤال 1:")
+  const blocks = text.split(/(?=(?:^|\n|\s{3,})(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*))/i);
   
   blocks.forEach(block => {
     const trimmed = block.trim();
-    if (!trimmed) return;
-    const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
+    if (!trimmed || trimmed.length < 5) return;
+    
+    // Split into lines or handle inline options
+    let lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length === 1) {
+      // If PDF text extracted into a single line, split by options A) B) C) D) or أ) ب) ج) د)
+      const inlineSplit = lines[0].split(/(?=\s+(?:[A-Da-dأ-د][\)\.\:\-]\s*|\([A-Da-dأ-د]\)\s*))/);
+      if (inlineSplit.length >= 3) lines = inlineSplit.map(s => s.trim());
+    }
     if (lines.length < 2) return;
     
-    let stem = lines[0].replace(/^(?:(?:Q\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*)/i, '').trim();
+    // Extract Question Stem
+    let stem = lines[0].replace(/^(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s+\d+[\.\:\)]\s*)/i, '').trim();
     let options = [];
     let correctIndex = 0;
     let explanation = '';
     
     lines.forEach((line) => {
-      // Option A), A., A:, (A), a)
-      const optMatch = line.match(/^\(?([A-Da-d])[\)\.\:\-]\s*(.+)$/);
-      if (optMatch) {
+      // Option Match: A), B), C), D) or أ), ب), ج), د) or 1), 2), 3), 4)
+      const optMatch = line.match(/^[\(\[]?([A-Da-dأ-د1-4])[\)\]\.\:\-]\s*(.+)$/);
+      if (optMatch && !line.match(/^(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|سؤال|س\d)/i)) {
         options.push(line);
       }
       
-      // Answer / Correct / Key: A
-      const ansMatch = line.match(/^(?:Answer|Ans|Correct|Key)[\:\s]+([A-Da-d1-4])/i);
+      // Answer Key: Answer: A or الإجابة: أ / الجواب: ب
+      const ansMatch = line.match(/^(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+[\(\[]?([A-Da-dأ-د1-4])/i);
       if (ansMatch) {
         const char = ansMatch[1].toUpperCase();
-        if (char === 'A' || char === '1') correctIndex = 0;
-        else if (char === 'B' || char === '2') correctIndex = 1;
-        else if (char === 'C' || char === '3') correctIndex = 2;
-        else if (char === 'D' || char === '4') correctIndex = 3;
+        if (char === 'A' || char === '1' || char === 'أ' || char === 'ا') correctIndex = 0;
+        else if (char === 'B' || char === '2' || char === 'ب') correctIndex = 1;
+        else if (char === 'C' || char === '3' || char === 'ج') correctIndex = 2;
+        else if (char === 'D' || char === '4' || char === 'د') correctIndex = 3;
       }
       
-      // Explanation / Rationale / Pearl
-      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note|Reason)[\:\s]+(.+)$/i);
+      // Explanation: Explanation: ... or التفسير: ... / الشرح: ...
+      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note|Reason|التفسير|الشرح|التعليل|ملاحظة|تفسير|شرح)[\:\s]+(.+)$/i);
       if (expMatch) {
         explanation = expMatch[1].trim();
       }
     });
     
-    // Fallback if options not prefixed with A/B/C/D
+    // Fallback if options were not prefixed by letters
     if (options.length === 0 && lines.length >= 5) {
       options = lines.slice(1, 5);
     }
@@ -1603,10 +1689,11 @@ function parseMcqText(rawText) {
         question: stem,
         options: options,
         correctIndex: correctIndex,
-        explanation: explanation || 'High-yield clinical correlation.'
+        explanation: explanation || 'High-yield clinical correlation / معلومة طبية هامة.'
       });
     }
   });
+  
   return questions;
 }
 
@@ -1620,7 +1707,7 @@ function extractMcqFromText() {
 function publishExtractedExam() {
   if (extractedMcqList.length === 0) extractMcqFromText();
   if (extractedMcqList.length === 0) {
-    return alert('No questions detected! Make sure questions have choices A, B, C, D and Answer: A.');
+    return alert('No questions detected! Please check your file or paste formatted questions.');
   }
   const title = document.getElementById('newMcqTitle').value.trim() || `Diagnostic Exam (${extractedMcqList.length} MCQs)`;
   const cat = document.getElementById('newMcqCat').value.trim() || 'Clinical Review';
@@ -1964,7 +2051,7 @@ function saveCanvasImage() {
 // 7. ORAL ROUNDS SIMULATOR
 let customOralQuestions = safeGet('hub_oral_custom_v1', [
   { id: 'o1', q: "Student! What is the immediate first-line drug and route for Acute Anaphylaxis?", a: "Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!", tag: "Emergency Medicine • +50 XP" },
-  { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Incontinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
+  { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Inconinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
   { id: 'o3', q: "What is the initial medication regimen for Acute Coronary Syndrome (ACS)?", a: "MONA: Morphine, Oxygen (if sat <90%), Nitroglycerin, and Aspirin (324 mg chewed).", tag: "Cardiology • +50 XP" }
 ]);
 let currentOralIdx = 0, oralTimerInt = null;
