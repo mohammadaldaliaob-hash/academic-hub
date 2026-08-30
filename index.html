@@ -48,6 +48,7 @@
     --border-hover: #cbd5e1;
     --success: #16a34a;
     --danger: #ef4444;
+    --warning: #f59e0b;
     --radius-lg: 16px;
     --radius-md: 10px;
     --radius-full: 9999px;
@@ -163,7 +164,7 @@
   .rank-icon-circle { width: 50px; height: 50px; border-radius: 50%; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid var(--primary); }
   .rank-title-text { font-size: 18px; font-weight: 700; color: var(--foreground); }
   .rank-xp-text { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
-  .rank-progress-container { width: 220px; }
+  .rank-progress-container { width: 240px; }
 
   /* COUNTDOWN BANNER */
   .announcement-card {
@@ -183,6 +184,12 @@
     cursor: pointer; font-weight: 600; margin-top: 6px;
   }
 
+  /* WRONG ANSWERS REVIEW HERO CARD */
+  .wrong-answers-vault-card {
+    background: var(--card-bg); border: 1.5px solid #ef4444; border-radius: var(--radius-lg);
+    padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+
   /* CIRCULAR FOCUS LAUNCHER BUTTON */
   .focus-hero-card {
     background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
@@ -197,7 +204,7 @@
   .circular-focus-btn:hover { transform: scale(1.06); box-shadow: 0 15px 30px -5px rgba(21, 93, 252, 0.6); }
 
   /* FOCUS ROOM */
-  .focus-room-container { max-width: 680px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 36px; text-align: center; }
+  .focus-room-container { max-width: 720px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 36px; text-align: center; }
   .timer-display { font-size: 68px; font-weight: 800; letter-spacing: 2px; color: var(--foreground); margin: 20px 0; }
   .timer-mode-buttons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
   .mode-btn { padding: 8px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); color: var(--muted-foreground); font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -223,10 +230,12 @@
   .mnemonic-letter-box { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
   .mnemonic-line { font-size: 13.5px; padding: 6px 10px; border-radius: 6px; background: var(--background); }
 
-  /* CLINICAL WHITEBOARD */
-  .whiteboard-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-  .wb-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .canvas-sheet { width: 100%; height: 420px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); cursor: crosshair; touch-action: none; }
+  /* CLINICAL CANVAS PRO WHITEBOARD */
+  .whiteboard-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px; position: relative; }
+  .wb-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--background); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border); }
+  .canvas-sheet-wrapper { position: relative; width: 100%; height: 520px; background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; cursor: crosshair; }
+  .canvas-sheet { width: 100%; height: 100%; display: block; touch-action: none; }
+  .canvas-overlay-text { position: absolute; background: transparent; border: 1px dashed #155dfc; outline: none; padding: 4px 8px; font-size: 16px; font-weight: 600; color: #000000; }
 
   /* ORAL ROUNDS SIMULATOR */
   .oral-sim-card { max-width: 640px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; }
@@ -237,6 +246,19 @@
   .stat-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card-bg); }
   .stat-label { font-size: 13px; color: var(--muted-foreground); font-weight: 500; }
   .stat-value { font-size: 26px; font-weight: 700; color: var(--foreground); margin-top: 6px; }
+
+  /* BIG CIRCULAR PROGRESS GAUGES (ANALYTICS) */
+  .analytics-rings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 28px; }
+  .ring-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .ring-svg-container { position: relative; width: 140px; height: 140px; margin-bottom: 14px; }
+  .ring-svg { transform: rotate(-90deg); width: 140px; height: 140px; }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 12; }
+  .ring-fill { fill: none; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 377; stroke-dashoffset: 377; transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .ring-center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: var(--foreground); }
+  .ring-center-label { font-size: 11px; font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; }
 
   .btn {
     display: inline-flex; justify-content: center; align-items: center; gap: 8px;
@@ -249,7 +271,7 @@
   .btn-outline:hover { background: var(--border); }
 
   /* VIDEO MASTERCLASSES (LECTURES) */
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
   .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
   .video-embed-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
@@ -258,13 +280,14 @@
   .video-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--foreground); }
   .video-desc { font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px; }
 
-  /* VIDEO COMPLETE CHECK CIRCLE */
-  .video-complete-circle {
-    position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(0, 0, 0, 0.6); border: 2px solid #ffffff; color: #ffffff;
-    display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-size: 16px; font-weight: 800; transition: all 0.2s;
+  /* VIDEO COMPLETE CHECK CIRCLE & ATTACH CIRCLE */
+  .video-header-actions { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 10; }
+  .video-action-circle {
+    width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, 0.65); border: 2px solid #ffffff;
+    color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: 800; transition: all 0.2s; backdrop-filter: blur(4px);
   }
-  .video-complete-circle.completed { background: #16a34a; border-color: #16a34a; }
+  .video-action-circle.completed { background: #16a34a; border-color: #16a34a; }
+  .video-action-circle:hover { transform: scale(1.1); background: var(--primary); border-color: white; }
 
   /* ATTACHED FILE BADGE */
   .attached-file-badge {
@@ -284,13 +307,14 @@
   .ref-table th, .ref-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
   .ref-table th { background: var(--background); font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; font-size: 11px; }
 
-  /* Q&A SECTION */
+  /* Q&A SECTION (STUDENT & ADMIN) */
   .qa-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
-  .qa-thread { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
-  .qa-msg { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--background); }
-  .qa-msg-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); margin-bottom: 8px; font-weight: 600; }
-  .qa-msg-body { font-size: 14px; color: var(--foreground); line-height: 1.5; }
-  .qa-reply { margin-top: 10px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--primary-tint); border-left: 3px solid var(--primary); font-size: 13px; }
+  .qa-thread { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+  .qa-msg { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: var(--background); position: relative; }
+  .qa-msg-header { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 8px; font-weight: 600; flex-wrap: wrap; gap: 6px; }
+  .qa-msg-body { font-size: 14.5px; color: var(--foreground); line-height: 1.5; margin-bottom: 10px; }
+  .qa-reply { margin-top: 10px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--primary-tint); border-left: 3.5px solid var(--primary); font-size: 13.5px; }
+  .qa-author-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: var(--radius-full); background: var(--card-bg); border: 1px solid var(--border); font-size: 11.5px; font-weight: 600; }
 
   /* QUESTION BANK & PLANNER */
   .qbank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
@@ -311,16 +335,25 @@
   .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-hover); display: flex; align-items: center; justify-content: center; font-size: 12px; }
   .task-item.completed .checkbox { background: var(--primary); border-color: var(--primary); color: white; }
 
-  /* FLASHCARDS */
-  .flashcard-wrapper { max-width: 580px; margin: 0 auto 30px auto; perspective: 1000px; position: relative; }
-  .flashcard { position: relative; width: 100%; height: 260px; background: var(--card-bg); border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  /* FLASHCARDS - SCROLLABLE & RESPONSIVE */
+  .flashcard-wrapper { max-width: 640px; margin: 0 auto 30px auto; perspective: 1000px; position: relative; }
+  .flashcard {
+    position: relative; width: 100%; min-height: 280px; max-height: 440px; background: var(--card-bg);
+    border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer;
+    transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
   .flashcard.flipped { transform: rotateY(180deg); }
-  .flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; }
-  .flashcard-back { transform: rotateY(180deg); background: var(--card-bg); border-radius: var(--radius-lg); }
-  .flashcard-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); background: var(--primary-tint); padding: 4px 10px; border-radius: var(--radius-full); }
-  .flashcard-text { font-size: 18px; font-weight: 600; line-height: 1.5; color: var(--foreground); }
-  .flashcard-hint { font-size: 12px; color: var(--muted-foreground); }
-  .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 580px; margin: 0 auto; }
+  .flashcard-face {
+    position: absolute; inset: 0; backface-visibility: hidden; padding: 28px 24px;
+    display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+    text-align: center; overflow-y: auto; word-break: break-word; border-radius: var(--radius-lg);
+  }
+  .flashcard-back { transform: rotateY(180deg); background: var(--card-bg); }
+  .flashcard-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary); background: var(--primary-tint); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 8px; }
+  .flashcard-text { font-size: 16.5px; font-weight: 600; line-height: 1.6; color: var(--foreground); margin: auto 0; width: 100%; text-align: left; max-height: 280px; overflow-y: auto; padding: 4px 8px; }
+  .flashcard-hint { font-size: 12px; color: var(--muted-foreground); margin-top: 10px; }
+  .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 640px; margin: 0 auto; flex-wrap: wrap; }
 
   /* MODALS & MCQ RUNNER */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
@@ -426,6 +459,21 @@
   </div>
 </div>
 
+<!-- MANAGE SECTIONS MODAL (ADMIN) -->
+<div class="modal-overlay" id="manageSectionsModal">
+  <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="font-size: 18px;">⚙️ Manage Platform Sections</h3>
+      <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openCreateSectionModal()">➕ Add New Section</button>
+    </div>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Customize, rename, or remove sections from the navigation menu.</p>
+    
+    <div id="manageSectionsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+
+    <button class="btn btn-outline" onclick="closeManageSectionsModal()">Close</button>
+  </div>
+</div>
+
 <!-- CREATE DYNAMIC SECTION MODAL (ADMIN) -->
 <div class="modal-overlay" id="createSectionModal">
   <div class="auth-card" style="max-width: 480px; text-align: left;">
@@ -444,6 +492,53 @@
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewCustomSection()">Create Section Live 🚀</button>
       <button class="btn btn-outline" onclick="closeCreateSectionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE EXAMS MODAL (ADMIN) -->
+<div class="modal-overlay" id="manageExamsModal">
+  <div class="auth-card" style="max-width: 620px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="font-size: 18px;">🎯 Manage Question Banks & Exams</h3>
+      <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openAdminMcqExtractorModal()">📝 + Add/Extract Exam</button>
+    </div>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Review all active examinations, reset student attempts, or remove deprecated question banks.</p>
+    
+    <div id="manageExamsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+
+    <button class="btn btn-outline" onclick="closeManageExamsModal()">Close</button>
+  </div>
+</div>
+
+<!-- ADD CUSTOM FOCUS SOUND (YOUTUBE / DESKTOP AUDIO) MODAL -->
+<div class="modal-overlay" id="addFocusSoundModal">
+  <div class="auth-card" style="max-width: 480px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">🎵 Add Custom Focus Audio</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 14px;">Add your favorite study playlist or ambient tracks from YouTube or your local desktop files!</p>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Sound Source:</label>
+    <select id="focusSoundSourceType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" onchange="toggleFocusSoundInputs()">
+      <option value="youtube">▶ YouTube Video / Lo-Fi Stream Link</option>
+      <option value="desktop">💻 Local Audio File from Desktop (MP3, WAV, M4A)</option>
+    </select>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Sound Title / Label:</label>
+    <input type="text" id="newFocusSoundTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Lo-Fi Beats for Medicine, Alpha Waves 40Hz, Deep Focus Piano">
+
+    <div id="focusSoundYoutubeGroup">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube URL / Playlist:</label>
+      <input type="url" id="newFocusSoundUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="https://www.youtube.com/watch?v=... or playlist link">
+    </div>
+
+    <div id="focusSoundDesktopGroup" style="display:none;">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Select Audio File from C: or D: disk:</label>
+      <input type="file" id="newFocusSoundFile" accept="audio/*" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;">
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveNewFocusSound()">Save Sound to Focus Room 🚀</button>
+      <button class="btn btn-outline" onclick="closeAddFocusSoundModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -500,7 +595,7 @@
 
 <!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL WITH LEFT QUESTION PALETTE -->
 <div class="modal-overlay" id="inAppQuizModal">
-  <div class="auth-card" style="max-width: 820px; width: 100%; text-align: left; max-height: 92vh; overflow-y: auto; position: relative;">
+  <div class="auth-card" style="max-width: 840px; width: 100%; text-align: left; max-height: 92vh; overflow-y: auto; position: relative;">
     <button class="btn-del-item" style="font-size: 20px; top: 16px; right: 16px;" onclick="closeInAppQuizModal()">✕</button>
     
     <!-- QUIZ HEADER -->
@@ -585,7 +680,9 @@
       
       <div id="examDetailedReview" style="max-height: 340px; overflow-y: auto; text-align:left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;"></div>
 
-      <button class="btn btn-primary" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button class="btn btn-primary" style="width:auto; padding:10px 24px;" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
+      </div>
     </div>
   </div>
 </div>
@@ -760,13 +857,19 @@
         <div class="nav-item" onclick="goToTab('planner')"><span>📅</span> Study Roadmap</div>
         <div class="nav-item" onclick="goToTab('qa')"><span>💬</span> Q&A with Dr. Mohammad</div>
         <div class="nav-item" onclick="goToTab('analytics')"><span>📈</span> Analytics</div>
+        <div class="nav-item" onclick="goToTab('students_admin')"><span>🔒</span> Student Telemetry</div>
 
         <!-- DYNAMIC CUSTOM SECTIONS INSERTED HERE -->
         <div id="dynamicNavItems"></div>
 
-        <!-- + ADD SECTION BUTTON (ADMIN) -->
-        <div class="nav-item" onclick="openCreateSectionModal()" style="border: 1.5px dashed var(--primary); color: var(--primary); justify-content: center; font-weight: 700; margin-top: 10px;">
-          <span>➕</span> Add New Section
+        <!-- MANAGE SECTIONS & + ADD BUTTONS -->
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:14px;">
+          <div class="nav-item" onclick="openManageSectionsModal()" style="background: var(--background); border: 1px solid var(--border); justify-content: center; font-weight: 600;">
+            <span>⚙️</span> Manage Sections
+          </div>
+          <div class="nav-item" onclick="openCreateSectionModal()" style="border: 1.5px dashed var(--primary); color: var(--primary); justify-content: center; font-weight: 700;">
+            <span>➕</span> Add New Section
+          </div>
         </div>
       </nav>
     </div>
@@ -776,7 +879,7 @@
       <div id="clerkUserButton"></div>
       <div class="sidebar-user-meta">
         <span class="sidebar-user-name" id="clerkUserName">Student</span>
-        <span class="sidebar-user-tag" id="sidebarRankTag">● Med Student (Lvl 1)</span>
+        <span class="sidebar-user-tag" id="sidebarRankTag">● Beginner (0 XP)</span>
       </div>
     </div>
   </aside>
@@ -786,13 +889,13 @@
 
     <!-- 1. OVERVIEW -->
     <div id="view-overview" class="view-panel active">
-      <!-- GAMIFICATION RANK CARD -->
+      <!-- 10-TIER GAMIFICATION RANK CARD -->
       <div class="rank-badge-card">
         <div class="rank-left">
-          <div class="rank-icon-circle" id="rankIcon">🥉</div>
+          <div class="rank-icon-circle" id="rankIcon">🌱</div>
           <div>
-            <div class="rank-title-text" id="rankTitle">Medical Student</div>
-            <div class="rank-xp-text" id="rankXpDisplay">0 / 250 XP to Junior Resident</div>
+            <div class="rank-title-text" id="rankTitle">Beginner (Rank 1)</div>
+            <div class="rank-xp-text" id="rankXpDisplay">0 / 500 XP to Rookie</div>
           </div>
         </div>
         <div class="rank-progress-container">
@@ -803,11 +906,23 @@
         </div>
       </div>
 
+      <!-- WRONG QUESTIONS VAULT & RESOLVE HERO CARD -->
+      <div class="wrong-answers-vault-card" id="wrongAnswersHeroCard">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:22px;">❌</span>
+            <h3 style="font-size: 17px; font-weight: 700; color: #dc2626;" id="wrongQuestionsCountHeading">Wrong Questions Vault: 0 Questions to Re-solve</h3>
+          </div>
+          <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Targeted spaced-repetition practice: Re-test exclusively on questions you missed across any exam!</p>
+        </div>
+        <button class="btn btn-primary" style="width: auto; padding: 10px 22px; background: #dc2626;" onclick="startWrongQuestionsReExam()">🎯 Re-solve Only Wrong Answers</button>
+      </div>
+
       <!-- BIG CIRCULAR FOCUS LAUNCHER -->
       <div class="focus-hero-card">
         <div>
           <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">🎧 Ready for Deep Clinical Study?</h3>
-          <p style="font-size: 13.5px; color: var(--muted-foreground);">Start a custom Pomodoro study block with ambient medical rain & alpha focus waves.</p>
+          <p style="font-size: 13.5px; color: var(--muted-foreground);">Start a custom Pomodoro study block with ambient medical rain, alpha focus waves, or custom YouTube streams.</p>
         </div>
         <div class="circular-focus-btn" onclick="goToTab('focus')">
           <span style="font-size: 24px; margin-bottom: 2px;">⏳</span>
@@ -831,7 +946,7 @@
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label">Daily Study Streak</div>
-          <div class="stat-value" id="statStreak" style="color: #ea580c;">0 Days 🔥</div>
+          <div class="stat-value" id="statStreak" style="color: #ea580c;">1 Day 🔥</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Quizzes Completed</div>
@@ -841,15 +956,19 @@
           <div class="stat-label">Flashcard Mastery</div>
           <div class="stat-value" id="statFlashcards" style="color: var(--primary);">0%</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-label">Wrong Questions Pending</div>
+          <div class="stat-value" id="statWrongCount" style="color: #dc2626;">0</div>
+        </div>
       </div>
     </div>
 
-    <!-- 2. FOCUS ROOM -->
+    <!-- 2. FOCUS ROOM (WITH CUSTOM YOUTUBE / DESKTOP SOUNDS) -->
     <div id="view-focus" class="view-panel">
       <div class="panel-header" style="text-align: center;">
         <div style="width:100%;">
           <h2 class="panel-title">⏳ Focus Study Room & Ambient Sounds</h2>
-          <p class="panel-subtitle">Deep work timer with customizable duration and ambient study sounds.</p>
+          <p class="panel-subtitle">Deep work timer with customizable duration and custom background audio from YouTube or desktop.</p>
         </div>
       </div>
 
@@ -865,20 +984,36 @@
 
         <div class="timer-display" id="pomodoroDisplay">25:00</div>
 
-        <div style="display:flex; gap:12px; justify-content:center;">
+        <div style="display:flex; gap:12px; justify-content:center; margin-bottom:14px;">
           <button class="btn btn-primary" id="btnTimerToggle" style="width: auto; padding: 12px 32px; font-size: 15px;" onclick="togglePomodoro()">▶ Start Focus</button>
           <button class="btn btn-outline" style="width: auto; padding: 12px 20px;" onclick="resetPomodoro()">↺ Reset</button>
         </div>
 
+        <!-- SOUND SELECTOR -->
         <div class="sound-selector-box">
-          <div style="font-size: 14px; font-weight: 700; color: var(--foreground);">🎧 Ambient Focus Audio:</div>
-          <div class="sound-buttons">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:480px; flex-wrap:wrap; gap:8px;">
+            <div style="font-size: 14px; font-weight: 700; color: var(--foreground);">🎧 Ambient Focus Audio:</div>
+            <button class="btn btn-primary" style="width:auto; padding:6px 14px; font-size:12px;" onclick="openAddFocusSoundModal()">🎵 + Add Sound (YouTube / Desktop)</button>
+          </div>
+
+          <div class="sound-buttons" id="soundButtonsContainer">
             <button class="sound-btn active" id="btnSoundNone" onclick="setAmbientSound('none')">🔇 Off</button>
             <button class="sound-btn" id="btnSoundRain" onclick="setAmbientSound('rain')">🌧️ Medical Rain</button>
             <button class="sound-btn" id="btnSoundAlpha" onclick="setAmbientSound('alpha')">🧠 Alpha Waves (40Hz)</button>
             <button class="sound-btn" id="btnSoundLibrary" onclick="setAmbientSound('library')">☕ Quiet Library</button>
           </div>
-          <div style="display:flex; align-items:center; gap:10px; margin-top:8px; width:100%; max-width:260px;">
+
+          <!-- YOUTUBE BACKGROUND PLAYER (HIDDEN OR MINIMAL) -->
+          <div id="customYoutubePlayerBox" style="display:none; width:100%; max-width:480px; margin-top:12px;">
+            <div style="position:relative; width:100%; padding-bottom:40px; background:#000; border-radius:var(--radius-md); overflow:hidden;">
+              <iframe id="focusYoutubeIframe" src="" style="position:absolute; inset:0; width:100%; height:100%; border:none;" allow="autoplay"></iframe>
+            </div>
+          </div>
+
+          <!-- LOCAL HTML5 AUDIO PLAYER -->
+          <audio id="desktopAudioPlayer" loop style="display:none;"></audio>
+
+          <div style="display:flex; align-items:center; gap:10px; margin-top:8px; width:100%; max-width:280px;">
             <span style="font-size:12px; color:var(--muted-foreground);">Volume:</span>
             <input type="range" id="soundVol" min="0" max="1" step="0.05" value="0.5" style="flex:1;" oninput="updateAmbientVolume(this.value)">
           </div>
@@ -891,11 +1026,12 @@
       <div class="panel-header">
         <div>
           <h2 class="panel-title">Clinical Question Bank & Native MCQ Exams</h2>
-          <p class="panel-subtitle">Interactive board exams with question-by-question scoring and clinical explanations. (+100 XP per exam!)</p>
+          <p class="panel-subtitle">Interactive board exams with question-by-question scoring, clinical explanations, and wrong answer review. (+100 XP per exam!)</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openManageExamsModal()">⚙️ Manage Exams</button>
           <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminMcqExtractorModal()">📝 + Extract MCQ File / Text (Admin)</button>
-          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAdminContentModal('quiz')">⚙️ + Add External Form / PDF</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAdminContentModal('quiz')">📁 + Add External Form / PDF</button>
         </div>
       </div>
 
@@ -913,12 +1049,12 @@
       <div class="qbank-grid" id="qbankGridContainer"></div>
     </div>
 
-    <!-- 4. LECTURES & PLAYLISTS -->
+    <!-- 4. LECTURES & PLAYLISTS (WITH FULL YOUTUBE PLAYLIST VIEW) -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">Medical Lectures & Video Masterclasses</h2>
-          <p class="panel-subtitle">Curated clinical lectures & complete video series with attached slides and study materials.</p>
+          <h2 class="panel-title">Medical Lectures & Complete Video Masterclasses</h2>
+          <p class="panel-subtitle">Curated clinical lectures & complete video series with interactive YouTube playlist list, attached slides, and completion markers.</p>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAddTopicModal()">🏷️ + Add Topic / Category</button>
@@ -929,9 +1065,7 @@
       <input type="text" id="videoSearchInput" class="search-input-box" placeholder="🔍 Search lectures or playlists by title, topic, or system..." oninput="filterVideos()">
 
       <!-- DYNAMIC TOPIC FILTER TABS -->
-      <div class="day-tabs" id="videoCategoryTabsContainer">
-        <!-- Rendered dynamically -->
-      </div>
+      <div class="day-tabs" id="videoCategoryTabsContainer"></div>
 
       <div class="video-grid" id="videoGridContainer"></div>
     </div>
@@ -977,26 +1111,42 @@
       <div id="mnemonicListContainer"></div>
     </div>
 
-    <!-- 8. CLINICAL WHITEBOARD -->
+    <!-- 8. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, STICKIES, SHAPES, PHOTOS) -->
     <div id="view-whiteboard" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">🎨 Clinical Whiteboard & Sketch Canvas</h2>
-          <p class="panel-subtitle">Draw diagrams, ECG rhythms, and metabolic pathways.</p>
+          <h2 class="panel-title">🎨 Clinical Canvas Pro & Sketch Whiteboard</h2>
+          <p class="panel-subtitle">Draw clinical diagrams, insert reference photos/ECGs, write medical notes, and place sticky annotations.</p>
         </div>
       </div>
 
       <div class="whiteboard-box">
+        <!-- ADVANCED TOOLBAR -->
         <div class="wb-toolbar">
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbColor('#155dfc')">🔵 Blue</button>
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbColor('#ef4444')">🔴 Red</button>
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbColor('#16a34a')">🟢 Green</button>
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbColor('#000000')">⚫ Black</button>
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbEraser()">🧹 Eraser</button>
-          <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="clearCanvas()">✕ Clear</button>
-          <button class="btn btn-primary" style="width:auto; padding:6px 16px; margin-left:auto;" onclick="saveCanvasImage()">💾 Download Drawing</button>
+          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbMode('draw')">✏️ Pen</button>
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbMode('text')">🔤 Add Text</button>
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="addStickyNotePrompt()">📝 Sticky Note</button>
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="document.getElementById('wbImgInput').click()">🖼️ Add Photo / ECG</button>
+            <input type="file" id="wbImgInput" accept="image/*" style="display:none;" onchange="handleWbImageUpload(event)">
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="setWbEraser()">🧹 Eraser</button>
+            <button class="btn btn-outline" style="width:auto; padding:6px 12px;" onclick="clearCanvas()">✕ Clear All</button>
+          </div>
+
+          <div style="display:flex; gap:8px; align-items:center; margin-left:auto; flex-wrap:wrap;">
+            <span style="font-size:12px; color:var(--muted-foreground);">Color:</span>
+            <input type="color" id="wbColorPicker" value="#155dfc" style="width:32px; height:32px; border:none; border-radius:6px; cursor:pointer;" onchange="setWbColor(this.value)">
+            
+            <span style="font-size:12px; color:var(--muted-foreground);">Size:</span>
+            <input type="range" id="wbSizeSlider" min="1" max="25" value="3" style="width:70px;" oninput="setWbWidth(this.value)">
+            
+            <button class="btn btn-primary" style="width:auto; padding:6px 16px;" onclick="saveCanvasImage()">💾 Export Image</button>
+          </div>
         </div>
-        <canvas id="medCanvas" class="canvas-sheet" width="800" height="420"></canvas>
+
+        <div class="canvas-sheet-wrapper" id="canvasWrapper">
+          <canvas id="medCanvas" class="canvas-sheet"></canvas>
+        </div>
       </div>
     </div>
 
@@ -1029,7 +1179,7 @@
       </div>
     </div>
 
-    <!-- 10. FLASHCARDS -->
+    <!-- 10. FLASHCARDS (FIXED SCROLL & OVERFLOW) -->
     <div id="view-flashcards" class="view-panel">
       <div class="panel-header" style="text-align: center;">
         <div style="width:100%;">
@@ -1039,6 +1189,7 @@
         <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; margin-top:10px;">
           <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Flashcards from File / PDF</button>
           <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px; color:#ef4444;" onclick="clearFlashcardDeck()">🗑️ Clear Deck</button>
         </div>
       </div>
 
@@ -1122,12 +1273,12 @@
       <div id="taskContainer"></div>
     </div>
 
-    <!-- 13. Q&A WITH DR. MOHAMMAD -->
+    <!-- 13. Q&A WITH DR. MOHAMMAD (WITH ADMIN INTERACTION & STUDENT INFO) -->
     <div id="view-qa" class="view-panel">
       <div class="panel-header">
         <div>
           <h2 class="panel-title">💬 Q&A with Dr. Mohammad</h2>
-          <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep.</p>
+          <p class="panel-subtitle">Ask direct questions about curriculum concepts, difficult cases, or exam prep. Admin can respond live with full student profile context.</p>
         </div>
       </div>
 
@@ -1137,33 +1288,128 @@
         <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="submitStudentQuestion()">Submit Inquiry ✉️</button>
       </div>
 
-      <h3 style="font-size: 18px; margin-bottom: 14px;">Your Inquiry Thread:</h3>
+      <h3 style="font-size: 18px; margin-bottom: 14px;">Inquiry Thread:</h3>
       <div class="qa-thread" id="qaThreadList"></div>
     </div>
 
-    <!-- 14. ANALYTICS -->
+    <!-- 14. PERFORMANCE ANALYTICS (WITH BIG VISUAL PROGRESS CIRCLES) -->
     <div id="view-analytics" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">Performance Analytics</h2>
-          <p class="panel-subtitle">Live metrics based on your quiz completions and daily streak.</p>
+          <h2 class="panel-title">📊 Visual Performance & Mastery Analytics</h2>
+          <p class="panel-subtitle">Real-time circular mastery metrics for courses, exams, flashcards, and wrong answers.</p>
         </div>
+      </div>
+
+      <!-- BIG CIRCULAR PROGRESS RINGS -->
+      <div class="analytics-rings-grid">
+        
+        <!-- 1. COURSE WATCH COMPLETION -->
+        <div class="ring-card">
+          <div class="ring-svg-container">
+            <svg class="ring-svg">
+              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="ring-fill" id="ringCourseFill" cx="70" cy="70" r="60" stroke="#155dfc"></circle>
+            </svg>
+            <div class="ring-center-text">
+              <span id="ringCoursePct">0%</span>
+              <span class="ring-center-label">Lectures</span>
+            </div>
+          </div>
+          <h4 style="font-size:15px; margin-bottom:4px;">Lecture Series Watched</h4>
+          <p style="font-size:12px; color:var(--muted-foreground);" id="ringCourseSub">0 / 0 Lectures Completed</p>
+        </div>
+
+        <!-- 2. EXAM MASTERY & ACCURACY -->
+        <div class="ring-card">
+          <div class="ring-svg-container">
+            <svg class="ring-svg">
+              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="ring-fill" id="ringExamFill" cx="70" cy="70" r="60" stroke="#16a34a"></circle>
+            </svg>
+            <div class="ring-center-text">
+              <span id="ringExamPct">0%</span>
+              <span class="ring-center-label">Q-Bank</span>
+            </div>
+          </div>
+          <h4 style="font-size:15px; margin-bottom:4px;">Exams Solved</h4>
+          <p style="font-size:12px; color:var(--muted-foreground);" id="ringExamSub">0 / 0 Quizzes Cleared</p>
+        </div>
+
+        <!-- 3. FLASHCARD MASTERY -->
+        <div class="ring-card">
+          <div class="ring-svg-container">
+            <svg class="ring-svg">
+              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="ring-fill" id="ringFcFill" cx="70" cy="70" r="60" stroke="#8b5cf6"></circle>
+            </svg>
+            <div class="ring-center-text">
+              <span id="ringFcPct">0%</span>
+              <span class="ring-center-label">Cards</span>
+            </div>
+          </div>
+          <h4 style="font-size:15px; margin-bottom:4px;">Flashcard Mastery</h4>
+          <p style="font-size:12px; color:var(--muted-foreground);" id="ringFcSub">0 Active Cards Reviewed</p>
+        </div>
+
+        <!-- 4. WRONG ANSWERS RESOLVED -->
+        <div class="ring-card">
+          <div class="ring-svg-container">
+            <svg class="ring-svg">
+              <circle class="ring-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="ring-fill" id="ringWrongFill" cx="70" cy="70" r="60" stroke="#ef4444"></circle>
+            </svg>
+            <div class="ring-center-text">
+              <span id="ringWrongPct">100%</span>
+              <span class="ring-center-label">Accuracy</span>
+            </div>
+          </div>
+          <h4 style="font-size:15px; margin-bottom:4px;">Wrong Qs Resolved</h4>
+          <p style="font-size:12px; color:var(--muted-foreground);" id="ringWrongSub">0 Pending Mistakes</p>
+        </div>
+
       </div>
 
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label">Daily Study Streak</div>
-          <div class="stat-value" id="analyticsStreak" style="color: #ea580c;">0 Days 🔥</div>
+          <div class="stat-value" id="analyticsStreak" style="color: #ea580c;">1 Day 🔥</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Total Student XP</div>
           <div class="stat-value" id="analyticsXpVal" style="color: var(--primary);">0 XP</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Mastery Rate</div>
-          <div class="stat-value" id="analyticsMastery">0%</div>
+          <div class="stat-label">Current Tier Rank</div>
+          <div class="stat-value" id="analyticsRankVal">🌱 Beginner</div>
         </div>
       </div>
+    </div>
+
+    <!-- 15. PRIVATE STUDENT TELEMETRY & DATA DIRECTORY (ADMIN ONLY) -->
+    <div id="view-students_admin" class="view-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">🔒 Student Telemetry & Privacy Vault (Admin View)</h2>
+          <p class="panel-subtitle">Comprehensive student profiles, authentication data, quiz scores, and course completion metrics.</p>
+        </div>
+        <button class="btn btn-primary" style="width:auto; padding:9px 18px;" onclick="exportStudentDataCSV()">📥 Export Student Data (CSV)</button>
+      </div>
+
+      <table class="ref-table" style="margin-top:10px;">
+        <thead>
+          <tr>
+            <th>Student Profile</th>
+            <th>Email / Clerk ID</th>
+            <th>Rank & XP</th>
+            <th>Quizzes Cleared</th>
+            <th>Wrong Qs</th>
+            <th>Lectures</th>
+            <th>Streak</th>
+          </tr>
+        </thead>
+        <tbody id="studentTelemetryBody"></tbody>
+      </table>
     </div>
 
   </main>
@@ -1171,7 +1417,7 @@
 
 <!-- ================= SCRIPT ENGINE ================= -->
 <script>
-// EXPLICIT GLOBAL DECLARATIONS (PREVENTS ANY RUNTIME REFERENCE ERRORS)
+// EXPLICIT GLOBAL DECLARATIONS
 let currentQuizCategoryFilter = 'all';
 let currentQuizSearchQuery = '';
 let currentVideoCategoryFilter = 'all';
@@ -1215,18 +1461,116 @@ function toggleDarkMode() {
   }
 })();
 
+// 10-RANK XP SYSTEM EXACT SPECIFICATION
+const medicalRanks = [
+  { level: 1, min: 0, max: 499, name: "Beginner", emoji: "🌱" },
+  { level: 2, min: 500, max: 1499, name: "Rookie", emoji: "🥉" },
+  { level: 3, min: 1500, max: 2999, name: "Fighter", emoji: "🥊" },
+  { level: 4, min: 3000, max: 5499, name: "Warrior", emoji: "⚔️" },
+  { level: 5, min: 5500, max: 8999, name: "Elite", emoji: "🛡️" },
+  { level: 6, min: 9000, max: 14999, name: "Master", emoji: "🎓" },
+  { level: 7, min: 15000, max: 22999, name: "Champion", emoji: "🏆" },
+  { level: 8, min: 23000, max: 34999, name: "Legend", emoji: "🌟" },
+  { level: 9, min: 35000, max: 49999, name: "Immortal", emoji: "⚡" },
+  { level: 10, min: 50000, max: 999999, name: "Overlord", emoji: "👑" }
+];
+
+let userXP = safeGet('hub_user_xp', 50);
+function addXP(amount) { userXP += amount; safeSet('hub_user_xp', userXP); renderRank(); renderAnalyticsRings(); }
+
+function renderRank() {
+  let currentRank = medicalRanks[0], nextRank = medicalRanks[1];
+  for (let i = 0; i < medicalRanks.length; i++) {
+    if (userXP >= medicalRanks[i].min) {
+      currentRank = medicalRanks[i];
+      nextRank = medicalRanks[i + 1] || null;
+    }
+  }
+  setElText('rankTitle', `${currentRank.emoji} ${currentRank.name} (Rank ${currentRank.level})`);
+  setElText('rankIcon', currentRank.emoji);
+  setElText('sidebarRankTag', `● ${currentRank.emoji} ${currentRank.name} (${userXP} XP)`);
+  setElText('analyticsXpVal', `${userXP} XP`);
+  setElText('analyticsRankVal', `${currentRank.emoji} ${currentRank.name} (Rank ${currentRank.level})`);
+
+  if (nextRank) {
+    const span = nextRank.min - currentRank.min;
+    const progress = userXP - currentRank.min;
+    const pct = Math.min(100, Math.round((progress / span) * 100));
+    setElText('rankXpDisplay', `${userXP} / ${nextRank.min} XP to ${nextRank.name}`);
+    setElText('rankRatio', `${pct}% to next rank`);
+    const bar = document.getElementById('rankBar');
+    if (bar) bar.style.width = pct + '%';
+  } else {
+    setElText('rankXpDisplay', `${userXP} XP (Maximum Overlord Rank!)`);
+    setElText('rankRatio', '100% Pinnacle Mastered');
+    const bar = document.getElementById('rankBar');
+    if (bar) bar.style.width = '100%';
+  }
+}
+
+// WRONG ANSWERS PERSISTENT TRACKER
+let wrongQuestionsVault = safeGet('hub_wrong_questions_v1', []);
+function recordWrongQuestion(qObj) {
+  if (!wrongQuestionsVault.some(q => q.question === qObj.question)) {
+    wrongQuestionsVault.unshift(qObj);
+    safeSet('hub_wrong_questions_v1', wrongQuestionsVault);
+    renderWrongQuestionsStatus();
+  }
+}
+function removeResolvedWrongQuestion(questionStem) {
+  wrongQuestionsVault = wrongQuestionsVault.filter(q => q.question !== questionStem);
+  safeSet('hub_wrong_questions_v1', wrongQuestionsVault);
+  renderWrongQuestionsStatus();
+}
+function renderWrongQuestionsStatus() {
+  const count = wrongQuestionsVault.length;
+  setElText('statWrongCount', count);
+  setElText('wrongQuestionsCountHeading', `❌ Wrong Questions Vault: ${count} Question${count === 1 ? '' : 's'} to Re-solve`);
+  renderAnalyticsRings();
+}
+
+function startWrongQuestionsReExam() {
+  if (wrongQuestionsVault.length === 0) {
+    return alert('🎉 Awesome job! You have 0 pending wrong questions in your vault!');
+  }
+  const wrongQuiz = {
+    id: 'quiz_wrong_vault_' + Date.now(),
+    title: `🎯 Target Mastery: ${wrongQuestionsVault.length} Wrong Questions Re-solve`,
+    desc: 'Practicing exclusively questions you missed previously.',
+    tag: 'Targeted Review • +100 XP',
+    category: 'Targeted Review',
+    questionsCount: wrongQuestionsVault.length,
+    solved: false,
+    isNative: true,
+    isWrongVault: true,
+    questions: JSON.parse(JSON.stringify(wrongQuestionsVault))
+  };
+  activeExam = wrongQuiz;
+  activeExamIndex = 0;
+  userExamAnswers = {};
+  questionStatusMap = {};
+  revealedExplanations = {};
+
+  setElText('examRunnerTitle', wrongQuiz.title);
+  setElText('examRunnerCategory', wrongQuiz.tag);
+  document.getElementById('examRunnerQuestionContainer').style.display = 'block';
+  document.getElementById('examRunnerResultsContainer').style.display = 'none';
+  renderExamQuestion();
+  document.getElementById('inAppQuizModal').style.display = 'flex';
+}
+
+// CHECK FULL ACCESS & CLERK
 function checkFullAccess() {
   const Clerk = window.Clerk;
   if (Clerk && Clerk.user) {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('mainDashboard').style.display = 'flex';
     const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
     setElText('clerkUserName', displayName);
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
-    renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard();
+    renderCustomSections(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('mainDashboard').style.display = 'none';
@@ -1235,7 +1579,6 @@ function checkFullAccess() {
   }
 }
 
-// FAST CLERK INITIALIZER
 async function initClerk() {
   try {
     const Clerk = window.Clerk;
@@ -1249,31 +1592,6 @@ async function initClerk() {
 }
 window.addEventListener('load', initClerk);
 
-// GAMIFICATION & RANKS
-const medicalRanks = [
-  { name: "Medical Student", min: 0, max: 250, icon: "🥉" },
-  { name: "Junior Resident", min: 251, max: 600, icon: "🥈" },
-  { name: "Chief Resident", min: 601, max: 1200, icon: "🥇" },
-  { name: "Attending Physician", min: 1201, max: 99999, icon: "👑" }
-];
-let userXP = safeGet('hub_user_xp', 50);
-function addXP(amount) { userXP += amount; safeSet('hub_user_xp', userXP); renderRank(); }
-function renderRank() {
-  let currentRank = medicalRanks[0], nextRank = medicalRanks[1];
-  for (let i = 0; i < medicalRanks.length; i++) {
-    if (userXP >= medicalRanks[i].min) { currentRank = medicalRanks[i]; nextRank = medicalRanks[i + 1] || null; }
-  }
-  setElText('rankTitle', currentRank.name); setElText('rankIcon', currentRank.icon); setElText('sidebarRankTag', `● ${currentRank.name} (${userXP} XP)`); setElText('analyticsXpVal', `${userXP} XP`);
-  if (nextRank) {
-    const span = nextRank.min - currentRank.min, progress = userXP - currentRank.min, pct = Math.min(100, Math.round((progress / span) * 100));
-    setElText('rankXpDisplay', `${userXP} / ${nextRank.min} XP to ${nextRank.name}`); setElText('rankRatio', `${pct}% to next rank`);
-    const bar = document.getElementById('rankBar'); if (bar) bar.style.width = pct + '%';
-  } else {
-    setElText('rankXpDisplay', `${userXP} XP (Max Rank!)`); setElText('rankRatio', '100% Mastered');
-    const bar = document.getElementById('rankBar'); if (bar) bar.style.width = '100%';
-  }
-}
-
 // NAVIGATION
 function goToTab(tabId) {
   stopStethoscopeAudio();
@@ -1281,9 +1599,12 @@ function goToTab(tabId) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const panel = document.getElementById('view-' + tabId); if (panel) panel.classList.add('active');
   const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`); if (nav) nav.classList.add('active');
+  if (tabId === 'whiteboard') setTimeout(resizeWhiteboard, 50);
+  if (tabId === 'analytics') renderAnalyticsRings();
+  if (tabId === 'students_admin') renderStudentTelemetry();
 }
 
-// 1. DYNAMIC CUSTOM SECTIONS CREATOR (ADMIN)
+// 1. MANAGE SECTIONS & CUSTOM SECTIONS
 let customSections = safeGet('hub_custom_sections_v2', [
   {
     id: 'sec_path_atlas',
@@ -1297,15 +1618,53 @@ let customSections = safeGet('hub_custom_sections_v2', [
   }
 ]);
 
+function openManageSectionsModal() {
+  const container = document.getElementById('manageSectionsList');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  if (customSections.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted-foreground); font-size:13px;">No custom sections yet. Click "+ Add New Section" to create one!</div>';
+  } else {
+    customSections.forEach((sec, idx) => {
+      const item = document.createElement('div');
+      item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:12px 16px; border-radius:var(--radius-md);`;
+      item.innerHTML = `
+        <div>
+          <strong>${escapeHTML(sec.icon)} ${escapeHTML(sec.title)}</strong>
+          <div style="font-size:12px; color:var(--muted-foreground);">${escapeHTML(sec.desc)} (${sec.items.length} items)</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px;" onclick="renameCustomSection('${sec.id}')">✏️ Rename</button>
+          <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px; color:#ef4444;" onclick="deleteCustomSection('${sec.id}')">🗑️ Delete</button>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  }
+  document.getElementById('manageSectionsModal').style.display = 'flex';
+}
+function closeManageSectionsModal() { document.getElementById('manageSectionsModal').style.display = 'none'; }
+
+function renameCustomSection(secId) {
+  const sec = customSections.find(s => s.id === secId);
+  if (!sec) return;
+  const newTitle = prompt('Enter new title for section:', sec.title);
+  if (newTitle) {
+    sec.title = newTitle.trim();
+    safeSet('hub_custom_sections_v2', customSections);
+    renderCustomSections();
+    openManageSectionsModal();
+  }
+}
+
 function openCreateSectionModal() {
   document.getElementById('newSectionTitle').value = '';
   document.getElementById('newSectionDesc').value = '';
   document.getElementById('newSectionIcon').value = '📑';
   document.getElementById('createSectionModal').style.display = 'flex';
 }
-function closeCreateSectionModal() {
-  document.getElementById('createSectionModal').style.display = 'none';
-}
+function closeCreateSectionModal() { document.getElementById('createSectionModal').style.display = 'none'; }
 
 function saveNewCustomSection() {
   const title = document.getElementById('newSectionTitle').value.trim();
@@ -1317,6 +1676,7 @@ function saveNewCustomSection() {
   customSections.push({ id: secId, title, icon, desc, items: [] });
   safeSet('hub_custom_sections_v2', customSections);
   closeCreateSectionModal();
+  closeManageSectionsModal();
   renderCustomSections();
   goToTab('custom_' + secId);
   alert(`🎉 Created section "${title}" successfully!`);
@@ -1369,7 +1729,6 @@ function renderCustomSections() {
         ${itemsHtml || '<div style="color:var(--muted-foreground); font-size:14px; grid-column: 1/-1;">No items in this section yet. Click "+ Add Content / File" to populate it!</div>'}
       </div>
     `;
-
     mainContainer.appendChild(panel);
   });
 }
@@ -1402,10 +1761,165 @@ function deleteCustomSection(secId) {
   customSections = customSections.filter(s => s.id !== secId);
   safeSet('hub_custom_sections_v2', customSections);
   renderCustomSections();
+  closeManageSectionsModal();
   goToTab('overview');
 }
 
-// 2. QUESTION BANK & ROBUST MCQ PARSER
+// 2. FOCUS ROOM: CUSTOM YOUTUBE & DESKTOP SOUNDS ENGINE
+let customFocusSounds = safeGet('hub_focus_sounds_v1', [
+  { id: 'rain', name: '🌧️ Medical Rain', type: 'synth_rain' },
+  { id: 'alpha', name: '🧠 Alpha Waves (40Hz)', type: 'synth_alpha' },
+  { id: 'library', name: '☕ Quiet Library', type: 'synth_library' }
+]);
+
+function openAddFocusSoundModal() {
+  document.getElementById('newFocusSoundTitle').value = '';
+  document.getElementById('newFocusSoundUrl').value = '';
+  document.getElementById('newFocusSoundFile').value = '';
+  document.getElementById('addFocusSoundModal').style.display = 'flex';
+}
+function closeAddFocusSoundModal() { document.getElementById('addFocusSoundModal').style.display = 'none'; }
+
+function toggleFocusSoundInputs() {
+  const type = document.getElementById('focusSoundSourceType').value;
+  document.getElementById('focusSoundYoutubeGroup').style.display = type === 'youtube' ? 'block' : 'none';
+  document.getElementById('focusSoundDesktopGroup').style.display = type === 'desktop' ? 'block' : 'none';
+}
+
+function saveNewFocusSound() {
+  const title = document.getElementById('newFocusSoundTitle').value.trim();
+  const srcType = document.getElementById('focusSoundSourceType').value;
+  if (!title) return alert('Please provide a title for the sound!');
+
+  if (srcType === 'youtube') {
+    const url = document.getElementById('newFocusSoundUrl').value.trim();
+    if (!url) return alert('Please enter a YouTube video or playlist URL!');
+    const embedUrl = parseYouTubeEmbedUrl(url);
+    const soundItem = { id: 'snd_' + Date.now(), name: '▶ ' + title, type: 'youtube', url: embedUrl };
+    customFocusSounds.push(soundItem);
+    safeSet('hub_focus_sounds_v1', customFocusSounds);
+    closeAddFocusSoundModal();
+    renderFocusSoundButtons();
+    setAmbientSound(soundItem.id);
+  } else {
+    const fileInput = document.getElementById('newFocusSoundFile');
+    if (!fileInput.files || fileInput.files.length === 0) return alert('Please select an audio file from your computer!');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Audio = e.target.result;
+      const soundItem = { id: 'snd_' + Date.now(), name: '💻 ' + title, type: 'desktop', data: base64Audio };
+      customFocusSounds.push(soundItem);
+      safeSet('hub_focus_sounds_v1', customFocusSounds);
+      closeAddFocusSoundModal();
+      renderFocusSoundButtons();
+      setAmbientSound(soundItem.id);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function renderFocusSoundButtons() {
+  const container = document.getElementById('soundButtonsContainer');
+  if (!container) return;
+  container.innerHTML = `<button class="sound-btn active" id="btnSoundNone" onclick="setAmbientSound('none')">🔇 Off</button>`;
+
+  customFocusSounds.forEach(snd => {
+    const btn = document.createElement('button');
+    btn.className = 'sound-btn';
+    btn.id = 'btnSound_' + snd.id;
+    btn.textContent = snd.name;
+    btn.onclick = () => setAmbientSound(snd.id);
+    container.appendChild(btn);
+  });
+}
+
+function setAmbientSound(soundId) {
+  stopAmbientSound();
+  document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+  
+  const ytBox = document.getElementById('customYoutubePlayerBox');
+  const ytIframe = document.getElementById('focusYoutubeIframe');
+  const desktopPlayer = document.getElementById('desktopAudioPlayer');
+
+  if (soundId === 'none') {
+    document.getElementById('btnSoundNone')?.classList.add('active');
+    if (ytBox) ytBox.style.display = 'none';
+    if (ytIframe) ytIframe.src = '';
+    if (desktopPlayer) { desktopPlayer.pause(); desktopPlayer.src = ''; }
+    return;
+  }
+
+  const btn = document.getElementById('btnSound_' + soundId);
+  if (btn) btn.classList.add('active');
+
+  const customSnd = customFocusSounds.find(s => s.id === soundId);
+  if (customSnd) {
+    if (customSnd.type === 'youtube') {
+      if (ytBox && ytIframe) {
+        let ytUrl = customSnd.url;
+        ytUrl += (ytUrl.includes('?') ? '&' : '?') + 'autoplay=1&loop=1';
+        ytIframe.src = ytUrl;
+        ytBox.style.display = 'block';
+      }
+    } else if (customSnd.type === 'desktop') {
+      if (desktopPlayer) {
+        desktopPlayer.src = customSnd.data;
+        desktopPlayer.volume = currentAmbientVolume;
+        desktopPlayer.play().catch(e => console.log('Audio playback permission:', e));
+      }
+    } else if (customSnd.type === 'synth_rain') {
+      playSynthRain();
+    } else if (customSnd.type === 'synth_alpha') {
+      playSynthAlpha();
+    } else if (customSnd.type === 'synth_library') {
+      playSynthLibrary();
+    }
+  } else if (soundId === 'rain') {
+    playSynthRain();
+  } else if (soundId === 'alpha') {
+    playSynthAlpha();
+  } else if (soundId === 'library') {
+    playSynthLibrary();
+  }
+}
+
+function playSynthRain() {
+  const ctx = getAudioContext(), gain = ctx.createGain();
+  gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime);
+  gain.connect(ctx.destination);
+  currentAmbientGain = gain;
+
+  const bufferSize = ctx.sampleRate * 2, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520;
+    data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.1;
+  }
+  const noise = ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true; noise.connect(gain); noise.start(); ambientNodes.push(noise);
+}
+function playSynthAlpha() {
+  const ctx = getAudioContext(), gain = ctx.createGain();
+  gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime);
+  gain.connect(ctx.destination);
+  currentAmbientGain = gain;
+
+  const osc1 = ctx.createOscillator(), osc2 = ctx.createOscillator();
+  osc1.frequency.value = 200; osc2.frequency.value = 240;
+  osc1.connect(gain); osc2.connect(gain);
+  osc1.start(); osc2.start(); ambientNodes.push(osc1, osc2);
+}
+function playSynthLibrary() {
+  const ctx = getAudioContext(), gain = ctx.createGain();
+  gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime);
+  gain.connect(ctx.destination);
+  currentAmbientGain = gain;
+
+  const osc = ctx.createOscillator(); osc.type = 'triangle'; osc.frequency.value = 110; osc.connect(gain); osc.start(); ambientNodes.push(osc);
+}
+
+// 3. QUESTION BANK & MANAGE EXAMS
 let customQuizzes = safeGet('hub_quizzes_custom_v3', [
   {
     id: 'quiz_cardio_1',
@@ -1427,11 +1941,11 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
           "Intravenous Atropine 0.5 mg"
         ],
         correctIndex: 0,
-        explanation: "In hemodynamically stable Atrial Fibrillation with rapid ventricular response, initial therapy is rate control using Beta-blockers (Metoprolol/Esmolol) or non-dihydropyridine calcium channel blockers (Diltiazem/Verapamil). Electrical cardioversion is reserved for unstable patients (hypotension, altered mental status, chest pain)."
+        explanation: "In hemodynamically stable Atrial Fibrillation with rapid ventricular response, initial therapy is rate control using Beta-blockers (Metoprolol/Esmolol) or non-dihydropyridine calcium channel blockers (Diltiazem/Verapamil)."
       },
       {
         id: 2,
-        question: "A 72-year-old female presents with recurrent syncopal episodes while gardening. Physical exam reveals a harsh, late-peaking crescendo-decrescendo systolic ejection murmur at the right 2nd intercostal space that radiates to the carotid arteries. What is the most likely underlying diagnosis?",
+        question: "A 72-year-old female presents with recurrent syncopal episodes while gardening. Physical exam reveals a harsh, late-peaking crescendo-decrescendo systolic ejection murmur at the right 2nd intercostal space radiating to the carotid arteries. What is the most likely underlying diagnosis?",
         options: [
           "Mitral Regurgitation",
           "Severe Calcific Aortic Stenosis",
@@ -1439,7 +1953,7 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
           "Hypertrophic Cardiomyopathy"
         ],
         correctIndex: 1,
-        explanation: "A harsh crescendo-decrescendo systolic murmur at the right upper sternal border radiating to the carotids with a delayed, weak carotid pulse (pulsus parvus et tardus) and syncope is the classic presentation of severe Aortic Stenosis."
+        explanation: "A harsh crescendo-decrescendo systolic murmur at the right upper sternal border radiating to the carotids with pulsus parvus et tardus and syncope is the classic presentation of severe Aortic Stenosis."
       },
       {
         id: 3,
@@ -1451,7 +1965,7 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
           "Left Main Coronary Artery (LMCA)"
         ],
         correctIndex: 2,
-        explanation: "ST elevations in the inferior leads (II, III, aVF) indicate an acute Inferior STEMI, which is most commonly caused by acute thrombotic occlusion of the Right Coronary Artery (RCA) in 85-90% of individuals."
+        explanation: "ST elevations in the inferior leads (II, III, aVF) indicate an acute Inferior STEMI, most commonly caused by acute thrombotic occlusion of the Right Coronary Artery (RCA)."
       }
     ]
   },
@@ -1475,11 +1989,11 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
           "Mixed Metabolic Alkalosis and Respiratory Alkalosis"
         ],
         correctIndex: 1,
-        explanation: "Anion Gap = Na+ - (Cl- + HCO3-) = 140 - (98 + 9) = 33 mEq/L (Normal is 8-12). An elevated anion gap (>12) with low pH and low bicarbonate in the presence of hyperglycemia and ketonuria establishes High Anion Gap Metabolic Acidosis due to DKA (MUDPILES mnemonic)."
+        explanation: "Anion Gap = Na+ - (Cl- + HCO3-) = 140 - (98 + 9) = 33 mEq/L. An elevated anion gap (>12) with low pH and low bicarbonate in the presence of hyperglycemia and ketonuria establishes High Anion Gap Metabolic Acidosis due to DKA (MUDPILES mnemonic)."
       },
       {
         id: 2,
-        question: "A 9-year-old boy presents with cola-colored urine, periorbital edema, and blood pressure of 145/95 mmHg two weeks after recovering from a bacterial skin infection (impetigo). Urinalysis shows dysmorphic red blood cells and RBC casts. What is the classic immunofluorescence microscopy finding?",
+        question: "A 9-year-old boy presents with cola-colored urine, periorbital edema, and blood pressure of 145/95 mmHg two weeks after recovering from impetigo. Urinalysis shows dysmorphic red blood cells and RBC casts. What is the classic immunofluorescence microscopy finding?",
         options: [
           "Linear IgG deposition along the glomerular basement membrane",
           "Granular 'starry-sky' / lumpy-bumpy subepithelial humps of IgG, IgM, and C3",
@@ -1487,11 +2001,47 @@ let customQuizzes = safeGet('hub_quizzes_custom_v3', [
           "Mesangial IgA immune complex deposition"
         ],
         correctIndex: 1,
-        explanation: "Post-streptococcal glomerulonephritis (PSGN) typically occurs 1-4 weeks after streptococcal pharyngitis or impetigo, presenting with nephritic syndrome (RBC casts, hypertension, edema) and granular 'lumpy-bumpy' subepithelial immune complex deposits of IgG and C3 on immunofluorescence."
+        explanation: "Post-streptococcal glomerulonephritis (PSGN) typically occurs 1-4 weeks after streptococcal infection, presenting with nephritic syndrome and granular 'lumpy-bumpy' subepithelial deposits of IgG and C3."
       }
     ]
   }
 ]);
+
+function openManageExamsModal() {
+  const container = document.getElementById('manageExamsList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  customQuizzes.forEach(q => {
+    const qCount = q.questions ? q.questions.length : (q.questionsCount || 10);
+    const item = document.createElement('div');
+    item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:12px 16px; border-radius:var(--radius-md);`;
+    item.innerHTML = `
+      <div>
+        <strong>${escapeHTML(q.title)}</strong>
+        <div style="font-size:12px; color:var(--muted-foreground);">${qCount} Questions • ${escapeHTML(q.category || 'General')} • ${q.solved ? '✓ Solved' : '⏳ Pending'}</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px;" onclick="resetQuizAttempt('${q.id}')">↺ Reset Attempt</button>
+        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:12px; color:#ef4444;" onclick="deleteAdminQuiz('${q.id}')">🗑️ Delete</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+  document.getElementById('manageExamsModal').style.display = 'flex';
+}
+function closeManageExamsModal() { document.getElementById('manageExamsModal').style.display = 'none'; }
+
+function resetQuizAttempt(quizId) {
+  const q = customQuizzes.find(item => item.id === quizId);
+  if (q) {
+    q.solved = false;
+    safeSet('hub_quizzes_custom_v3', customQuizzes);
+    renderQuizzes();
+    openManageExamsModal();
+    alert('Exam attempt reset!');
+  }
+}
 
 function renderQuizzes() {
   const container = document.getElementById('qbankGridContainer');
@@ -1525,6 +2075,7 @@ function renderQuizzes() {
     container.appendChild(card);
   });
   setElText('statQuizzes', `${solvedCount} / ${customQuizzes.length}`);
+  renderAnalyticsRings();
 }
 
 function filterQuizzes() {
@@ -1550,6 +2101,7 @@ function deleteAdminQuiz(id) {
   customQuizzes = customQuizzes.filter(q => q.id !== id);
   safeSet('hub_quizzes_custom_v3', customQuizzes);
   renderQuizzes();
+  openManageExamsModal();
 }
 
 // NATIVE IN-APP QUIZ RUNNER WITH LEFT QUESTION PALETTE
@@ -1706,8 +2258,10 @@ function checkCurrentAnswer() {
   
   if (userChoice === q.correctIndex) {
     questionStatusMap[activeExamIndex] = 'correct';
+    if (activeExam.isWrongVault) removeResolvedWrongQuestion(q.question);
   } else {
     questionStatusMap[activeExamIndex] = 'wrong';
+    recordWrongQuestion(q);
   }
   
   renderExamQuestion();
@@ -1741,7 +2295,12 @@ function submitInAppExam() {
   activeExam.questions.forEach((q, qIdx) => {
     const userChoice = userExamAnswers[qIdx];
     const isCorrect = userChoice === q.correctIndex;
-    if (isCorrect) correctCount++;
+    if (isCorrect) {
+      correctCount++;
+      if (activeExam.isWrongVault) removeResolvedWrongQuestion(q.question);
+    } else {
+      recordWrongQuestion(q);
+    }
     
     const reviewItem = document.createElement('div');
     reviewItem.style.cssText = `background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;`;
@@ -1769,13 +2328,12 @@ function submitInAppExam() {
   document.getElementById('examRunnerQuestionContainer').style.display = 'none';
   document.getElementById('examRunnerResultsContainer').style.display = 'block';
   
-  solveQuiz(activeExam.id);
+  if (!activeExam.isWrongVault) solveQuiz(activeExam.id);
   addXP(100);
 }
 
-// ADMIN MCQ DRAG & DROP AND ULTRA-SMART PARSER
+// ULTRA-SMART BILINGUAL ARABIC & ENGLISH MCQ PARSER
 let extractedMcqList = [];
-
 function openAdminMcqExtractorModal() {
   extractedMcqList = [];
   document.getElementById('mcqTextInput').value = '';
@@ -1786,9 +2344,7 @@ function openAdminMcqExtractorModal() {
   initDropZone();
   document.getElementById('adminMcqExtractorModal').style.display = 'flex';
 }
-function closeAdminMcqExtractorModal() {
-  document.getElementById('adminMcqExtractorModal').style.display = 'none';
-}
+function closeAdminMcqExtractorModal() { document.getElementById('adminMcqExtractorModal').style.display = 'none'; }
 
 function initDropZone() {
   const dropZone = document.getElementById('mcqDropZone');
@@ -1835,7 +2391,6 @@ async function extractTextFromDocx(arrayBuffer) {
 
 async function processUploadedFile(file) {
   if (!file) return;
-  
   const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   const titleInput = document.getElementById('newMcqTitle');
   if (titleInput && !titleInput.value) {
@@ -1851,15 +2406,10 @@ async function processUploadedFile(file) {
     reader.onload = async function(evt) {
       try {
         const text = await extractTextFromPDF(evt.target.result);
-        if (!text.trim()) {
-          setElText('mcqExtractStatus', '⚠️ No text layer detected');
-          alert('This PDF seems to contain scanned images. If so, please copy/paste the questions directly into the box.');
-          return;
-        }
+        if (!text.trim()) return alert('Scanned image PDF detected. Please copy/paste text directly.');
         document.getElementById('mcqTextInput').value = text;
         extractMcqFromText();
       } catch (err) {
-        console.error('PDF extract error:', err);
         setElText('mcqExtractStatus', '❌ Error reading PDF');
       }
     };
@@ -1873,7 +2423,6 @@ async function processUploadedFile(file) {
         document.getElementById('mcqTextInput').value = text;
         extractMcqFromText();
       } catch (err) {
-        console.error('Word extract error:', err);
         reader.readAsText(file);
       }
     };
@@ -1890,12 +2439,9 @@ async function processUploadedFile(file) {
 
 function parseMcqText(rawText) {
   if (!rawText) return [];
-  
   const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
   let text = rawText;
-  arabicDigits.forEach((digit, i) => {
-    text = text.replace(new RegExp(digit, 'g'), i);
-  });
+  arabicDigits.forEach((digit, i) => { text = text.replace(new RegExp(digit, 'g'), i); });
 
   text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__Q_START__ $1. ');
   text = text.replace(/(?:\s+|\n|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '\n__OPT_START__ $1) ');
@@ -1912,11 +2458,7 @@ function parseMcqText(rawText) {
     const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
     if (lines.length === 0) return;
 
-    let stemLines = [];
-    let optionLines = [];
-    let answerLine = '';
-    let explanationLine = '';
-
+    let stemLines = [], optionLines = [], answerLine = '', explanationLine = '';
     let parsingOptions = false;
     lines.forEach(line => {
       if (line.startsWith('__ANS_START__')) {
@@ -1944,9 +2486,7 @@ function parseMcqText(rawText) {
       if (clean) options.push(clean);
     });
 
-    if (options.length === 0 && lines.length >= 4) {
-      options = lines.slice(1, 5);
-    }
+    if (options.length === 0 && lines.length >= 4) options = lines.slice(1, 5);
 
     let correctIndex = 0;
     if (answerLine) {
@@ -1984,9 +2524,7 @@ function extractMcqFromText() {
 
 function publishExtractedExam() {
   if (extractedMcqList.length === 0) extractMcqFromText();
-  if (extractedMcqList.length === 0) {
-    return alert('No questions detected! Please verify that questions are numbered (e.g. 1. Question stem) and have choices (a, b, c, d).');
-  }
+  if (extractedMcqList.length === 0) return alert('No questions detected!');
   const title = document.getElementById('newMcqTitle').value.trim() || `Diagnostic Exam (${extractedMcqList.length} MCQs)`;
   const cat = document.getElementById('newMcqCat').value.trim() || 'Clinical Review';
   
@@ -2018,7 +2556,7 @@ function saveNewAdminContent() {
   safeSet('hub_quizzes_custom_v3', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 
-// 3. LECTURES & PLAYLISTS ENGINE
+// 4. LECTURES & PLAYLISTS (WITH COMPLETE EMBEDDED PLAYLIST PLAYER)
 let videoCategories = safeGet('hub_video_categories', [
   'Cardiology', 'Neurology', 'Nephrology', 'Pulmonology', 'Pharmacology', 'Pathology', 'Biochemistry', 'Surgery'
 ]);
@@ -2084,9 +2622,7 @@ function openAddTopicModal() {
   document.getElementById('newTopicName').value = '';
   document.getElementById('addTopicModal').style.display = 'flex';
 }
-function closeAddTopicModal() {
-  document.getElementById('addTopicModal').style.display = 'none';
-}
+function closeAddTopicModal() { document.getElementById('addTopicModal').style.display = 'none'; }
 function saveNewTopic() {
   const name = document.getElementById('newTopicName').value.trim();
   if (!name) return alert('Enter topic name!');
@@ -2114,8 +2650,14 @@ function renderVideos() {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.innerHTML = `
-      <div class="video-complete-circle ${v.completed ? 'completed' : ''}" onclick="toggleVideoComplete('${v.id}')" title="${v.completed ? 'Completed (Click to uncheck)' : 'Click to mark as Completed'}">
-        ${v.completed ? '✓' : ''}
+      <!-- TOP ACTION CIRCLES -->
+      <div class="video-header-actions">
+        <div class="video-action-circle ${v.completed ? 'completed' : ''}" onclick="toggleVideoComplete('${v.id}')" title="${v.completed ? 'Completed (+50 XP) - Click to unmark' : 'Click to mark as Completed (+50 XP)'}">
+          ${v.completed ? '✓' : '○'}
+        </div>
+        <div class="video-action-circle" onclick="openAttachFileModal('${v.id}')" title="Attach file / summary notes to this lecture">
+          📎
+        </div>
       </div>
 
       <div class="video-embed-box"><iframe src="${escapeHTML(v.url)}" allowfullscreen></iframe></div>
@@ -2134,8 +2676,8 @@ function renderVideos() {
         </div>
 
         <div style="display:flex; gap:8px; margin-top:10px;">
-          <button class="btn btn-outline" style="font-size:12px; padding:8px 12px;" onclick="openAttachFileModal('${v.id}')">📎 + Attach File/Notes</button>
-          <button class="btn btn-primary" style="font-size:12px; padding:8px 12px;" onclick="toggleVideoComplete('${v.id}')">${v.completed ? 'Completed ✓' : 'Mark Completed'}</button>
+          <button class="btn btn-outline" style="font-size:12px; padding:8px 12px;" onclick="openAttachFileModal('${v.id}')">📎 + Attach Notes</button>
+          <button class="btn btn-primary" style="font-size:12px; padding:8px 12px;" onclick="toggleVideoComplete('${v.id}')">${v.completed ? 'Completed ✓' : 'Mark Complete (+50 XP)'}</button>
         </div>
       </div>
 
@@ -2143,6 +2685,7 @@ function renderVideos() {
     `;
     container.appendChild(card);
   });
+  renderAnalyticsRings();
 }
 
 function toggleVideoComplete(id) {
@@ -2160,9 +2703,7 @@ function openAttachFileModal(videoId) {
   document.getElementById('attachFileUrl').value = '';
   document.getElementById('attachVideoFileModal').style.display = 'flex';
 }
-function closeAttachFileModal() {
-  document.getElementById('attachVideoFileModal').style.display = 'none';
-}
+function closeAttachFileModal() { document.getElementById('attachVideoFileModal').style.display = 'none'; }
 function saveAttachedFile() {
   const vidId = document.getElementById('attachVideoId').value;
   const name = document.getElementById('attachFileName').value.trim() || 'Lecture Materials PDF';
@@ -2220,7 +2761,7 @@ function saveNewAdminVideo() {
   customVideos.unshift({
     id: 'vid_' + Date.now(),
     title,
-    tag: `${tag} • Playlist`,
+    tag: `${tag} • Series`,
     category: tag,
     desc,
     url: embedUrl,
@@ -2247,7 +2788,7 @@ function deleteAdminVideo(id) {
   renderVideos();
 }
 
-// 4. FLASHCARDS & FILE AUTO-EXTRACTOR
+// 5. FLASHCARDS & FILE AUTO-EXTRACTOR (FIXED OVERFLOW & CLEAN SPLIT)
 let customFlashcards = safeGet('hub_fc_custom_v2', [
   { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
   { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
@@ -2259,19 +2800,21 @@ let extractedFcList = [];
 function renderFlashcard() {
   if (customFlashcards.length === 0) {
     setElText('fcCategory', 'Empty Deck');
-    setElText('fcQuestion', 'No flashcards yet. Click "+ Extract Flashcards from File" or "+ Add Single Card" to populate!');
+    setElText('fcQuestion', 'No flashcards in deck. Click "+ Extract Flashcards from File / PDF" to auto-import questions!');
     setElText('fcAnswer', 'No answer');
     setElText('statFlashcards', '0%');
+    renderAnalyticsRings();
     return;
   }
   if (currentCardIndex >= customFlashcards.length) currentCardIndex = 0;
   const card = customFlashcards[currentCardIndex];
   const fc = document.getElementById('activeFlashcard');
   if (fc) fc.classList.remove('flipped');
-  setElText('fcCategory', card.cat || 'Medical Concept');
+  setElText('fcCategory', `${card.cat || 'Medical Concept'} (${currentCardIndex + 1}/${customFlashcards.length})`);
   setElText('fcQuestion', card.q);
   setElText('fcAnswer', card.a);
   setElText('statFlashcards', Math.round(((currentCardIndex + 1) / customFlashcards.length) * 100) + '%');
+  renderAnalyticsRings();
 }
 function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
 function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % customFlashcards.length; renderFlashcard(); }
@@ -2280,6 +2823,12 @@ function deleteFlashcard() {
   if (customFlashcards.length === 0) return;
   if (!confirm('Delete this flashcard?')) return;
   customFlashcards = customFlashcards.filter((fc, idx) => idx !== currentCardIndex);
+  safeSet('hub_fc_custom_v2', customFlashcards);
+  renderFlashcard();
+}
+function clearFlashcardDeck() {
+  if (!confirm('Are you sure you want to clear the entire flashcard deck?')) return;
+  customFlashcards = [];
   safeSet('hub_fc_custom_v2', customFlashcards);
   renderFlashcard();
 }
@@ -2293,9 +2842,7 @@ function openAdminFlashcardExtractorModal() {
   initFcDropZone();
   document.getElementById('adminFlashcardExtractorModal').style.display = 'flex';
 }
-function closeAdminFlashcardExtractorModal() {
-  document.getElementById('adminFlashcardExtractorModal').style.display = 'none';
-}
+function closeAdminFlashcardExtractorModal() { document.getElementById('adminFlashcardExtractorModal').style.display = 'none'; }
 
 function initFcDropZone() {
   const dropZone = document.getElementById('fcDropZone');
@@ -2360,32 +2907,46 @@ async function processFcUploadedFile(file) {
 }
 
 function extractFlashcardsFromText() {
-  const text = document.getElementById('fcTextInput').value;
-  if (!text.trim()) return alert('Paste text or drop a file first!');
+  const rawText = document.getElementById('fcTextInput').value;
+  if (!rawText.trim()) return alert('Paste text or drop a file first!');
   const cat = document.getElementById('newFcCat').value.trim() || 'Medical Deck';
   
   extractedFcList = [];
-  const blocks = text.split(/(?=(?:^|\n)(?:Q\s*[\:\.]|\bQuestion\s*[\:\.]|س\s*[\:\.]|\d+[\.\:\)]))/i);
-  
+
+  // Robust multi-question pre-processor for flashcards
+  let text = rawText;
+  const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  arabicDigits.forEach((digit, i) => { text = text.replace(new RegExp(digit, 'g'), i); });
+
+  // Separate numbered stems even inline in PDF text
+  text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__FC_Q_START__ $1. ');
+  text = text.replace(/(?:\s+|\n|^)[\(\[]?([a-eA-Eأ-د1-4])[\)\]\.\:\-]\s+/g, '\n__OPT__ $1) ');
+  text = text.replace(/(?:\s+|\n|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '\n__FC_A_START__ ');
+
+  const blocks = text.split(/__FC_Q_START__/);
   blocks.forEach(block => {
     const trimmed = block.trim();
-    if (!trimmed) return;
-    
+    if (!trimmed || trimmed.length < 4) return;
+
     let q = '', a = '';
-    const ansSplit = trimmed.split(/(?:^|\n|\s{2,})(?:A\s*[\:\.]|\bAnswer\s*[\:\.]|الجواب\s*[\:\.]|الإجابة\s*[\:\.]|\-\>|\=\>)/i);
-    
-    if (ansSplit.length >= 2) {
-      q = ansSplit[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
-      a = ansSplit[1].trim();
+    if (trimmed.includes('__FC_A_START__')) {
+      const parts = trimmed.split('__FC_A_START__');
+      q = parts[0].replace(/__OPT__/g, '\n').trim();
+      a = parts[1].trim();
     } else {
       const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
       if (lines.length >= 2) {
-        q = lines[0].replace(/^(?:(?:Q\s*|س\s*)?\d+[\.\:\)\-]\s*|\bQuestion\s*\d+[\.\:\)\-]\s*|Q\s*[\:\.]|س\s*[\:\.])/i, '').trim();
-        a = lines.slice(1).join(' ').trim();
+        q = lines[0].replace(/^[\d\.\:\)\-\s]+/, '').trim();
+        a = lines.slice(1).join('\n').replace(/__OPT__/g, '').trim();
+      } else {
+        q = trimmed.replace(/^[\d\.\:\)\-\s]+/, '').trim();
+        a = "High-yield board concept / Review details in notes.";
       }
     }
     
-    if (q && a) {
+    // Clean stem number redundancy
+    q = q.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
+    if (q) {
       extractedFcList.push({ cat, q, a });
     }
   });
@@ -2395,7 +2956,7 @@ function extractFlashcardsFromText() {
 
 function publishExtractedFlashcards() {
   if (extractedFcList.length === 0) extractFlashcardsFromText();
-  if (extractedFcList.length === 0) return alert('No flashcards detected! Make sure you have Q: ... and A: ... pairs.');
+  if (extractedFcList.length === 0) return alert('No flashcards detected!');
 
   customFlashcards.unshift(...extractedFcList);
   safeSet('hub_fc_custom_v2', customFlashcards);
@@ -2404,7 +2965,331 @@ function publishExtractedFlashcards() {
   alert(`🎉 Successfully added ${extractedFcList.length} flashcards into your deck!`);
 }
 
-// 5. STETHOSCOPE AUSCULTATION SIMULATOR
+// 6. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, SHAPES, PHOTOS)
+let wbCanvas = null, wbCtx = null, wbMode = 'draw', isWbDrawing = false, wbColor = '#155dfc', wbWidth = 3;
+
+function initWhiteboard() {
+  wbCanvas = document.getElementById('medCanvas'); if (!wbCanvas) return;
+  wbCtx = wbCanvas.getContext('2d');
+  resizeWhiteboard();
+  window.addEventListener('resize', resizeWhiteboard);
+
+  function getCanvasPos(e) {
+    const rect = wbCanvas.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: cx - rect.left, y: cy - rect.top };
+  }
+
+  wbCanvas.addEventListener('mousedown', (e) => {
+    const p = getCanvasPos(e);
+    if (wbMode === 'draw') {
+      isWbDrawing = true;
+      wbCtx.beginPath();
+      wbCtx.moveTo(p.x, p.y);
+    } else if (wbMode === 'text') {
+      placeTextPrompt(p.x, p.y);
+    }
+  });
+
+  wbCanvas.addEventListener('mousemove', (e) => {
+    if (!isWbDrawing || wbMode !== 'draw') return;
+    const p = getCanvasPos(e);
+    wbCtx.strokeStyle = wbColor;
+    wbCtx.lineWidth = wbWidth;
+    wbCtx.lineCap = 'round';
+    wbCtx.lineJoin = 'round';
+    wbCtx.lineTo(p.x, p.y);
+    wbCtx.stroke();
+  });
+
+  wbCanvas.addEventListener('mouseup', () => { isWbDrawing = false; });
+  wbCanvas.addEventListener('mouseleave', () => { isWbDrawing = false; });
+
+  wbCanvas.addEventListener('touchstart', (e) => {
+    const p = getCanvasPos(e);
+    if (wbMode === 'draw') { isWbDrawing = true; wbCtx.beginPath(); wbCtx.moveTo(p.x, p.y); }
+  });
+  wbCanvas.addEventListener('touchmove', (e) => {
+    if (!isWbDrawing || wbMode !== 'draw') return;
+    const p = getCanvasPos(e);
+    wbCtx.strokeStyle = wbColor; wbCtx.lineWidth = wbWidth; wbCtx.lineCap = 'round'; wbCtx.lineJoin = 'round';
+    wbCtx.lineTo(p.x, p.y); wbCtx.stroke();
+  });
+  wbCanvas.addEventListener('touchend', () => { isWbDrawing = false; });
+}
+
+function resizeWhiteboard() {
+  const wrapper = document.getElementById('canvasWrapper');
+  if (!wrapper || !wbCanvas) return;
+  const temp = wbCanvas.toDataURL();
+  wbCanvas.width = wrapper.clientWidth || 800;
+  wbCanvas.height = wrapper.clientHeight || 520;
+  const img = new Image();
+  img.onload = () => { if (wbCtx) wbCtx.drawImage(img, 0, 0); };
+  img.src = temp;
+}
+
+function setWbMode(mode) { wbMode = mode; }
+function setWbColor(c) { wbColor = c; wbMode = 'draw'; }
+function setWbWidth(w) { wbWidth = parseInt(w); }
+function setWbEraser() { wbColor = '#ffffff'; wbWidth = 24; wbMode = 'draw'; }
+function clearCanvas() {
+  if (wbCtx && wbCanvas) {
+    wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+    document.querySelectorAll('.canvas-overlay-text, .canvas-sticky-note').forEach(el => el.remove());
+  }
+}
+
+function placeTextPrompt(x, y) {
+  const text = prompt("Enter note/text to place on canvas:");
+  if (!text) return;
+  wbCtx.font = "bold 16px sans-serif";
+  wbCtx.fillStyle = wbColor === '#ffffff' ? '#000000' : wbColor;
+  wbCtx.fillText(text, x, y);
+}
+
+function addStickyNotePrompt() {
+  const noteText = prompt("Enter Sticky Note Text / Clinical Pearl:", "High-yield board note!");
+  if (!noteText) return;
+  const wrapper = document.getElementById('canvasWrapper');
+  const sticky = document.createElement('div');
+  sticky.className = 'canvas-sticky-note';
+  sticky.style.cssText = `position:absolute; top:40px; left:40px; width:180px; min-height:100px; background:#fef08a; color:#854d0e; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.15); font-size:13px; font-weight:600; cursor:move; z-index:10; resize:both; overflow:auto;`;
+  sticky.innerHTML = `
+    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+      <span>📌 Note</span>
+      <button style="background:none; border:none; color:#854d0e; cursor:pointer; font-weight:bold;" onclick="this.parentElement.parentElement.remove()">✕</button>
+    </div>
+    <div>${escapeHTML(noteText)}</div>
+  `;
+  wrapper.appendChild(sticky);
+}
+
+function handleWbImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 340, maxH = 260;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+      if (h > maxH) { w = (maxH / h) * w; h = maxH; }
+      wbCtx.drawImage(img, 40, 40, w, h);
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveCanvasImage() {
+  if (!wbCanvas) return;
+  const link = document.createElement('a');
+  link.download = 'Clinical_Canvas_Sketch.png';
+  link.href = wbCanvas.toDataURL();
+  link.click();
+}
+
+// 7. BIG CIRCULAR PROGRESS GAUGES (ANALYTICS ENGINE)
+function setRingProgress(fillId, pct) {
+  const circle = document.getElementById(fillId);
+  if (!circle) return;
+  const circumference = 2 * Math.PI * 60; // 377
+  const offset = circumference - (Math.min(100, Math.max(0, pct)) / 100) * circumference;
+  circle.style.strokeDashoffset = offset;
+}
+
+function renderAnalyticsRings() {
+  // 1. Course watch completion
+  const totalVids = customVideos.length;
+  const compVids = customVideos.filter(v => v.completed).length;
+  const coursePct = totalVids ? Math.round((compVids / totalVids) * 100) : 0;
+  setRingProgress('ringCourseFill', coursePct);
+  setElText('ringCoursePct', coursePct + '%');
+  setElText('ringCourseSub', `${compVids} / ${totalVids} Lectures Completed`);
+
+  // 2. Exam mastery
+  const totalQuizzes = customQuizzes.length;
+  const compQuizzes = customQuizzes.filter(q => q.solved).length;
+  const examPct = totalQuizzes ? Math.round((compQuizzes / totalQuizzes) * 100) : 0;
+  setRingProgress('ringExamFill', examPct);
+  setElText('ringExamPct', examPct + '%');
+  setElText('ringExamSub', `${compQuizzes} / ${totalQuizzes} Quizzes Cleared`);
+
+  // 3. Flashcards mastery
+  const totalFc = customFlashcards.length;
+  const fcPct = totalFc ? Math.min(100, Math.round(((currentCardIndex + 1) / totalFc) * 100)) : 0;
+  setRingProgress('ringFcFill', fcPct);
+  setElText('ringFcPct', fcPct + '%');
+  setElText('ringFcSub', `${totalFc} Active Flashcards`);
+
+  // 4. Wrong Questions Accuracy Rate
+  const wrongCount = wrongQuestionsVault.length;
+  const accuracyPct = Math.max(0, 100 - (wrongCount * 10));
+  setRingProgress('ringWrongFill', accuracyPct);
+  setElText('ringWrongPct', accuracyPct + '%');
+  setElText('ringWrongSub', `${wrongCount} Pending Mistakes`);
+}
+
+// 8. Q&A ENGINE (WITH ADMIN INTERACTION & FULL STUDENT INFO)
+let customQaList = safeGet('hub_qa_list_v2', [
+  {
+    id: 1,
+    studentName: "Student Ahmed",
+    studentEmail: "ahmed.med@student.edu",
+    studentRank: "Rookie (Rank 2)",
+    text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity reactions?",
+    reply: "Type 1 is IgE-mediated immediate anaphylaxis & mast cell degranulation, while Type 2 is antibody-mediated (IgG/IgM) cytotoxic cellular injury.",
+    date: "Aug 28",
+    status: "Answered"
+  }
+]);
+
+function renderQA() {
+  const container = document.getElementById('qaThreadList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  customQaList.forEach((q, idx) => {
+    const card = document.createElement('div');
+    card.className = 'qa-msg';
+    card.innerHTML = `
+      <div class="qa-msg-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="qa-author-badge">👤 ${escapeHTML(q.studentName || 'Student')}</span>
+          <span style="font-size:11px; color:var(--primary); font-weight:600;">${escapeHTML(q.studentRank || 'Med Student')}</span>
+          <span style="font-size:11px; color:var(--muted-foreground);">${escapeHTML(q.studentEmail || '')}</span>
+        </div>
+        <span>${escapeHTML(q.date)}</span>
+      </div>
+      <div class="qa-msg-body">${escapeHTML(q.text)}</div>
+
+      ${q.reply ? `
+        <div class="qa-reply">
+          <strong>Dr. Mohammad:</strong>
+          <p style="margin-top:2px;">${escapeHTML(q.reply)}</p>
+        </div>
+      ` : ''}
+
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn btn-outline" style="width:auto; padding:5px 12px; font-size:11.5px;" onclick="adminReplyQA(${idx})">💬 Admin Reply / Edit</button>
+        <button class="btn btn-outline" style="width:auto; padding:5px 10px; font-size:11.5px; color:#ef4444;" onclick="deleteQA(${idx})">🗑️ Delete</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function submitStudentQuestion() {
+  const input = document.getElementById('qaQuestionInput');
+  if (!input || !input.value.trim()) return;
+
+  const Clerk = window.Clerk;
+  const displayName = (Clerk && Clerk.user) ? (Clerk.user.fullName || Clerk.user.firstName || 'Student') : 'Student';
+  const email = (Clerk && Clerk.user) ? (Clerk.user.primaryEmailAddress?.emailAddress || 'student@med.edu') : 'student@med.edu';
+  
+  let currentRank = medicalRanks[0];
+  for (let i = 0; i < medicalRanks.length; i++) {
+    if (userXP >= medicalRanks[i].min) currentRank = medicalRanks[i];
+  }
+
+  customQaList.unshift({
+    id: Date.now(),
+    studentName: displayName,
+    studentEmail: email,
+    studentRank: `${currentRank.emoji} ${currentRank.name}`,
+    text: input.value.trim(),
+    reply: "Dr. Mohammad has received your inquiry and will post a clinical pearl response shortly.",
+    date: "Today",
+    status: "Pending"
+  });
+
+  safeSet('hub_qa_list_v2', customQaList);
+  input.value = '';
+  renderQA();
+}
+
+function adminReplyQA(index) {
+  const q = customQaList[index];
+  if (!q) return;
+  const reply = prompt(`Reply as Dr. Mohammad to ${q.studentName}:`, q.reply || "");
+  if (reply !== null) {
+    q.reply = reply.trim();
+    q.status = "Answered";
+    safeSet('hub_qa_list_v2', customQaList);
+    renderQA();
+  }
+}
+
+function deleteQA(index) {
+  if (!confirm('Delete this inquiry?')) return;
+  customQaList.splice(index, 1);
+  safeSet('hub_qa_list_v2', customQaList);
+  renderQA();
+}
+
+// 9. STUDENT TELEMETRY & PRIVACY DIRECTORY (ADMIN ONLY)
+function renderStudentTelemetry() {
+  const tbody = document.getElementById('studentTelemetryBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const Clerk = window.Clerk;
+  const displayName = (Clerk && Clerk.user) ? (Clerk.user.fullName || Clerk.user.firstName || 'Medical Student') : 'Medical Student';
+  const email = (Clerk && Clerk.user) ? (Clerk.user.primaryEmailAddress?.emailAddress || 'student@domain.edu') : 'student@domain.edu';
+  const photo = (Clerk && Clerk.user && Clerk.user.imageUrl) ? Clerk.user.imageUrl : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+
+  let currentRank = medicalRanks[0];
+  for (let i = 0; i < medicalRanks.length; i++) {
+    if (userXP >= medicalRanks[i].min) currentRank = medicalRanks[i];
+  }
+
+  const solvedQuizzesCount = customQuizzes.filter(q => q.solved).length;
+  const compVidsCount = customVideos.filter(v => v.completed).length;
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="${photo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid var(--primary);">
+        <div>
+          <strong>${escapeHTML(displayName)}</strong>
+          <div style="font-size:11px; color:var(--muted-foreground);">Active Student</div>
+        </div>
+      </div>
+    </td>
+    <td><code>${escapeHTML(email)}</code></td>
+    <td><span class="video-tag" style="margin:0;">${currentRank.emoji} ${currentRank.name} (${userXP} XP)</span></td>
+    <td><strong>${solvedQuizzesCount} / ${customQuizzes.length}</strong></td>
+    <td><span style="color:#dc2626; font-weight:700;">${wrongQuestionsVault.length}</span></td>
+    <td><strong>${compVidsCount} / ${customVideos.length}</strong></td>
+    <td>🔥 1 Day</td>
+  `;
+  tbody.appendChild(row);
+}
+
+function exportStudentDataCSV() {
+  const Clerk = window.Clerk;
+  const displayName = (Clerk && Clerk.user) ? (Clerk.user.fullName || 'Student') : 'Student';
+  const email = (Clerk && Clerk.user) ? (Clerk.user.primaryEmailAddress?.emailAddress || 'student@domain.edu') : 'student@domain.edu';
+  const solvedQuizzesCount = customQuizzes.filter(q => q.solved).length;
+
+  const csvContent = "data:text/csv;charset=utf-8," +
+    "Student Name,Email,Total XP,Quizzes Completed,Wrong Questions Count\n" +
+    `"${displayName}","${email}",${userXP},${solvedQuizzesCount},${wrongQuestionsVault.length}\n`;
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "Student_Telemetry_Export.csv");
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+// 10. STETHOSCOPE AUSCULTATION SIMULATOR
 let customSteth = safeGet('hub_steth_custom_v1', [
   { id: 'as', cat: 'Cardiology • Murmur', title: 'Aortic Stenosis', desc: 'Harsh crescendo-decrescendo systolic ejection murmur.', type: 'as' },
   { id: 'mr', cat: 'Cardiology • Murmur', title: 'Mitral Regurgitation', desc: 'Holosystolic high-pitched blowing murmur at apex.', type: 'mr' },
@@ -2482,7 +3367,7 @@ function deleteSteth(id) {
   safeSet('hub_steth_custom_v1', customSteth); renderSteth();
 }
 
-// 6. ANTIBIOTIC LADDER
+// 11. ANTIBIOTIC LADDER
 let customAbx = safeGet('hub_abx_custom_v1', [
   { id: 'abx1', tag: 'Tier 1: Penicillins', tagStyle: 'background:#dbeafe; color:#1e40af;', title: 'Amoxicillin, Ampicillin, Penicillin G/V', desc: 'Covers: Strep pharyngitis, Enterococcus, Syphilis, Listeria.' },
   { id: 'abx2', tag: 'Tier 2: Cephalosporins (1st - 4th Gen)', tagStyle: 'background:#e0e7ff; color:#3730a3;', title: 'Cefazolin (1st) ➔ Ceftriaxone (3rd) ➔ Cefepime (4th - Pseudomonas)', desc: 'Covers: Surgical prophylaxis, Meningitis, Community Pneumonia, Pyelonephritis.' },
@@ -2512,7 +3397,7 @@ function deleteAbx(id) {
   safeSet('hub_abx_custom_v1', customAbx); renderAbx();
 }
 
-// 7. MNEMONICS VAULT
+// 12. MNEMONICS VAULT
 let customMnemonics = safeGet('hub_mnemonics_custom_v1', [
   { id: 'm1', cat: 'Nephrology • Acid-Base', title: 'MUDPILES (High Anion Gap Metabolic Acidosis)', lines: ['Methanol', 'Uremia (Renal Failure)', 'Diabetic Ketoacidosis (DKA)', 'Propylene Glycol', 'Isoniazid / Iron', 'Lactic Acidosis', 'Ethylene Glycol (Oxalate crystals)', 'Salicylates (Aspirin toxicity)'] },
   { id: 'm2', cat: 'Psychiatry • Mood', title: 'SIGECAPS (Major Depressive Disorder)', lines: ['Sleep disturbances', 'Interest loss (Anhedonia)', 'Guilt or worthlessness', 'Energy low (Fatigue)', 'Concentration impaired', 'Appetite / weight change', 'Psychomotor agitation/retardation', 'Suicidal ideation'] }
@@ -2546,30 +3431,7 @@ function filterMnemonics() {
   });
 }
 
-// 8. CLINICAL CANVAS WHITEBOARD
-let wbCanvas = null, wbCtx = null, isDrawing = false, wbCurrentColor = '#155dfc', wbCurrentWidth = 3;
-function initWhiteboard() {
-  wbCanvas = document.getElementById('medCanvas'); if (!wbCanvas) return;
-  wbCtx = wbCanvas.getContext('2d'); wbCtx.lineCap = 'round'; wbCtx.lineJoin = 'round';
-  function getPos(e) {
-    const rect = wbCanvas.getBoundingClientRect(), cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: cx - rect.left, y: cy - rect.top };
-  }
-  function start(e) { isDrawing = true; const p = getPos(e); wbCtx.beginPath(); wbCtx.moveTo(p.x, p.y); }
-  function draw(e) { if (!isDrawing) return; const p = getPos(e); wbCtx.strokeStyle = wbCurrentColor; wbCtx.lineWidth = wbCurrentWidth; wbCtx.lineTo(p.x, p.y); wbCtx.stroke(); }
-  function stop() { isDrawing = false; }
-  wbCanvas.addEventListener('mousedown', start); wbCanvas.addEventListener('mousemove', draw); wbCanvas.addEventListener('mouseup', stop);
-  wbCanvas.addEventListener('touchstart', start); wbCanvas.addEventListener('touchmove', draw); wbCanvas.addEventListener('touchend', stop);
-}
-function setWbColor(color) { wbCurrentColor = color; wbCurrentWidth = 3; }
-function setWbEraser() { wbCurrentColor = '#ffffff'; wbCurrentWidth = 18; }
-function clearCanvas() { if (wbCtx && wbCanvas) wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height); }
-function saveCanvasImage() {
-  if (!wbCanvas) return;
-  const link = document.createElement('a'); link.download = 'Medical_Notes_Sketch.png'; link.href = wbCanvas.toDataURL(); link.click();
-}
-
-// 9. ORAL ROUNDS SIMULATOR
+// 13. ORAL ROUNDS SIMULATOR
 let customOralQuestions = safeGet('hub_oral_custom_v1', [
   { id: 'o1', q: "Student! What is the immediate first-line drug and route for Acute Anaphylaxis?", a: "Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!", tag: "Emergency Medicine • +50 XP" },
   { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Incontinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
@@ -2614,7 +3476,7 @@ function nextOralQuestion() {
   if (oralTimerInt) clearInterval(oralTimerInt);
 }
 
-// 10. MEDICAL DIRECTORY
+// 14. MEDICAL DIRECTORY
 let customDirectory = safeGet('hub_dir_custom_v1', [
   { param: 'Serum Potassium (K+)', range: '3.5 - 5.0 mEq/L', cat: 'Electrolytes', pearl: 'Key for cardiac membrane potential & ECG changes.' },
   { param: 'Serum Sodium (Na+)', range: '135 - 145 mEq/L', cat: 'Electrolytes', pearl: 'Major determinant of extracellular fluid volume.' },
@@ -2649,7 +3511,7 @@ function filterMedicalDirectory() {
   });
 }
 
-// 11. UNIVERSAL ADD MODAL
+// 15. UNIVERSAL ADD MODAL
 function openUniversalAddModal(type) {
   document.getElementById('universalModalType').value = type;
   const titleEl = document.getElementById('universalModalTitle');
@@ -2775,11 +3637,8 @@ function saveUniversalAdd() {
   closeUniversalAddModal(); alert('🎉 Item Published Live!');
 }
 
-// 12. POMODORO
-let pomodoroTimer = null;
-let pomodoroSecondsLeft = 25 * 60;
-let isPomodoroRunning = false;
-let currentPomodoroMode = 'pomodoro';
+// 16. POMODORO TIMER
+let pomodoroTimer = null, pomodoroSecondsLeft = 25 * 60, isPomodoroRunning = false, currentPomodoroMode = 'pomodoro';
 
 function setPomodoroMode(mode) {
   currentPomodoroMode = mode;
@@ -2827,31 +3686,14 @@ function getAudioContext() {
   return audioCtx;
 }
 function stopAmbientSound() { ambientNodes.forEach(n => { try { n.stop(); n.disconnect(); } catch(e){} }); ambientNodes = []; currentAmbientGain = null; }
-function updateAmbientVolume(val) { currentAmbientVolume = parseFloat(val); if (currentAmbientGain) currentAmbientGain.gain.setValueAtTime(currentAmbientVolume * 0.15, audioCtx.currentTime); }
-function setAmbientSound(type) {
-  stopAmbientSound(); document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
-  if (type === 'none') { document.getElementById('btnSoundNone').classList.add('active'); return; }
-  const ctx = getAudioContext(), gain = ctx.createGain(); gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime); gain.connect(ctx.destination); currentAmbientGain = gain;
-  if (type === 'rain') {
-    document.getElementById('btnSoundRain').classList.add('active');
-    const bufferSize = ctx.sampleRate * 2, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520; data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.1;
-    }
-    const noise = ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true; noise.connect(gain); noise.start(); ambientNodes.push(noise);
-  } else if (type === 'alpha') {
-    document.getElementById('btnSoundAlpha').classList.add('active');
-    const osc1 = ctx.createOscillator(), osc2 = ctx.createOscillator();
-    osc1.frequency.value = 200; osc2.frequency.value = 240; osc1.connect(gain); osc2.connect(gain); osc1.start(); osc2.start(); ambientNodes.push(osc1, osc2);
-  } else if (type === 'library') {
-    document.getElementById('btnSoundLibrary').classList.add('active');
-    const osc = ctx.createOscillator(); osc.type = 'triangle'; osc.frequency.value = 110; osc.connect(gain); osc.start(); ambientNodes.push(osc);
-  }
+function updateAmbientVolume(val) {
+  currentAmbientVolume = parseFloat(val);
+  if (currentAmbientGain) currentAmbientGain.gain.setValueAtTime(currentAmbientVolume * 0.15, audioCtx.currentTime);
+  const dp = document.getElementById('desktopAudioPlayer');
+  if (dp) dp.volume = currentAmbientVolume;
 }
 
-// 13. PLANNER
+// 17. PLANNER
 let currentDay = 'mon';
 const initialTasks = {
   mon: [{ id: 1, goal: "Cellular Pathology: Video Lecture", time: "04:00 PM", done: false }],
@@ -2898,7 +3740,7 @@ function setDay(day, btn) {
   if (btn) btn.classList.add('active'); renderPlanner();
 }
 
-// 14. COUNTDOWN & ANNOUNCEMENT
+// 18. COUNTDOWN & ANNOUNCEMENT
 let targetExamTimestamp = safeGet('hub_exam_target_ts', Date.now() + (45 * 24 * 60 * 60 * 1000));
 function updateCountdownTimer() {
   const diff = targetExamTimestamp - Date.now(), digitsEl = document.getElementById('examCountdown');
@@ -2921,30 +3763,6 @@ function saveAdminCountdown() {
   if (titleInput) { safeSet('hub_ann_title', titleInput); setElText('displayAnnounceTitle', titleInput); }
   if (descInput) { safeSet('hub_ann_desc', descInput); setElText('displayAnnounceDesc', descInput); }
   closeAdminModal(); updateCountdownTimer();
-}
-
-// 15. Q&A
-function renderQA() {
-  const container = document.getElementById('qaThreadList'); if (!container) return;
-  container.innerHTML = '';
-  const list = safeGet('hub_qa_list', [
-    { id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated immediate anaphylaxis, while Type 2 is antibody-mediated cytotoxic tissue injury.", date: "Aug 28" }
-  ]);
-  list.forEach(q => {
-    const card = document.createElement('div'); card.className = 'qa-msg';
-    card.innerHTML = `
-      <div class="qa-msg-header"><span>Student Inquiry</span><span>${escapeHTML(q.date)}</span></div>
-      <div class="qa-msg-body">${escapeHTML(q.text)}</div>
-      ${q.reply ? `<div class="qa-reply"><strong>Dr. Mohammad:</strong><p style="margin-top:2px;">${escapeHTML(q.reply)}</p></div>` : ''}
-    `;
-    container.appendChild(card);
-  });
-}
-function submitStudentQuestion() {
-  const input = document.getElementById('qaQuestionInput'); if (!input || !input.value.trim()) return;
-  const questions = safeGet('hub_qa_list', []);
-  questions.unshift({ id: Date.now(), text: input.value.trim(), reply: "Dr. Mohammad has received your inquiry and will post a response shortly.", date: "Today" });
-  safeSet('hub_qa_list', questions); input.value = ''; renderQA();
 }
 </script>
 </body>
