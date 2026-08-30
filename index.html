@@ -198,17 +198,17 @@
 
   /* STETHOSCOPE SOUNDBOARD */
   .steth-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-  .steth-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; }
+  .steth-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
   .steth-btn-play { background: var(--primary-tint); color: var(--primary); border: 1.5px solid var(--primary); padding: 10px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .steth-btn-play.playing { background: var(--primary); color: white; }
 
   /* ANTIBIOTIC LADDER */
   .abx-ladder { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-  .abx-tier { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .abx-tier { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: relative; }
   .abx-tag { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
 
   /* MNEMONICS VAULT */
-  .mnemonic-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); margin-bottom: 16px; }
+  .mnemonic-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--card-bg); margin-bottom: 16px; position: relative; }
   .mnemonic-letter-box { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
   .mnemonic-line { font-size: 13.5px; padding: 6px 10px; border-radius: 6px; background: var(--background); }
 
@@ -218,7 +218,7 @@
   .canvas-sheet { width: 100%; height: 420px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); cursor: crosshair; touch-action: none; }
 
   /* ORAL ROUNDS SIMULATOR */
-  .oral-sim-card { max-width: 640px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; }
+  .oral-sim-card { max-width: 640px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; position: relative; }
   .countdown-circle { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; margin: 20px auto; color: var(--primary); }
 
   /* STATS GRID */
@@ -285,7 +285,7 @@
   .task-item.completed .checkbox { background: var(--primary); border-color: var(--primary); color: white; }
 
   /* FLASHCARDS */
-  .flashcard-wrapper { max-width: 580px; margin: 0 auto 30px auto; perspective: 1000px; }
+  .flashcard-wrapper { max-width: 580px; margin: 0 auto 30px auto; perspective: 1000px; position: relative; }
   .flashcard { position: relative; width: 100%; height: 260px; background: var(--card-bg); border: 2px solid var(--border); border-radius: var(--radius-lg); cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
   .flashcard.flipped { transform: rotateY(180deg); }
   .flashcard-face { position: absolute; inset: 0; backface-visibility: hidden; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; }
@@ -337,6 +337,23 @@
     <div id="realClerkContainer"></div>
   </div>
 
+</div>
+
+<!-- UNIVERSAL ADMIN ADD MODAL -->
+<div class="modal-overlay" id="universalAddModal">
+  <div class="auth-card" style="max-width: 480px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 14px;" id="universalModalTitle">⚙️ Add New Item</h3>
+    <input type="hidden" id="universalModalType">
+    
+    <div id="universalModalFields">
+      <!-- Dynamic inputs based on item being added -->
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button class="btn btn-primary" onclick="saveUniversalAdd()">Save Item Live 🚀</button>
+      <button class="btn btn-outline" onclick="closeUniversalAddModal()">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- ADMIN ADD QUIZ / FILE MODAL -->
@@ -454,7 +471,6 @@
 
     <!-- 1. OVERVIEW -->
     <div id="view-overview" class="view-panel active">
-      
       <!-- GAMIFICATION RANK CARD -->
       <div class="rank-badge-card">
         <div class="rank-left">
@@ -565,7 +581,7 @@
       <div class="qbank-grid" id="qbankGridContainer"></div>
     </div>
 
-    <!-- 4. LECTURES (RENAMED + DYNAMIC VIDEO CREATOR) -->
+    <!-- 4. LECTURES -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
         <div>
@@ -585,45 +601,10 @@
           <h2 class="panel-title">🩺 Stethoscope Auscultation Simulator</h2>
           <p class="panel-subtitle">Train your ears for clinical heart and lung sound exams.</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('stethoscope')">⚙️ + Add Sound (Admin)</button>
       </div>
 
-      <div class="steth-grid">
-        <div class="steth-card">
-          <div>
-            <span class="video-tag">Cardiology • Murmur</span>
-            <h3 style="font-size: 17px; margin-bottom: 6px;">Aortic Stenosis</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Harsh crescendo-decrescendo systolic ejection murmur radiating to carotids.</p>
-          </div>
-          <button class="steth-btn-play" id="btnStethAS" onclick="toggleStethoscope('as')">🔊 Listen to Murmur</button>
-        </div>
-
-        <div class="steth-card">
-          <div>
-            <span class="video-tag">Cardiology • Murmur</span>
-            <h3 style="font-size: 17px; margin-bottom: 6px;">Mitral Regurgitation</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Holosystolic high-pitched blowing murmur at apex radiating to left axilla.</p>
-          </div>
-          <button class="steth-btn-play" id="btnStethMR" onclick="toggleStethoscope('mr')">🔊 Listen to Murmur</button>
-        </div>
-
-        <div class="steth-card">
-          <div>
-            <span class="video-tag">Pulmonology • Breath Sound</span>
-            <h3 style="font-size: 17px; margin-bottom: 6px;">Expiratory Wheezing</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Continuous musical high-pitched airway narrowing (Asthma / COPD).</p>
-          </div>
-          <button class="steth-btn-play" id="btnStethWheeze" onclick="toggleStethoscope('wheeze')">🔊 Listen to Breath Sound</button>
-        </div>
-
-        <div class="steth-card">
-          <div>
-            <span class="video-tag">Pulmonology • Breath Sound</span>
-            <h3 style="font-size: 17px; margin-bottom: 6px;">Fine Crackles / Rales</h3>
-            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Discontinuous popping sounds of fluid in alveoli (Pneumonia / Pulmonary Edema).</p>
-          </div>
-          <button class="steth-btn-play" id="btnStethCrackles" onclick="toggleStethoscope('crackles')">🔊 Listen to Breath Sound</button>
-        </div>
-      </div>
+      <div class="steth-grid" id="stethGridContainer"></div>
     </div>
 
     <!-- 6. ANTIBIOTIC LADDER -->
@@ -633,33 +614,10 @@
           <h2 class="panel-title">💊 "Bug vs. Drug" Antibiotic Ladder</h2>
           <p class="panel-subtitle">Master antimicrobial coverage from narrow spectrum to heavy guns.</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('antibiotics')">⚙️ + Add Antibiotic (Admin)</button>
       </div>
 
-      <div class="abx-ladder">
-        <div class="abx-tier">
-          <div>
-            <span class="abx-tag" style="background:#dbeafe; color:#1e40af;">Tier 1: Penicillins</span>
-            <h4 style="font-size: 16px; margin-top:4px;">Amoxicillin, Ampicillin, Penicillin G/V</h4>
-            <p style="font-size: 13px; color:var(--muted-foreground);">Covers: Strep pharyngitis, Enterococcus, Syphilis, Listeria.</p>
-          </div>
-        </div>
-
-        <div class="abx-tier">
-          <div>
-            <span class="abx-tag" style="background:#e0e7ff; color:#3730a3;">Tier 2: Cephalosporins (1st - 4th Gen)</span>
-            <h4 style="font-size: 16px; margin-top:4px;">Cefazolin (1st) ➔ Ceftriaxone (3rd) ➔ Cefepime (4th - Pseudomonas)</h4>
-            <p style="font-size: 13px; color:var(--muted-foreground);">Covers: Surgical prophylaxis, Meningitis, Community Pneumonia, Pyelonephritis.</p>
-          </div>
-        </div>
-
-        <div class="abx-tier" style="border-left: 4px solid #ef4444;">
-          <div>
-            <span class="abx-tag" style="background:#fee2e2; color:#991b1b;">Tier 3: The Heavy Guns (MRSA & Pseudomonas)</span>
-            <h4 style="font-size: 16px; margin-top:4px;">Vancomycin (MRSA), Pip-Tazo / Meropenem (Pseudomonas + Anaerobes)</h4>
-            <p style="font-size: 13px; color:var(--muted-foreground);">Covers: Hospital-acquired pneumonia, Sepsis, Febrile Neutropenia.</p>
-          </div>
-        </div>
-      </div>
+      <div class="abx-ladder" id="abxLadderContainer"></div>
     </div>
 
     <!-- 7. MNEMONIC VAULT -->
@@ -669,41 +627,12 @@
           <h2 class="panel-title">🧠 High-Yield Medical Mnemonic Vault</h2>
           <p class="panel-subtitle">Master classic diagnostic memory hacks.</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('mnemonics')">⚙️ + Add Mnemonic (Admin)</button>
       </div>
 
       <input type="text" id="mnemonicSearch" class="search-input-box" placeholder="🔍 Search mnemonics (e.g. Acidosis, Depression, Calcium, Sepsis)..." oninput="filterMnemonics()">
 
-      <div id="mnemonicListContainer">
-        <div class="mnemonic-card">
-          <span class="video-tag">Nephrology • Acid-Base</span>
-          <h3 style="font-size: 18px; margin: 4px 0 8px 0;">MUDPILES (High Anion Gap Metabolic Acidosis)</h3>
-          <div class="mnemonic-letter-box">
-            <div class="mnemonic-line"><strong>M</strong>ethanol</div>
-            <div class="mnemonic-line"><strong>U</strong>remia (Renal Failure)</div>
-            <div class="mnemonic-line"><strong>D</strong>iabetic Ketoacidosis (DKA)</div>
-            <div class="mnemonic-line"><strong>P</strong>ropylene Glycol</div>
-            <div class="mnemonic-line"><strong>I</strong>soniazid / Iron</div>
-            <div class="mnemonic-line"><strong>L</strong>actic Acidosis</div>
-            <div class="mnemonic-line"><strong>E</strong>thylene Glycol (Oxalate crystals)</div>
-            <div class="mnemonic-line"><strong>S</strong>alicylates (Aspirin toxicity)</div>
-          </div>
-        </div>
-
-        <div class="mnemonic-card">
-          <span class="video-tag">Psychiatry • Mood</span>
-          <h3 style="font-size: 18px; margin: 4px 0 8px 0;">SIGECAPS (Major Depressive Disorder)</h3>
-          <div class="mnemonic-letter-box">
-            <div class="mnemonic-line"><strong>S</strong>leep disturbances</div>
-            <div class="mnemonic-line"><strong>I</strong>nterest loss (Anhedonia)</div>
-            <div class="mnemonic-line"><strong>G</strong>uilt or worthlessness</div>
-            <div class="mnemonic-line"><strong>E</strong>nergy low (Fatigue)</div>
-            <div class="mnemonic-line"><strong>C</strong>oncentration impaired</div>
-            <div class="mnemonic-line"><strong>A</strong>ppetite / weight change</div>
-            <div class="mnemonic-line"><strong>P</strong>sychomotor agitation/retardation</div>
-            <div class="mnemonic-line"><strong>S</strong>uicidal ideation</div>
-          </div>
-        </div>
-      </div>
+      <div id="mnemonicListContainer"></div>
     </div>
 
     <!-- 8. CLINICAL WHITEBOARD -->
@@ -731,11 +660,12 @@
 
     <!-- 9. ORAL ROUNDS SIMULATOR -->
     <div id="view-oral" class="view-panel">
-      <div class="panel-header" style="text-align:center;">
-        <div style="width:100%;">
+      <div class="panel-header">
+        <div>
           <h2 class="panel-title">🗣️ Attending Physician "Oral Rounds" Simulator</h2>
           <p class="panel-subtitle">Listen to rapid-fire oral questions and test your recall under pressure.</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('oral')">⚙️ + Add Question (Admin)</button>
       </div>
 
       <div class="oral-sim-card">
@@ -754,6 +684,7 @@
           <strong>Attending Feedback:</strong>
           <p id="oralAnswerText" style="margin-top:4px; font-size:14px;">Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!</p>
         </div>
+        <button class="btn-del-item" title="Delete Question (Admin)">✕</button>
       </div>
     </div>
 
@@ -764,6 +695,7 @@
           <h2 class="panel-title">High-Yield Flashcard Deck</h2>
           <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Flashcard (Admin)</button>
       </div>
 
       <div class="flashcard-wrapper">
@@ -779,6 +711,7 @@
             <span class="flashcard-hint">👆 Click to flip back</span>
           </div>
         </div>
+        <button class="btn-del-item" title="Delete Flashcard (Admin)" onclick="deleteFlashcard()">✕</button>
       </div>
 
       <div class="flashcard-controls">
@@ -794,6 +727,7 @@
           <h2 class="panel-title">Searchable Medical Reference Directory</h2>
           <p class="panel-subtitle">Instant clinical values, lab reference ranges, and diagnostic criteria.</p>
         </div>
+        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openUniversalAddModal('directory')">⚙️ + Add Lab Value (Admin)</button>
       </div>
 
       <input type="text" id="medSearchInput" class="search-input-box" placeholder="🔍 Search any lab value, formula, or drug..." oninput="filterMedicalDirectory()">
@@ -805,16 +739,10 @@
             <th>Normal Range / Standard</th>
             <th>Category</th>
             <th>Clinical Pearl</th>
+            <th style="width: 50px;">Delete</th>
           </tr>
         </thead>
-        <tbody id="medDirectoryBody">
-          <tr><td>Serum Potassium (K+)</td><td>3.5 - 5.0 mEq/L</td><td>Electrolytes</td><td>Key for cardiac membrane potential & ECG changes.</td></tr>
-          <tr><td>Serum Sodium (Na+)</td><td>135 - 145 mEq/L</td><td>Electrolytes</td><td>Major determinant of extracellular fluid volume.</td></tr>
-          <tr><td>Serum Creatinine</td><td>0.7 - 1.3 mg/dL</td><td>Renal</td><td>Indicator of Glomerular Filtration Rate (GFR).</td></tr>
-          <tr><td>Fasting Blood Glucose</td><td>70 - 99 mg/dL</td><td>Metabolic</td><td>&ge; 126 mg/dL indicates Diabetes Mellitus.</td></tr>
-          <tr><td>Hemoglobin (Hb) - Male</td><td>13.8 - 17.2 g/dL</td><td>Hematology</td><td>Anemia evaluated with MCV & Ferritin.</td></tr>
-          <tr><td>Mean Arterial Pressure (MAP)</td><td>70 - 100 mmHg</td><td>Cardiovascular</td><td>Formula: DBP + 1/3 (SBP - DBP).</td></tr>
-        </tbody>
+        <tbody id="medDirectoryBody"></tbody>
       </table>
     </div>
 
@@ -902,20 +830,18 @@
 const TARGET_PASSCODE_HASH = "8f437172246bb6c8cbae6cac402515f5416d70e71e159b49614e0536c85b07c0";
 let isPasscodeUnlocked = (sessionStorage.getItem('hub_passcode_ok') === 'true');
 
-// 1. DYNAMIC VIDEOS (LECTURES) ENGINE
+// DYNAMIC VIDEOS (LECTURES) ENGINE
 const defaultVideos = [
   { id: 'v1', title: 'Cellular Injury, Necrosis & Apoptosis', tag: 'Pathology • 25 Mins', desc: 'Comprehensive breakdown of reversible vs irreversible cell injury.', url: 'https://www.youtube-nocookie.com/embed/pC7sC_Fqf1Q' },
   { id: 'v2', title: 'Autonomic Nervous System: Sympathetic vs Parasympathetic', tag: 'Pharmacology • 35 Mins', desc: 'Alpha & Beta receptors, cholinergic pathways, and drug mechanisms.', url: 'https://www.youtube-nocookie.com/embed/k4Jb1VfI1hM' },
   { id: 'v3', title: 'Cardiac Cycle & Heart Sounds', tag: 'Cardiology • 30 Mins', desc: 'Wiggers diagram, systole, diastole, and heart sound generation.', url: 'https://www.youtube-nocookie.com/embed/IS9TD9fHFv0' }
 ];
-
 let customVideos = safeGet('hub_videos_custom_v1', defaultVideos);
 
 function renderVideos() {
   const container = document.getElementById('videoGridContainer');
   if (!container) return;
   container.innerHTML = '';
-
   customVideos.forEach(function(v) {
     const card = document.createElement('div');
     card.className = 'video-card';
@@ -929,380 +855,501 @@ function renderVideos() {
           <h4 class="video-title">${escapeHTML(v.title)}</h4>
           <p class="video-desc">${escapeHTML(v.desc)}</p>
         </div>
-        <button class="btn btn-outline" onclick="addXP(50); alert('🎉 Video completed! +50 XP Awarded.');">Mark as Completed ✓</button>
+        <button class="btn btn-outline" onclick="addXP(50); alert('🎉 Video completed! +50 XP.');">Mark as Completed ✓</button>
       </div>
-      <button class="btn-del-item" title="Delete Lecture (Admin)" onclick="deleteAdminVideo('${v.id}')">✕</button>
+      <button class="btn-del-item" title="Delete Lecture" onclick="deleteAdminVideo('${v.id}')">✕</button>
     `;
     container.appendChild(card);
   });
 }
-
-function openAdminVideoModal() {
-  const m = document.getElementById('adminVideoModal');
-  if (m) m.style.display = 'flex';
-}
-function closeAdminVideoModal() {
-  const m = document.getElementById('adminVideoModal');
-  if (m) m.style.display = 'none';
-}
+function openAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'flex'; }
+function closeAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'none'; }
 function saveNewAdminVideo() {
   const title = document.getElementById('newVidTitle').value.trim();
   const tag = document.getElementById('newVidTag').value.trim();
   const desc = document.getElementById('newVidDesc').value.trim();
   let url = document.getElementById('newVidUrl').value.trim();
-
-  if (!title || !url) { alert('Please fill in title and video URL!'); return; }
-
-  // Format standard youtube watch links into embed links
-  if (url.includes('youtube.com/watch?v=')) {
-    url = url.replace('watch?v=', 'embed/');
-  } else if (url.includes('youtu.be/')) {
-    url = url.replace('youtu.be/', 'www.youtube-nocookie.com/embed/');
-  }
-
-  customVideos.push({
-    id: 'vid_' + Date.now(),
-    title: title,
-    tag: tag || 'Lecture',
-    desc: desc || 'Medical lecture presentation.',
-    url: url
-  });
-
-  safeSet('hub_videos_custom_v1', customVideos);
-  closeAdminVideoModal();
-  renderVideos();
-  alert('🎉 Video Lecture Added Live to Platform!');
+  if (!title || !url) return alert('Fill title and video URL!');
+  if (url.includes('youtube.com/watch?v=')) { url = url.replace('watch?v=', 'embed/'); }
+  else if (url.includes('youtu.be/')) { url = url.replace('youtu.be/', 'www.youtube-nocookie.com/embed/'); }
+  customVideos.push({ id: 'vid_' + Date.now(), title, tag: tag || 'Lecture', desc: desc || 'Medical lecture.', url });
+  safeSet('hub_videos_custom_v1', customVideos); closeAdminVideoModal(); renderVideos();
 }
 function deleteAdminVideo(id) {
   if (!confirm('Delete this video lecture?')) return;
   customVideos = customVideos.filter(v => v.id !== id);
-  safeSet('hub_videos_custom_v1', customVideos);
-  renderVideos();
+  safeSet('hub_videos_custom_v1', customVideos); renderVideos();
 }
 
-// 2. STETHOSCOPE AUSCULTATION AUDIO SYNTHESIS
-let currentStethOsc = null;
-let currentStethInterval = null;
+// STETHOSCOPE AUSCULTATION AUDIO SYNTHESIS
+let currentStethOsc = null, currentStethInterval = null;
+let customSteth = safeGet('hub_steth_custom_v1', [
+  { id: 'as', cat: 'Cardiology • Murmur', title: 'Aortic Stenosis', desc: 'Harsh crescendo-decrescendo systolic ejection murmur.', type: 'as' },
+  { id: 'mr', cat: 'Cardiology • Murmur', title: 'Mitral Regurgitation', desc: 'Holosystolic high-pitched blowing murmur at apex.', type: 'mr' },
+  { id: 'wheeze', cat: 'Pulmonology • Breath Sound', title: 'Expiratory Wheezing', desc: 'Continuous musical high-pitched airway narrowing.', type: 'wheeze' },
+  { id: 'crackles', cat: 'Pulmonology • Breath Sound', title: 'Fine Crackles / Rales', desc: 'Discontinuous popping sounds of fluid in alveoli.', type: 'crackles' }
+]);
+
+function renderSteth() {
+  const container = document.getElementById('stethGridContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  customSteth.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'steth-card';
+    card.innerHTML = `
+      <div>
+        <span class="video-tag">${escapeHTML(s.cat)}</span>
+        <h3 style="font-size: 17px; margin-bottom: 6px;">${escapeHTML(s.title)}</h3>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(s.desc)}</p>
+      </div>
+      <button class="steth-btn-play" id="btnSteth_${s.id}" onclick="toggleStethoscope('${s.type}', '${s.id}')">🔊 Listen to Sound</button>
+      <button class="btn-del-item" title="Delete Sound" onclick="deleteSteth('${s.id}')">✕</button>
+    `;
+    container.appendChild(card);
+  });
+}
+function deleteSteth(id) {
+  if (!confirm('Delete this sound?')) return;
+  stopStethoscopeAudio();
+  customSteth = customSteth.filter(s => s.id !== id);
+  safeSet('hub_steth_custom_v1', customSteth); renderSteth();
+}
 
 function stopStethoscopeAudio() {
   if (currentStethOsc) { try { currentStethOsc.stop(); currentStethOsc.disconnect(); } catch(e){} currentStethOsc = null; }
   if (currentStethInterval) { clearInterval(currentStethInterval); currentStethInterval = null; }
-  document.querySelectorAll('.steth-btn-play').forEach(b => {
-    b.classList.remove('playing');
-    b.textContent = '🔊 Listen';
-  });
+  document.querySelectorAll('.steth-btn-play').forEach(b => { b.classList.remove('playing'); b.textContent = '🔊 Listen to Sound'; });
 }
 
-function toggleStethoscope(type) {
-  const btn = document.getElementById('btnSteth' + (type === 'as' ? 'AS' : type === 'mr' ? 'MR' : type === 'wheeze' ? 'Wheeze' : 'Crackles'));
-  if (btn && btn.classList.contains('playing')) {
-    stopStethoscopeAudio();
-    return;
-  }
-
+function toggleStethoscope(type, id) {
+  const btn = document.getElementById('btnSteth_' + id);
+  if (btn && btn.classList.contains('playing')) { stopStethoscopeAudio(); return; }
   stopStethoscopeAudio();
   if (btn) { btn.classList.add('playing'); btn.textContent = '⏸ Playing...'; }
-
   const ctx = getAudioContext();
 
   if (type === 'as') {
-    // Aortic Stenosis crescendo-decrescendo systolic murmur
     currentStethInterval = setInterval(function() {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, ctx.currentTime);
-      gain.gain.setValueAtTime(0.01, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.15);
-      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.4);
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(140, ctx.currentTime);
+      gain.gain.setValueAtTime(0.01, ctx.currentTime); gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.15); gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+      osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.4);
     }, 850);
   } else if (type === 'mr') {
-    // Mitral regurgitation holosystolic blowing murmur
     currentStethInterval = setInterval(function() {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(280, ctx.currentTime);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.4);
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(280, ctx.currentTime);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime); gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+      osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.4);
     }, 800);
   } else if (type === 'wheeze') {
-    // Continuous musical wheeze
     currentStethInterval = setInterval(function() {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(420, ctx.currentTime);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 1.3);
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(420, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+      osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1.3);
     }, 1800);
   } else if (type === 'crackles') {
-    // Fine crackles / popping
     currentStethInterval = setInterval(function() {
       for (let i = 0; i < 4; i++) {
         setTimeout(function() {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+          const osc = ctx.createOscillator(), gain = ctx.createGain();
           osc.frequency.value = 600 + Math.random() * 400;
-          gain.gain.setValueAtTime(0.1, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-          osc.connect(gain); gain.connect(ctx.destination);
-          osc.start(); osc.stop(ctx.currentTime + 0.05);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+          osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.05);
         }, i * 60);
       }
     }, 1500);
   }
 }
 
-// 3. CLINICAL WHITEBOARD CANVAS
-let wbCanvas = null;
-let wbCtx = null;
-let isDrawing = false;
-let wbCurrentColor = '#155dfc';
-let wbCurrentWidth = 3;
+// ANTIBIOTIC LADDER ENGINE
+let customAbx = safeGet('hub_abx_custom_v1', [
+  { id: 'abx1', tag: 'Tier 1: Penicillins', tagStyle: 'background:#dbeafe; color:#1e40af;', title: 'Amoxicillin, Ampicillin, Penicillin G/V', desc: 'Covers: Strep pharyngitis, Enterococcus, Syphilis, Listeria.' },
+  { id: 'abx2', tag: 'Tier 2: Cephalosporins (1st - 4th Gen)', tagStyle: 'background:#e0e7ff; color:#3730a3;', title: 'Cefazolin (1st) ➔ Ceftriaxone (3rd) ➔ Cefepime (4th - Pseudomonas)', desc: 'Covers: Surgical prophylaxis, Meningitis, Community Pneumonia, Pyelonephritis.' },
+  { id: 'abx3', tag: 'Tier 3: The Heavy Guns (MRSA & Pseudomonas)', tagStyle: 'background:#fee2e2; color:#991b1b;', title: 'Vancomycin (MRSA), Pip-Tazo / Meropenem (Pseudomonas + Anaerobes)', desc: 'Covers: Hospital-acquired pneumonia, Sepsis, Febrile Neutropenia.' }
+]);
 
-function initWhiteboard() {
-  wbCanvas = document.getElementById('medCanvas');
-  if (!wbCanvas) return;
-  wbCtx = wbCanvas.getContext('2d');
-  wbCtx.lineCap = 'round';
-  wbCtx.lineJoin = 'round';
-
-  function getPos(e) {
-    const rect = wbCanvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top };
-  }
-
-  function start(e) {
-    isDrawing = true;
-    const pos = getPos(e);
-    wbCtx.beginPath();
-    wbCtx.moveTo(pos.x, pos.y);
-  }
-  function draw(e) {
-    if (!isDrawing) return;
-    const pos = getPos(e);
-    wbCtx.strokeStyle = wbCurrentColor;
-    wbCtx.lineWidth = wbCurrentWidth;
-    wbCtx.lineTo(pos.x, pos.y);
-    wbCtx.stroke();
-  }
-  function stop() { isDrawing = false; }
-
-  wbCanvas.addEventListener('mousedown', start);
-  wbCanvas.addEventListener('mousemove', draw);
-  wbCanvas.addEventListener('mouseup', stop);
-  wbCanvas.addEventListener('touchstart', start);
-  wbCanvas.addEventListener('touchmove', draw);
-  wbCanvas.addEventListener('touchend', stop);
+function renderAbx() {
+  const container = document.getElementById('abxLadderContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  customAbx.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'abx-tier';
+    card.innerHTML = `
+      <div>
+        <span class="abx-tag" style="${a.tagStyle}">${escapeHTML(a.tag)}</span>
+        <h4 style="font-size: 16px; margin-top:4px;">${escapeHTML(a.title)}</h4>
+        <p style="font-size: 13px; color:var(--muted-foreground);">${escapeHTML(a.desc)}</p>
+      </div>
+      <button class="btn-del-item" title="Delete Tier" onclick="deleteAbx('${a.id}')">✕</button>
+    `;
+    container.appendChild(card);
+  });
+}
+function deleteAbx(id) {
+  if (!confirm('Delete this antibiotic tier?')) return;
+  customAbx = customAbx.filter(a => a.id !== id);
+  safeSet('hub_abx_custom_v1', customAbx); renderAbx();
 }
 
+// MNEMONICS VAULT ENGINE
+let customMnemonics = safeGet('hub_mnemonics_custom_v1', [
+  { id: 'm1', cat: 'Nephrology • Acid-Base', title: 'MUDPILES (High Anion Gap Metabolic Acidosis)', lines: ['Methanol', 'Uremia (Renal Failure)', 'Diabetic Ketoacidosis (DKA)', 'Propylene Glycol', 'Isoniazid / Iron', 'Lactic Acidosis', 'Ethylene Glycol (Oxalate crystals)', 'Salicylates (Aspirin toxicity)'] },
+  { id: 'm2', cat: 'Psychiatry • Mood', title: 'SIGECAPS (Major Depressive Disorder)', lines: ['Sleep disturbances', 'Interest loss (Anhedonia)', 'Guilt or worthlessness', 'Energy low (Fatigue)', 'Concentration impaired', 'Appetite / weight change', 'Psychomotor agitation/retardation', 'Suicidal ideation'] }
+]);
+
+function renderMnemonics() {
+  const container = document.getElementById('mnemonicListContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  customMnemonics.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'mnemonic-card';
+    let linesHtml = m.lines.map(line => `<div class="mnemonic-line">${escapeHTML(line)}</div>`).join('');
+    card.innerHTML = `
+      <span class="video-tag">${escapeHTML(m.cat)}</span>
+      <h3 style="font-size: 18px; margin: 4px 0 8px 0;">${escapeHTML(m.title)}</h3>
+      <div class="mnemonic-letter-box">${linesHtml}</div>
+      <button class="btn-del-item" title="Delete Mnemonic" onclick="deleteMnemonic('${m.id}')">✕</button>
+    `;
+    container.appendChild(card);
+  });
+}
+function deleteMnemonic(id) {
+  if (!confirm('Delete this mnemonic?')) return;
+  customMnemonics = customMnemonics.filter(m => m.id !== id);
+  safeSet('hub_mnemonics_custom_v1', customMnemonics); renderMnemonics();
+}
+
+// CLINICAL WHITEBOARD CANVAS
+let wbCanvas = null, wbCtx = null, isDrawing = false, wbCurrentColor = '#155dfc', wbCurrentWidth = 3;
+function initWhiteboard() {
+  wbCanvas = document.getElementById('medCanvas'); if (!wbCanvas) return;
+  wbCtx = wbCanvas.getContext('2d'); wbCtx.lineCap = 'round'; wbCtx.lineJoin = 'round';
+  function getPos(e) {
+    const rect = wbCanvas.getBoundingClientRect(), cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: cx - rect.left, y: cy - rect.top };
+  }
+  function start(e) { isDrawing = true; const p = getPos(e); wbCtx.beginPath(); wbCtx.moveTo(p.x, p.y); }
+  function draw(e) { if (!isDrawing) return; const p = getPos(e); wbCtx.strokeStyle = wbCurrentColor; wbCtx.lineWidth = wbCurrentWidth; wbCtx.lineTo(p.x, p.y); wbCtx.stroke(); }
+  function stop() { isDrawing = false; }
+  wbCanvas.addEventListener('mousedown', start); wbCanvas.addEventListener('mousemove', draw); wbCanvas.addEventListener('mouseup', stop);
+  wbCanvas.addEventListener('touchstart', start); wbCanvas.addEventListener('touchmove', draw); wbCanvas.addEventListener('touchend', stop);
+}
 function setWbColor(color) { wbCurrentColor = color; wbCurrentWidth = 3; }
 function setWbEraser() { wbCurrentColor = '#ffffff'; wbCurrentWidth = 18; }
 function clearCanvas() { if (wbCtx && wbCanvas) wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height); }
 function saveCanvasImage() {
   if (!wbCanvas) return;
-  const link = document.createElement('a');
-  link.download = 'Medical_Notes_Sketch.png';
-  link.href = wbCanvas.toDataURL();
-  link.click();
+  const link = document.createElement('a'); link.download = 'Medical_Notes_Sketch.png'; link.href = wbCanvas.toDataURL(); link.click();
 }
 
-// 4. ORAL ROUNDS SIMULATOR
-const oralQuestions = [
-  { q: "Student! What is the immediate first-line drug and route for Acute Anaphylaxis?", a: "Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!", tag: "Emergency Medicine • +50 XP" },
-  { q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Incontinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
-  { q: "What is the initial medication regimen for Acute Coronary Syndrome (ACS)?", a: "MONA: Morphine, Oxygen (if sat <90%), Nitroglycerin, and Aspirin (324 mg chewed).", tag: "Cardiology • +50 XP" },
-  { q: "What are the three components of Virchow's Triad for Thrombosis?", a: "1. Endothelial Injury, 2. Stasis or abnormal blood flow, 3. Hypercoagulability.", tag: "Hematology • +50 XP" }
+// ORAL ROUNDS SIMULATOR
+const defaultOralQuestions = [
+  { id: 'o1', q: "Student! What is the immediate first-line drug and route for Acute Anaphylaxis?", a: "Intramuscular (IM) Epinephrine 1:1,000 (0.3 to 0.5 mg) into the anterolateral mid-thigh!", tag: "Emergency Medicine • +50 XP" },
+  { id: 'o2', q: "What is the classic diagnostic triad of Normal Pressure Hydrocephalus (NPH)?", a: "'Wet, Wobbly, and Wacky' — Urinary Incontinence, Gait Ataxia, and Dementia / Cognitive decline.", tag: "Neurology • +50 XP" },
+  { id: 'o3', q: "What is the initial medication regimen for Acute Coronary Syndrome (ACS)?", a: "MONA: Morphine, Oxygen (if sat <90%), Nitroglycerin, and Aspirin (324 mg chewed).", tag: "Cardiology • +50 XP" },
+  { id: 'o4', q: "What are the three components of Virchow's Triad for Thrombosis?", a: "1. Endothelial Injury, 2. Stasis or abnormal blood flow, 3. Hypercoagulability.", tag: "Hematology • +50 XP" }
 ];
-let currentOralIdx = 0;
-let oralTimerInt = null;
+let customOralQuestions = safeGet('hub_oral_custom_v1', defaultOralQuestions);
+let currentOralIdx = 0, oralTimerInt = null;
+
+function renderOralQuestion() {
+  if (customOralQuestions.length === 0) {
+    setElText('oralQuestionText', '"No questions available. Add one as Admin!"');
+    setElText('oralTag', 'Empty');
+    return;
+  }
+  if (currentOralIdx >= customOralQuestions.length) currentOralIdx = 0;
+  const item = customOralQuestions[currentOralIdx];
+  setElText('oralQuestionText', `"${item.q}"`);
+  setElText('oralTag', item.tag);
+  const delBtn = document.querySelector('.oral-sim-card .btn-del-item');
+  if (delBtn) delBtn.setAttribute('onclick', `deleteOralQuestion('${item.id}')`);
+}
 
 function speakOralQuestion() {
-  const item = oralQuestions[currentOralIdx];
+  if (customOralQuestions.length === 0) return;
+  const item = customOralQuestions[currentOralIdx];
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(item.q);
-    utter.rate = 0.95;
-    window.speechSynthesis.speak(utter);
+    const utter = new SpeechSynthesisUtterance(item.q); utter.rate = 0.95; window.speechSynthesis.speak(utter);
   }
-
   let sec = 10;
   const display = document.getElementById('oralTimerDisplay');
   if (oralTimerInt) clearInterval(oralTimerInt);
   if (display) display.textContent = sec + 's';
-
   oralTimerInt = setInterval(function() {
-    sec--;
-    if (display) display.textContent = sec + 's';
-    if (sec <= 0) {
-      clearInterval(oralTimerInt);
-      revealOralAnswer();
-    }
+    sec--; if (display) display.textContent = sec + 's';
+    if (sec <= 0) { clearInterval(oralTimerInt); revealOralAnswer(); }
   }, 1000);
 }
-
 function revealOralAnswer() {
-  const item = oralQuestions[currentOralIdx];
-  const box = document.getElementById('oralAnswerBox');
-  const txt = document.getElementById('oralAnswerText');
-  if (txt) txt.textContent = item.a;
-  if (box) box.style.display = 'block';
+  if (customOralQuestions.length === 0) return;
+  const item = customOralQuestions[currentOralIdx];
+  const box = document.getElementById('oralAnswerBox'), txt = document.getElementById('oralAnswerText');
+  if (txt) txt.textContent = item.a; if (box) box.style.display = 'block';
   addXP(50);
 }
-
 function nextOralQuestion() {
-  currentOralIdx = (currentOralIdx + 1) % oralQuestions.length;
-  const item = oralQuestions[currentOralIdx];
-  setElText('oralQuestionText', `"${item.q}"`);
-  setElText('oralTag', item.tag);
-  const box = document.getElementById('oralAnswerBox');
-  if (box) box.style.display = 'none';
-  const display = document.getElementById('oralTimerDisplay');
-  if (display) display.textContent = '10s';
+  if (customOralQuestions.length === 0) return;
+  currentOralIdx = (currentOralIdx + 1) % customOralQuestions.length;
+  renderOralQuestion();
+  const box = document.getElementById('oralAnswerBox'); if (box) box.style.display = 'none';
+  const display = document.getElementById('oralTimerDisplay'); if (display) display.textContent = '10s';
   if (oralTimerInt) clearInterval(oralTimerInt);
 }
-
-// 5. MNEMONICS SEARCH
-function filterMnemonics() {
-  const input = document.getElementById('mnemonicSearch');
-  const filter = (input ? input.value : '').toLowerCase();
-  const cards = document.querySelectorAll('#mnemonicListContainer .mnemonic-card');
-  cards.forEach(function(c) {
-    c.style.display = c.textContent.toLowerCase().includes(filter) ? '' : 'none';
-  });
+function deleteOralQuestion(id) {
+  if (!confirm('Delete this question?')) return;
+  customOralQuestions = customOralQuestions.filter(o => o.id !== id);
+  safeSet('hub_oral_custom_v1', customOralQuestions);
+  nextOralQuestion();
 }
 
-// 6. IN-APP ADMIN CONTENT CREATOR (ADD QUIZZES & FILES)
-const defaultQuizzes = [
-  { id: 'q1', title: 'Quiz 01: Core Fundamentals', desc: 'Evaluates foundational principles, basic definitions, and terminology.', tag: 'Unit 1 • +100 XP', url: 'https://forms.google.com', questions: 10, solved: false },
-  { id: 'q2', title: 'Quiz 02: Advanced Applications', desc: 'Diagnostic test challenging analytical problem-solving and formulas.', tag: 'Unit 2 • +100 XP', url: 'https://forms.google.com', questions: 15, solved: false }
+// FLASHCARDS DATA & ENGINE (+15 XP)
+const defaultFlashcards = [
+  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
+  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
+  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." }
 ];
+let customFlashcards = safeGet('hub_fc_custom_v1', defaultFlashcards);
+let currentCardIndex = 0;
 
-let customQuizzes = safeGet('hub_quizzes_custom_v2', defaultQuizzes);
-
-function renderQuizzes() {
-  const container = document.getElementById('qbankGridContainer');
-  if (!container) return;
-  container.innerHTML = '';
-  let solvedCount = 0;
-
-  customQuizzes.forEach(function(q) {
-    if (q.solved) solvedCount++;
-    const card = document.createElement('div');
-    card.className = 'qbank-card ' + (q.solved ? 'solved' : '');
-    card.id = 'card-' + q.id;
-    card.innerHTML = `
-      <div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-          <span class="video-tag">${escapeHTML(q.tag || 'Assessment')}</span>
-          <span class="status-badge ${q.solved ? 'status-done' : 'status-pending'}">${q.solved ? '✓ Completed' : 'Not Solved'}</span>
-        </div>
-        <h3 style="font-size: 18px; margin-bottom: 8px;">${escapeHTML(q.title)}</h3>
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(q.desc)}</p>
-      </div>
-      <div>
-        <a href="${escapeHTML(q.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="btn-launch-${q.id}" style="${q.solved ? 'display:none;' : ''}" onclick="startAndAutoSaveQuiz('${q.id}', ${Number(q.questions || 10)})">🚀 Start Exam ↗</a>
-        <button class="btn btn-outline" id="btn-restart-${q.id}" style="${q.solved ? '' : 'display:none;'}" onclick="restartQuiz('${q.id}')">↺ Restart Exam</button>
-      </div>
-      <button class="btn-del-item" title="Delete Quiz (Admin)" onclick="deleteAdminQuiz('${q.id}')">✕</button>
-    `;
-    container.appendChild(card);
-  });
-  setElText('statQuizzes', `${solvedCount} / ${customQuizzes.length}`);
-  setElText('analyticsMastery', customQuizzes.length ? Math.round((solvedCount / customQuizzes.length) * 100) + '%' : '0%');
+function renderFlashcard() {
+  if (customFlashcards.length === 0) {
+    setElText('fcCategory', 'Empty');
+    setElText('fcQuestion', 'No flashcards available. Add one as Admin!');
+    setElText('fcAnswer', 'N/A');
+    return;
+  }
+  if (currentCardIndex >= customFlashcards.length) currentCardIndex = 0;
+  const card = customFlashcards[currentCardIndex];
+  const fc = document.getElementById('activeFlashcard');
+  if (fc) fc.classList.remove('flipped');
+  setElText('fcCategory', card.cat); setElText('fcQuestion', card.q); setElText('fcAnswer', card.a);
+  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / customFlashcards.length) * 100) + '%');
+}
+function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
+function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % customFlashcards.length; renderFlashcard(); }
+function prevCard() { currentCardIndex = (currentCardIndex - 1 + customFlashcards.length) % customFlashcards.length; renderFlashcard(); }
+function deleteFlashcard() {
+  if (customFlashcards.length === 0) return;
+  if (!confirm('Delete this flashcard?')) return;
+  customFlashcards = customFlashcards.filter((fc, idx) => idx !== currentCardIndex);
+  safeSet('hub_fc_custom_v1', customFlashcards);
+  renderFlashcard();
 }
 
+// MEDICAL REFERENCE DIRECTORY
+let customDirectory = safeGet('hub_dir_custom_v1', [
+  { param: 'Serum Potassium (K+)', range: '3.5 - 5.0 mEq/L', cat: 'Electrolytes', pearl: 'Key for cardiac membrane potential & ECG changes.' },
+  { param: 'Serum Sodium (Na+)', range: '135 - 145 mEq/L', cat: 'Electrolytes', pearl: 'Major determinant of extracellular fluid volume.' },
+  { param: 'Serum Creatinine', range: '0.7 - 1.3 mg/dL', cat: 'Renal', pearl: 'Indicator of Glomerular Filtration Rate (GFR).' },
+  { param: 'Mean Arterial Pressure (MAP)', range: '70 - 100 mmHg', cat: 'Cardiovascular', pearl: 'Formula: DBP + 1/3 (SBP - DBP).' }
+]);
+
+function renderDirectory() {
+  const tbody = document.getElementById('medDirectoryBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  customDirectory.forEach(d => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${escapeHTML(d.param)}</strong></td>
+      <td>${escapeHTML(d.range)}</td>
+      <td><span class="video-tag" style="margin:0;">${escapeHTML(d.cat)}</span></td>
+      <td>${escapeHTML(d.pearl)}</td>
+      <td><button class="btn-del-item" style="position:static; font-size:14px; padding:0 8px;" onclick="deleteDir('${escapeHTML(d.param)}')">✕</button></td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+function deleteDir(param) {
+  if (!confirm('Delete this reference value?')) return;
+  customDirectory = customDirectory.filter(d => d.param !== param);
+  safeSet('hub_dir_custom_v1', customDirectory); renderDirectory();
+}
+function filterMedicalDirectory() {
+  const filter = (document.getElementById('medSearchInput')?.value || '').toLowerCase();
+  document.querySelectorAll('#medDirectoryBody tr').forEach(function(r) {
+    r.style.display = r.textContent.toLowerCase().includes(filter) ? '' : 'none';
+  });
+}
+
+// UNIVERSAL ADMIN IN-APP CONTENT MODALS
+function openUniversalAddModal(type) {
+  document.getElementById('universalModalType').value = type;
+  const titleEl = document.getElementById('universalModalTitle');
+  const fieldsContainer = document.getElementById('universalModalFields');
+  fieldsContainer.innerHTML = '';
+
+  if (type === 'stethoscope') {
+    titleEl.textContent = '⚙️ Add New Stethoscope Sound';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
+      <input type="text" id="stethTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Mitral Stenosis">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category:</label>
+      <input type="text" id="stethCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology • Murmur">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
+      <input type="text" id="stethDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Diastolic rumble at apex.">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Sound Simulator Engine Type:</label>
+      <select id="stethSoundType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;">
+        <option value="as">Aortic Stenosis (Crescendo murmur)</option>
+        <option value="mr">Mitral Regurgitation (Blowing murmur)</option>
+        <option value="wheeze">Wheezing (Continuous musical)</option>
+        <option value="crackles">Fine Crackles (Pops/Rales)</option>
+      </select>
+    `;
+  } else if (type === 'antibiotics') {
+    titleEl.textContent = '⚙️ Add New Antibiotic Tier';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Tier Label (e.g. Tier 4: Carbapenems):</label>
+      <input type="text" id="abxTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Tier 4: Carbapenems">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Drugs:</label>
+      <input type="text" id="abxTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Imipenem, Meropenem">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Clinical Coverage Description:</label>
+      <input type="text" id="abxDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Covers Pseudomonas and anaerobic bacteria.">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Color Theme:</label>
+      <select id="abxColor" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;">
+        <option value="blue">Blue (Standard)</option>
+        <option value="green">Green (Mild)</option>
+        <option value="red">Red (Critical/Heavy)</option>
+      </select>
+    `;
+  } else if (type === 'mnemonics') {
+    titleEl.textContent = '⚙️ Add New Mnemonic';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title (e.g. CRAB):</label>
+      <input type="text" id="mnTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. CRAB (Multiple Myeloma signs)">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category:</label>
+      <input type="text" id="mnCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Hematology">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Mnemonic Breakdown (comma separated list):</label>
+      <textarea id="mnLines" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px; height: 100px;" placeholder="Calcium, Renal failure, Anemia, Bone lesions"></textarea>
+    `;
+  } else if (type === 'oral') {
+    titleEl.textContent = '⚙️ Add New Oral Question';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Question Text:</label>
+      <input type="text" id="oralQ" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. What is the hallmark sign of Cushings Reflex?">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Answer Text:</label>
+      <textarea id="oralA" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px; height: 80px;" placeholder="Hypertension, Bradycardia, Irregular breathing."></textarea>
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category Tag:</label>
+      <input type="text" id="oralTagInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Neurosurgery • +50 XP">
+    `;
+  } else if (type === 'flashcard') {
+    titleEl.textContent = '⚙️ Add New Flashcard';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category:</label>
+      <input type="text" id="fcCatInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Physiology">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Question:</label>
+      <input type="text" id="fcQ" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. What is the rate limiting step of glycolysis?">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Answer:</label>
+      <textarea id="fcA" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px; height: 80px;" placeholder="PFK-1 (Phosphofructokinase-1)"></textarea>
+    `;
+  } else if (type === 'directory') {
+    titleEl.textContent = '⚙️ Add New Directory Reference';
+    fieldsContainer.innerHTML = `
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Parameter Name:</label>
+      <input type="text" id="dirParam" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Thyroid Stimulating Hormone (TSH)">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Normal Range / Standard:</label>
+      <input type="text" id="dirRange" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. 0.4 - 4.0 mIU/L">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category:</label>
+      <input type="text" id="dirCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Endocrinology">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Clinical Pearl:</label>
+      <input type="text" id="dirPearl" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Screens for primary thyroid disease.">
+    `;
+  }
+  document.getElementById('universalAddModal').style.display = 'flex';
+}
+function closeUniversalAddModal() { document.getElementById('universalAddModal').style.display = 'none'; }
+
+function saveUniversalAdd() {
+  const type = document.getElementById('universalModalType').value;
+  if (type === 'stethoscope') {
+    const title = document.getElementById('stethTitle').value.trim(), cat = document.getElementById('stethCat').value.trim() || 'Stethoscope Lab', desc = document.getElementById('stethDesc').value.trim(), soundType = document.getElementById('stethSoundType').value;
+    if (!title) return alert('Enter a title!');
+    customSteth.push({ id: 'steth_' + Date.now(), cat, title, desc, type: soundType });
+    safeSet('hub_steth_custom_v1', customSteth); renderSteth();
+  } else if (type === 'antibiotics') {
+    const tag = document.getElementById('abxTag').value.trim(), title = document.getElementById('abxTitle').value.trim(), desc = document.getElementById('abxDesc').value.trim(), color = document.getElementById('abxColor').value;
+    if (!tag || !title) return alert('Fill tag and drugs fields!');
+    let tagStyle = 'background:#dbeafe; color:#1e40af;';
+    if (color === 'green') tagStyle = 'background:#d1fae5; color:#065f46;';
+    if (color === 'red') tagStyle = 'background:#fee2e2; color:#991b1b;';
+    customAbx.push({ id: 'abx_' + Date.now(), tag, tagStyle, title, desc });
+    safeSet('hub_abx_custom_v1', customAbx); renderAbx();
+  } else if (type === 'mnemonics') {
+    const title = document.getElementById('mnTitle').value.trim(), cat = document.getElementById('mnCat').value.trim(), rawLines = document.getElementById('mnLines').value.trim();
+    if (!title) return alert('Enter title!');
+    const lines = rawLines ? rawLines.split(',').map(l => l.trim()) : [];
+    customMnemonics.push({ id: 'mn_' + Date.now(), cat, title, lines });
+    safeSet('hub_mnemonics_custom_v1', customMnemonics); renderMnemonics();
+  } else if (type === 'oral') {
+    const q = document.getElementById('oralQ').value.trim(), a = document.getElementById('oralA').value.trim(), tag = document.getElementById('oralTagInput').value.trim() || 'Clinical Quiz';
+    if (!q || !a) return alert('Fill question and answer fields!');
+    customOralQuestions.push({ id: 'oral_' + Date.now(), q, a, tag });
+    safeSet('hub_oral_custom_v1', customOralQuestions); nextOralQuestion();
+  } else if (type === 'flashcard') {
+    const cat = document.getElementById('fcCatInput').value.trim() || 'General', q = document.getElementById('fcQ').value.trim(), a = document.getElementById('fcA').value.trim();
+    if (!q || !a) return alert('Fill question and answer fields!');
+    customFlashcards.push({ cat, q, a });
+    safeSet('hub_fc_custom_v1', customFlashcards); renderFlashcard();
+  } else if (type === 'directory') {
+    const param = document.getElementById('dirParam').value.trim(), range = document.getElementById('dirRange').value.trim(), cat = document.getElementById('dirCat').value.trim() || 'General', pearl = document.getElementById('dirPearl').value.trim();
+    if (!param || !range) return alert('Fill parameter name and range!');
+    customDirectory.push({ param, range, cat, pearl });
+    safeSet('hub_dir_custom_v1', customDirectory); renderDirectory();
+  }
+  closeUniversalAddModal(); alert('🎉 Item Published Live!');
+}
+
+// IN-APP ADMIN CONTENT CREATOR (ADD QUIZZES & FILES)
 function openAdminContentModal(type) { document.getElementById('adminContentModal').style.display = 'flex'; }
 function closeAdminContentModal() { document.getElementById('adminContentModal').style.display = 'none'; }
 function saveNewAdminContent() {
-  const title = document.getElementById('newContentTitle').value.trim();
-  const desc = document.getElementById('newContentDesc').value.trim();
-  const url = document.getElementById('newContentUrl').value.trim();
-  const qCount = parseInt(document.getElementById('newContentQuestions').value) || 10;
-  const type = document.getElementById('newContentType').value;
-
-  if (!title) { alert('Please enter a title!'); return; }
-
-  customQuizzes.push({
-    id: 'quiz_' + Date.now(),
-    title: title,
-    desc: desc || 'Medical Study Resource',
-    tag: type === 'quiz' ? `Assessment • +100 XP` : `PDF File • +50 XP`,
-    url: url || 'https://forms.google.com',
-    questions: qCount,
-    solved: false
-  });
-  safeSet('hub_quizzes_custom_v2', customQuizzes);
-  closeAdminContentModal();
-  renderQuizzes();
-  alert('🎉 New Content Published Live!');
+  const title = document.getElementById('newContentTitle').value.trim(), desc = document.getElementById('newContentDesc').value.trim(), url = document.getElementById('newContentUrl').value.trim(), qCount = parseInt(document.getElementById('newContentQuestions').value) || 10, type = document.getElementById('newContentType').value;
+  if (!title) return alert('Please enter a title!');
+  customQuizzes.push({ id: 'quiz_' + Date.now(), title, desc: desc || 'Medical Study Resource', tag: type === 'quiz' ? `Assessment • +100 XP` : `PDF File • +50 XP`, url: url || 'https://forms.google.com', questions: qCount, solved: false });
+  safeSet('hub_quizzes_custom_v2', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 function deleteAdminQuiz(id) {
   if (!confirm('Delete this quiz?')) return;
   customQuizzes = customQuizzes.filter(q => q.id !== id);
-  safeSet('hub_quizzes_custom_v2', customQuizzes);
-  renderQuizzes();
-}
-function startAndAutoSaveQuiz(qId, total) {
-  customQuizzes = customQuizzes.map(q => q.id === qId ? Object.assign({}, q, { solved: true }) : q);
-  safeSet('hub_quizzes_custom_v2', customQuizzes);
-  addXP(100);
-  renderQuizzes();
-}
-function restartQuiz(qId) {
-  customQuizzes = customQuizzes.map(q => q.id === qId ? Object.assign({}, q, { solved: false }) : q);
-  safeSet('hub_quizzes_custom_v2', customQuizzes);
-  renderQuizzes();
+  safeSet('hub_quizzes_custom_v2', customQuizzes); renderQuizzes();
 }
 
-// 7. GAMIFICATION (XP & MEDICAL RANKS)
-let userXP = safeGet('hub_user_xp', 50);
+// GAMIFICATION (XP & MEDICAL RANKS)
 const medicalRanks = [
   { name: "Medical Student", min: 0, max: 250, icon: "🥉" },
   { name: "Junior Resident", min: 251, max: 600, icon: "🥈" },
   { name: "Chief Resident", min: 601, max: 1200, icon: "🥇" },
   { name: "Attending Physician", min: 1201, max: 99999, icon: "👑" }
 ];
+let userXP = safeGet('hub_user_xp', 50);
 function addXP(amount) { userXP += amount; safeSet('hub_user_xp', userXP); renderRank(); }
 function renderRank() {
   let currentRank = medicalRanks[0], nextRank = medicalRanks[1];
   for (let i = 0; i < medicalRanks.length; i++) {
     if (userXP >= medicalRanks[i].min) { currentRank = medicalRanks[i]; nextRank = medicalRanks[i + 1] || null; }
   }
-  setElText('rankTitle', currentRank.name);
-  setElText('rankIcon', currentRank.icon);
-  setElText('sidebarRankTag', `● ${currentRank.name} (${userXP} XP)`);
-  setElText('analyticsXpVal', `${userXP} XP`);
+  setElText('rankTitle', currentRank.name); setElText('rankIcon', currentRank.icon); setElText('sidebarRankTag', `● ${currentRank.name} (${userXP} XP)`); setElText('analyticsXpVal', `${userXP} XP`);
   if (nextRank) {
-    const span = nextRank.min - currentRank.min;
-    const progress = userXP - currentRank.min;
-    const pct = Math.min(100, Math.round((progress / span) * 100));
-    setElText('rankXpDisplay', `${userXP} / ${nextRank.min} XP to ${nextRank.name}`);
-    setElText('rankRatio', `${pct}% to next rank`);
-    const bar = document.getElementById('rankBar');
-    if (bar) bar.style.width = pct + '%';
+    const span = nextRank.min - currentRank.min, progress = userXP - currentRank.min, pct = Math.min(100, Math.round((progress / span) * 100));
+    setElText('rankXpDisplay', `${userXP} / ${nextRank.min} XP to ${nextRank.name}`); setElText('rankRatio', `${pct}% to next rank`);
+    const bar = document.getElementById('rankBar'); if (bar) bar.style.width = pct + '%';
   } else {
-    setElText('rankXpDisplay', `${userXP} XP (Max Rank!)`);
-    setElText('rankRatio', '100% Mastered');
-    const bar = document.getElementById('rankBar');
-    if (bar) bar.style.width = '100%';
+    setElText('rankXpDisplay', `${userXP} XP (Max Rank!)`); setElText('rankRatio', '100% Mastered');
+    const bar = document.getElementById('rankBar'); if (bar) bar.style.width = '100%';
   }
 }
 
-// 8. POMODORO & AMBIENT AUDIO ENGINE
+// POMODORO & AMBIENT AUDIO ENGINE
 let pomodoroTimer = null, pomodoroSecondsLeft = 25 * 60, isPomodoroRunning = false, currentPomodoroMode = 'pomodoro';
 function setPomodoroMode(mode) {
-  currentPomodoroMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  currentPomodoroMode = mode; document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   if (mode === 'pomodoro') { document.getElementById('btnModePomodoro').classList.add('active'); pomodoroSecondsLeft = 25 * 60; }
   else if (mode === 'short') { document.getElementById('btnModeShort').classList.add('active'); pomodoroSecondsLeft = 5 * 60; }
   else if (mode === 'long') { document.getElementById('btnModeLong').classList.add('active'); pomodoroSecondsLeft = 15 * 60; }
@@ -1310,21 +1357,17 @@ function setPomodoroMode(mode) {
   updatePomodoroDisplay();
 }
 function updatePomodoroDisplay() {
-  const mins = String(Math.floor(pomodoroSecondsLeft / 60)).padStart(2, '0');
-  const secs = String(pomodoroSecondsLeft % 60).padStart(2, '0');
+  const mins = String(Math.floor(pomodoroSecondsLeft / 60)).padStart(2, '0'), secs = String(pomodoroSecondsLeft % 60).padStart(2, '0');
   setElText('pomodoroDisplay', `${mins}:${secs}`);
 }
 function togglePomodoro() {
   const btn = document.getElementById('btnTimerToggle');
-  if (isPomodoroRunning) {
-    clearInterval(pomodoroTimer); isPomodoroRunning = false;
-    if (btn) btn.textContent = '▶ Resume Focus';
-  } else {
-    isPomodoroRunning = true;
-    if (btn) btn.textContent = '⏸ Pause';
+  if (isPomodoroRunning) { clearInterval(pomodoroTimer); isPomodoroRunning = false; if (btn) btn.textContent = '▶ Resume Focus'; }
+  else {
+    isPomodoroRunning = true; if (btn) btn.textContent = '⏸ Pause';
     pomodoroTimer = setInterval(function() {
       if (pomodoroSecondsLeft > 0) { pomodoroSecondsLeft--; updatePomodoroDisplay(); }
-      else { clearInterval(pomodoroTimer); isPomodoroRunning = false; playChime(); addXP(50); alert('🎉 Focus Session Completed! +50 XP.'); setPomodoroMode('short'); }
+      else { clearInterval(pomodoroTimer); isPomodoroRunning = false; playChime(); addXP(50); alert('🎉 Focus Completed! +50 XP.'); setPomodoroMode('short'); }
     }, 1000);
   }
 }
@@ -1340,30 +1383,24 @@ function playChime() {
   try {
     const ctx = getAudioContext();
     const osc = ctx.createOscillator(), gain = ctx.createGain();
-    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
     gain.gain.setValueAtTime(0.3, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + 1.2);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1.2);
   } catch(e) {}
 }
 function stopAmbientSound() { ambientNodes.forEach(n => { try { n.stop(); n.disconnect(); } catch(e){} }); ambientNodes = []; currentAmbientGain = null; }
 function updateAmbientVolume(val) { currentAmbientVolume = parseFloat(val); if (currentAmbientGain) currentAmbientGain.gain.setValueAtTime(currentAmbientVolume * 0.15, audioCtx.currentTime); }
 function setAmbientSound(type) {
-  stopAmbientSound();
-  document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+  stopAmbientSound(); document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
   if (type === 'none') { document.getElementById('btnSoundNone').classList.add('active'); return; }
-  const ctx = getAudioContext();
-  const gain = ctx.createGain(); gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime);
-  gain.connect(ctx.destination); currentAmbientGain = gain;
+  const ctx = getAudioContext(), gain = ctx.createGain(); gain.gain.setValueAtTime(currentAmbientVolume * 0.15, ctx.currentTime); gain.connect(ctx.destination); currentAmbientGain = gain;
   if (type === 'rain') {
     document.getElementById('btnSoundRain').classList.add('active');
     const bufferSize = ctx.sampleRate * 2, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0);
     let b0 = 0, b1 = 0, b2 = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520;
-      data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.1;
+      b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759; b2 = 0.96900 * b2 + white * 0.1538520; data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.1;
     }
     const noise = ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true; noise.connect(gain); noise.start(); ambientNodes.push(noise);
   } else if (type === 'alpha') {
@@ -1376,7 +1413,7 @@ function setAmbientSound(type) {
   }
 }
 
-// 9. ADMIN COUNTDOWN
+// ADMIN COUNTDOWN
 let targetExamTimestamp = safeGet('hub_exam_target_ts', Date.now() + (45 * 24 * 60 * 60 * 1000));
 function updateCountdownTimer() {
   const diff = targetExamTimestamp - Date.now();
@@ -1404,78 +1441,7 @@ function saveAdminCountdown() {
   closeAdminModal(); updateCountdownTimer();
 }
 
-// 10. THEME & ACCENT
-function toggleDarkMode() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  safeSet('hub_theme_pref', next);
-  const btn = document.querySelector('.theme-toggle-btn');
-  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
-}
-function setAccentColor(primary, hover) {
-  document.documentElement.style.setProperty('--primary', primary);
-  document.documentElement.style.setProperty('--primary-hover', hover);
-  document.documentElement.style.setProperty('--primary-tint', primary + '20');
-  safeSet('hub_accent_pref', { primary: primary, hover: hover });
-}
-
-// 11. FLASHCARDS DATA & ENGINE (+15 XP)
-const flashcardsList = [
-  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
-  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
-  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." },
-  { cat: "Microbiology", q: "Which Gram-positive, spore-forming rod produces a toxin that inhibits GABA & Glycine release?", a: "Clostridium tetani (causes spastic paralysis / lockjaw)." },
-  { cat: "Biochemistry", q: "What is the rate-limiting enzyme of Glycolysis?", a: "Phosphofructokinase-1 (PFK-1)." }
-];
-let currentCardIndex = 0;
-function renderFlashcard() {
-  const card = flashcardsList[currentCardIndex];
-  const fc = document.getElementById('activeFlashcard');
-  if (fc) fc.classList.remove('flipped');
-  setElText('fcCategory', card.cat); setElText('fcQuestion', card.q); setElText('fcAnswer', card.a);
-  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / flashcardsList.length) * 100) + '%');
-}
-function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
-function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % flashcardsList.length; renderFlashcard(); }
-function prevCard() { currentCardIndex = (currentCardIndex - 1 + flashcardsList.length) % flashcardsList.length; renderFlashcard(); }
-
-// 12. MEDICAL DIRECTORY SEARCH
-function filterMedicalDirectory() {
-  const filter = (document.getElementById('medSearchInput')?.value || '').toLowerCase();
-  document.querySelectorAll('#medDirectoryBody tr').forEach(function(r) {
-    r.style.display = r.textContent.toLowerCase().includes(filter) ? '' : 'none';
-  });
-}
-
-// 13. Q&A WITH DR. MOHAMMAD
-function submitStudentQuestion() {
-  const input = document.getElementById('qaQuestionInput');
-  if (!input || !input.value.trim()) return;
-  const questions = safeGet('hub_qa_list', [
-    { id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated (e.g. Anaphylaxis), while Type 2 is antibody-mediated cytotoxic.", date: "Aug 28" }
-  ]);
-  questions.unshift({ id: Date.now(), text: input.value.trim(), reply: "Dr. Mohammad has received your question and will reply shortly.", date: "Today" });
-  safeSet('hub_qa_list', questions);
-  input.value = '';
-  renderQA();
-}
-function renderQA() {
-  const list = document.getElementById('qaThreadList');
-  if (!list) return;
-  list.innerHTML = '';
-  const questions = safeGet('hub_qa_list', [
-    { id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated (e.g. Anaphylaxis), while Type 2 is antibody-mediated cytotoxic.", date: "Aug 28" }
-  ]);
-  questions.forEach(function(q) {
-    const item = document.createElement('div');
-    item.className = 'qa-msg';
-    item.innerHTML = `<div class="qa-msg-header"><span>👨‍⚕️ Student Inquiry</span><span>${escapeHTML(q.date)}</span></div><div class="qa-msg-body">${escapeHTML(q.text)}</div><div class="qa-reply"><strong>Dr. Mohammad:</strong> ${escapeHTML(q.reply)}</div>`;
-    list.appendChild(item);
-  });
-}
-
-// 14. SECURITY & PASSCODE
+// SECURITY & PASSCODE
 async function hashText(str) {
   try {
     const buffer = new TextEncoder().encode(str.trim().toUpperCase());
@@ -1485,6 +1451,7 @@ async function hashText(str) {
     return str.trim().toUpperCase() === "MED2026" ? TARGET_PASSCODE_HASH : "invalid";
   }
 }
+
 async function verifyPasscode() {
   const input = document.getElementById('passcodeInput');
   const errorEl = document.getElementById('passcodeError');
@@ -1492,9 +1459,7 @@ async function verifyPasscode() {
   const hashed = await hashText(input.value);
   if (hashed === TARGET_PASSCODE_HASH) {
     if (errorEl) errorEl.style.display = 'none';
-    isPasscodeUnlocked = true;
-    sessionStorage.setItem('hub_passcode_ok', 'true');
-    checkFullAccess();
+    isPasscodeUnlocked = true; sessionStorage.setItem('hub_passcode_ok', 'true'); checkFullAccess();
   } else {
     if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Incorrect Passcode. Access Denied.'; }
   }
@@ -1503,49 +1468,28 @@ function checkFullAccess() {
   const Clerk = window.Clerk;
   if (!isPasscodeUnlocked) {
     document.getElementById('authOverlay').style.display = 'flex';
-    document.getElementById('passcodeCard').style.display = 'block';
-    document.getElementById('clerkCard').style.display = 'none';
-    document.getElementById('mainDashboard').style.display = 'none';
-    return;
+    document.getElementById('passcodeCard').style.display = 'block'; document.getElementById('clerkCard').style.display = 'none';
+    document.getElementById('mainDashboard').style.display = 'none'; return;
   }
   if (Clerk && Clerk.user) {
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('mainDashboard').style.display = 'flex';
+    document.getElementById('authOverlay').style.display = 'none'; document.getElementById('mainDashboard').style.display = 'flex';
     const displayName = Clerk.user.fullName || Clerk.user.firstName || Clerk.user.primaryEmailAddress?.emailAddress || 'Student';
-    setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋');
-    setElText('clerkUserName', displayName);
+    setElText('welcomeUser', 'Welcome Back, ' + displayName + ' 👋'); setElText('clerkUserName', displayName);
     const userBtnContainer = document.getElementById('clerkUserButton');
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
-    renderQuizzes(); renderVideos(); renderPlanner(); renderFlashcard(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard();
+    renderQuizzes(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard();
     setElText('displayAnnounceTitle', safeGet('hub_ann_title', '📢 Board Exam Countdown & Updates'));
     setElText('displayAnnounceDesc', safeGet('hub_ann_desc', 'Weekly Unit 1 Review & Diagnostic Quiz 01 is now open for all students.'));
   } else {
-    document.getElementById('authOverlay').style.display = 'flex';
-    document.getElementById('passcodeCard').style.display = 'none';
-    document.getElementById('clerkCard').style.display = 'block';
-    document.getElementById('mainDashboard').style.display = 'none';
+    document.getElementById('authOverlay').style.display = 'flex'; document.getElementById('passcodeCard').style.display = 'none';
+    document.getElementById('clerkCard').style.display = 'block'; document.getElementById('mainDashboard').style.display = 'none';
     const container = document.getElementById('realClerkContainer');
     if (container && Clerk && Clerk.mountSignIn && container.children.length === 0) Clerk.mountSignIn(container);
   }
 }
-checkFullAccess();
 
-async function initClerk() {
-  try {
-    const Clerk = window.Clerk;
-    if (!Clerk) { setTimeout(initClerk, 200); return; }
-    await Clerk.load();
-    if (Clerk.addListener) Clerk.addListener(function(state) { if (state && state.user) checkFullAccess(); });
-    checkFullAccess();
-  } catch (err) { checkFullAccess(); }
-}
-window.addEventListener('load', initClerk);
-
-// UTILITIES
-function escapeHTML(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-}
+// UTILITIES & STATE
+function escapeHTML(str) { if (!str) return ''; return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
 function setElText(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
 const memoryStore = {};
 function safeGet(key, defaultVal) { try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : defaultVal; } catch(e) { return memoryStore[key] !== undefined ? memoryStore[key] : defaultVal; } }
@@ -1554,19 +1498,9 @@ function goToTab(tabId) {
   stopStethoscopeAudio();
   document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const panel = document.getElementById('view-' + tabId);
-  if (panel) panel.classList.add('active');
-  const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`);
-  if (nav) nav.classList.add('active');
+  const panel = document.getElementById('view-' + tabId); if (panel) panel.classList.add('active');
+  const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`); if (nav) nav.classList.add('active');
 }
-
-// RESTORE THEME
-(function() {
-  const savedTheme = safeGet('hub_theme_pref', 'light');
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const savedAccent = safeGet('hub_accent_pref', null);
-  if (savedAccent) setAccentColor(savedAccent.primary, savedAccent.hover);
-})();
 
 // PLANNER ENGINE (+25 XP)
 let currentDay = 'mon';
@@ -1575,13 +1509,11 @@ const initialTasks = {
   tue: [{ id: 2, goal: "Autonomic Nervous System Review", time: "04:00 PM", done: false }]
 };
 function renderPlanner() {
-  const container = document.getElementById('taskContainer');
-  if (!container) return;
+  const container = document.getElementById('taskContainer'); if (!container) return;
   container.innerHTML = '';
   const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
   tasks.forEach(function (t) {
-    const item = document.createElement('div');
-    item.className = 'task-item ' + (t.done ? 'completed' : '');
+    const item = document.createElement('div'); item.className = 'task-item ' + (t.done ? 'completed' : '');
     item.innerHTML = `
       <div style="display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="toggleTask(${Number(t.id)})">
         <div class="checkbox">${t.done ? '✓' : ''}</div>
@@ -1595,16 +1527,13 @@ function renderPlanner() {
     container.appendChild(item);
   });
   const done = tasks.filter(t => t.done).length;
-  const bar = document.getElementById('progBar');
-  if (bar) bar.style.width = (tasks.length ? Math.round((done / tasks.length) * 100) : 0) + '%';
+  const bar = document.getElementById('progBar'); if (bar) bar.style.width = (tasks.length ? Math.round((done / tasks.length) * 100) : 0) + '%';
 }
 function addNewTask() {
-  const name = document.getElementById('taskName'), time = document.getElementById('taskTime');
-  if (!name || !name.value.trim()) return;
+  const name = document.getElementById('taskName'), time = document.getElementById('taskTime'); if (!name || !name.value.trim()) return;
   const tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
   tasks.push({ id: Date.now(), goal: name.value.trim(), time: time.value.trim(), done: false });
-  safeSet('hub_tasks_' + currentDay, tasks);
-  name.value = ''; time.value = ''; renderPlanner();
+  safeSet('hub_tasks_' + currentDay, tasks); name.value = ''; time.value = ''; renderPlanner();
 }
 function toggleTask(id) {
   let tasks = safeGet('hub_tasks_' + currentDay, initialTasks[currentDay] || []);
@@ -1616,10 +1545,16 @@ function deleteTask(id) {
   safeSet('hub_tasks_' + currentDay, tasks); renderPlanner();
 }
 function setDay(day, btn) {
-  currentDay = day;
-  document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderPlanner();
+  currentDay = day; document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active'); renderPlanner();
+}
+
+// Q&A
+function submitStudentQuestion() {
+  const input = document.getElementById('qaQuestionInput'); if (!input || !input.value.trim()) return;
+  const questions = safeGet('hub_qa_list', [{ id: 1, text: "Can you explain the difference between Type 1 and Type 2 Hypersensitivity?", reply: "Type 1 is IgE-mediated, while Type 2 is antibody-mediated.", date: "Aug 28" }]);
+  questions.unshift({ id: Date.now(), text: input.value.trim(), reply: "Dr. Mohammad has received your question and will reply shortly.", date: "Today" });
+  safeSet('hub_qa_list', questions); input.value = ''; renderQA();
 }
 </script>
 </body>
