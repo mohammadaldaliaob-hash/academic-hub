@@ -239,7 +239,7 @@
   .btn-outline { background: var(--card-bg); border: 1px solid var(--border); color: var(--foreground); }
   .btn-outline:hover { background: var(--border); }
 
-  /* VIDEO MASTERCLASSES (LECTURES) */
+  /* VIDEO MASTERCLASSES & PLAYLISTS */
   .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
   .video-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card-bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
   .video-embed-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
@@ -297,9 +297,32 @@
   .flashcard-hint { font-size: 12px; color: var(--muted-foreground); }
   .flashcard-controls { display: flex; gap: 12px; justify-content: center; max-width: 580px; margin: 0 auto; }
 
-  /* MODALS */
+  /* MODALS & MCQ RUNNER */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999999; justify-content: center; align-items: center; padding: 20px; }
   .btn-del-item { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; }
+
+  /* INTERACTIVE MCQ RUNNER STYLES */
+  .mcq-option-list { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  .mcq-option-card {
+    display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: var(--radius-md);
+    border: 1.5px solid var(--border); background: var(--card-bg); cursor: pointer; transition: all 0.15s ease;
+    font-size: 14px; font-weight: 500; text-align: left; color: var(--foreground);
+  }
+  .mcq-option-card:hover { border-color: var(--primary); background: var(--primary-tint); }
+  .mcq-option-card.selected { border-color: var(--primary); background: var(--primary-tint); font-weight: 600; color: var(--primary); }
+  .mcq-option-card.correct { border-color: #16a34a; background: #dcfce7; color: #15803d; font-weight: 600; }
+  .mcq-option-card.wrong { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+  .mcq-option-radio {
+    width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-hover);
+    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .mcq-option-card.selected .mcq-option-radio { border-color: var(--primary); background: var(--primary); color: white; }
+  .mcq-option-card.correct .mcq-option-radio { border-color: #16a34a; background: #16a34a; color: white; }
+  .mcq-option-card.wrong .mcq-option-radio { border-color: #ef4444; background: #ef4444; color: white; }
+  .mcq-explanation-box {
+    margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--background);
+    border-left: 4px solid var(--primary); font-size: 13.5px; text-align: left; line-height: 1.5; color: var(--foreground);
+  }
 
   @media (max-width: 768px) {
     .dashboard-wrapper { flex-direction: column; }
@@ -340,13 +363,90 @@
   </div>
 </div>
 
+<!-- NATIVE IN-APP MCQ EXAM RUNNER MODAL -->
+<div class="modal-overlay" id="inAppQuizModal">
+  <div class="auth-card" style="max-width: 640px; text-align: left; max-height: 90vh; overflow-y: auto; position: relative;">
+    <button class="btn-del-item" style="font-size: 20px; top: 16px; right: 16px;" onclick="closeInAppQuizModal()">✕</button>
+    
+    <!-- QUIZ HEADER -->
+    <div style="margin-bottom: 16px;">
+      <span class="video-tag" id="examRunnerCategory">Medical Assessment</span>
+      <h3 style="font-size: 20px; margin: 6px 0;" id="examRunnerTitle">Exam Title</h3>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted-foreground); margin-bottom: 6px;">
+        <span id="examRunnerProgressText">Question 1 of 10</span>
+        <span id="examRunnerScoreLive">+100 XP Upon Completion</span>
+      </div>
+      <div class="progress-bar-bg" style="margin-bottom: 0;">
+        <div class="progress-bar-fill" id="examRunnerProgressBar" style="width: 10%;"></div>
+      </div>
+    </div>
+
+    <!-- QUESTION CONTENT -->
+    <div id="examRunnerQuestionContainer">
+      <h4 style="font-size: 16px; line-height: 1.5; color: var(--foreground); margin-bottom: 16px;" id="examQuestionStem">Question text here...</h4>
+      
+      <div class="mcq-option-list" id="examOptionList"></div>
+    </div>
+
+    <!-- EXAM RESULT SUMMARY (Shown upon completion) -->
+    <div id="examRunnerResultsContainer" style="display:none; text-align:center; padding: 10px 0;">
+      <div style="font-size: 48px; margin-bottom: 10px;" id="examResultEmoji">🎉</div>
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;" id="examResultHeading">Exam Completed!</h3>
+      <p style="font-size: 15px; color: var(--muted-foreground); margin-bottom: 16px;" id="examResultScoreText">You scored 8/10 (80%)</p>
+      
+      <div id="examDetailedReview" style="max-height: 320px; overflow-y: auto; text-align:left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;"></div>
+
+      <button class="btn btn-primary" onclick="closeInAppQuizModal()">Close Exam & Claim XP 🚀</button>
+    </div>
+
+    <!-- FOOTER NAV BUTTONS -->
+    <div id="examRunnerFooterNav" style="display: flex; gap: 10px; justify-content: space-between; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
+      <button class="btn btn-outline" style="width: auto; padding: 10px 20px;" id="btnExamPrev" onclick="navExamQuestion(-1)">← Previous</button>
+      <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" id="btnExamNext" onclick="navExamQuestion(1)">Next Question →</button>
+      <button class="btn btn-primary" style="width: auto; padding: 10px 24px; display:none; background: #16a34a;" id="btnExamSubmit" onclick="submitInAppExam()">Finish & Submit Exam ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MCQ FILE & TEXT AUTO-EXTRACTOR MODAL -->
+<div class="modal-overlay" id="adminMcqExtractorModal">
+  <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <h3 style="font-size: 18px; margin-bottom: 4px;">📝 MCQ File & Text Auto-Extractor</h3>
+    <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px;">Upload an MCQ file or paste questions. The extractor parses all questions, options (A, B, C, D), and answers into a native interactive exam!</p>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Exam Title:</label>
+    <input type="text" id="newMcqTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology: High-Yield Arrhythmias & Murmurs">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subject / Category:</label>
+    <input type="text" id="newMcqCat" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology • Board Review">
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Option A: Upload MCQ File (.txt, .json, .csv):</label>
+      <input type="file" id="mcqFileInput" accept=".txt,.json,.csv" class="search-input-box" style="margin-top: 4px; padding: 8px 12px;" onchange="handleMcqFileUpload(event)">
+    </div>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Option B: Or Paste MCQ Text Directly:</label>
+    <textarea id="mcqTextInput" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px; height: 150px; font-family: monospace; font-size: 12.5px; resize: vertical;" placeholder="1. Question stem text?&#10;A) Option 1&#10;B) Option 2&#10;C) Option 3&#10;D) Option 4&#10;Answer: A&#10;Explanation: Clinical pearl..."></textarea>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+      <button class="btn btn-outline" style="width: auto; padding: 8px 16px;" onclick="extractMcqFromText()">⚡ Auto-Extract Questions</button>
+      <span id="mcqExtractStatus" style="font-size: 12px; font-weight: 600; color: var(--primary);">0 Questions detected</span>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="publishExtractedExam()">Publish Native Exam Live 🚀</button>
+      <button class="btn btn-outline" onclick="closeAdminMcqExtractorModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN ADD QUIZ / FILE MODAL -->
 <div class="modal-overlay" id="adminContentModal">
   <div class="auth-card" style="max-width: 460px; text-align: left;">
-    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Add New Quiz or Study File</h3>
+    <h3 style="font-size: 18px; margin-bottom: 14px;">⚙️ Add Quiz or Study File</h3>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Content Type:</label>
     <select id="newContentType" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;">
-      <option value="quiz">🎯 Online Quiz (Google Form / Assessment)</option>
+      <option value="quiz">🎯 Online Quiz (Google Form / Assessment Link)</option>
       <option value="file">📁 Study Notes / PDF Document (Google Drive Link)</option>
     </select>
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title:</label>
@@ -364,20 +464,21 @@
   </div>
 </div>
 
-<!-- ADMIN ADD VIDEO MODAL -->
+<!-- ADMIN ADD VIDEO / PLAYLIST MODAL -->
 <div class="modal-overlay" id="adminVideoModal">
-  <div class="auth-card" style="max-width: 460px; text-align: left;">
-    <h3 style="font-size: 18px; margin-bottom: 14px;">🎥 Add New Video Lecture</h3>
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Video Title:</label>
-    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Renal Tubular Acidosis: Types 1, 2, 4">
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Subject Tag & Duration:</label>
-    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Nephrology • 30 Mins">
+  <div class="auth-card" style="max-width: 480px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 14px;">🎥 Add Video Lecture or YouTube Playlist</h3>
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Title (e.g. Ninja Nerd Cardiology Series):</label>
+    <input type="text" id="newVidTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Ninja Nerd: Cardiology & ECG Masterclass">
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Category / Subject Tag:</label>
+    <input type="text" id="newVidTag" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="e.g. Cardiology • Complete Playlist">
     <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Description:</label>
-    <input type="text" id="newVidDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Clinical breakdown of urine pH & electrolyte wasting">
-    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube Embed / Video URL:</label>
-    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 20px;" placeholder="https://www.youtube-nocookie.com/embed/...">
+    <input type="text" id="newVidDesc" class="search-input-box" style="margin-top: 4px; margin-bottom: 12px;" placeholder="Full series covering ECG interpretation, cardiac cycle, and murmurs">
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">YouTube Video or Playlist URL:</label>
+    <input type="url" id="newVidUrl" class="search-input-box" style="margin-top: 4px; margin-bottom: 8px;" placeholder="https://www.youtube.com/playlist?list=... or https://youtu.be/...">
+    <div style="font-size: 11px; color: var(--muted-foreground); margin-bottom: 18px;">💡 Paste ANY YouTube playlist link or single video link — it embeds automatically!</div>
     <div style="display: flex; gap: 10px;">
-      <button class="btn btn-primary" onclick="saveNewAdminVideo()">Add Video Lecture 🎬</button>
+      <button class="btn btn-primary" onclick="saveNewAdminVideo()">Add to Site 🚀</button>
       <button class="btn btn-outline" onclick="closeAdminVideoModal()">Cancel</button>
     </div>
   </div>
@@ -555,27 +656,57 @@
       </div>
     </div>
 
-    <!-- 3. QUESTION BANK -->
+    <!-- 3. QUESTION BANK & NATIVE MCQ EXAMS -->
     <div id="view-qbank" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">Question Bank & Assessments</h2>
-          <p class="panel-subtitle">Click "Start Exam" to launch. (+100 XP awarded upon completion!)</p>
+          <h2 class="panel-title">Clinical Question Bank & Native MCQ Exams</h2>
+          <p class="panel-subtitle">Interactive board exams with question-by-question scoring and clinical explanations. (+100 XP per exam!)</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminContentModal('quiz')">⚙️ + Add New Quiz (Admin)</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminMcqExtractorModal()">📝 + Extract MCQ File / Text (Admin)</button>
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="openAdminContentModal('quiz')">⚙️ + Add External Form / PDF</button>
+        </div>
+      </div>
+
+      <!-- SEARCH & SUBJECT FILTER TABS -->
+      <input type="text" id="qbankSearchInput" class="search-input-box" placeholder="🔍 Search question banks, exams, or clinical topics..." oninput="filterQuizzes()">
+
+      <div class="day-tabs" style="margin-bottom: 20px;">
+        <button class="day-tab active" onclick="filterQuizCategory('all', this)">All Exams</button>
+        <button class="day-tab" onclick="filterQuizCategory('Cardiology', this)">Cardiology</button>
+        <button class="day-tab" onclick="filterQuizCategory('Nephrology', this)">Nephrology</button>
+        <button class="day-tab" onclick="filterQuizCategory('Pharmacology', this)">Pharmacology</button>
+        <button class="day-tab" onclick="filterQuizCategory('Pathology', this)">Pathology</button>
       </div>
 
       <div class="qbank-grid" id="qbankGridContainer"></div>
     </div>
 
-    <!-- 4. LECTURES -->
+    <!-- 4. LECTURES & PLAYLISTS -->
     <div id="view-videos" class="view-panel">
       <div class="panel-header">
         <div>
-          <h2 class="panel-title">Medical Lectures & Masterclasses</h2>
-          <p class="panel-subtitle">High-yield clinical lectures curated by Dr. Mohammad.</p>
+          <h2 class="panel-title">Medical Lectures & Ninja Nerd Playlists</h2>
+          <p class="panel-subtitle">High-yield clinical lectures & full playlist series curated by Dr. Mohammad.</p>
         </div>
-        <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminVideoModal()">⚙️ + Add Video Lecture (Admin)</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-outline" style="width: auto; padding: 9px 16px;" onclick="loadNinjaNerdPresets()">⚡ Load Ninja Nerd Full Playlists</button>
+          <button class="btn btn-primary" style="width: auto; padding: 9px 18px;" onclick="openAdminVideoModal()">⚙️ + Add Video or Playlist (Admin)</button>
+        </div>
+      </div>
+
+      <!-- SEARCH & SUBJECT FILTER TABS -->
+      <input type="text" id="videoSearchInput" class="search-input-box" placeholder="🔍 Search lectures or playlists by title, topic, or system..." oninput="filterVideos()">
+
+      <div class="day-tabs" style="margin-bottom: 20px;">
+        <button class="day-tab active" onclick="filterVideoCategory('all', this)">All Topics</button>
+        <button class="day-tab" onclick="filterVideoCategory('Cardiology', this)">Cardiology</button>
+        <button class="day-tab" onclick="filterVideoCategory('Neurology', this)">Neurology</button>
+        <button class="day-tab" onclick="filterVideoCategory('Nephrology', this)">Nephrology</button>
+        <button class="day-tab" onclick="filterVideoCategory('Pulmonology', this)">Pulmonology</button>
+        <button class="day-tab" onclick="filterVideoCategory('Pharmacology', this)">Pharmacology</button>
+        <button class="day-tab" onclick="filterVideoCategory('Pathology', this)">Pathology</button>
       </div>
 
       <div class="video-grid" id="videoGridContainer"></div>
@@ -888,10 +1019,95 @@ function goToTab(tabId) {
   const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`); if (nav) nav.classList.add('active');
 }
 
-// 1. QUESTION BANK
-let customQuizzes = safeGet('hub_quizzes_custom_v2', [
-  { id: 'q1', title: 'Quiz 01: Core Clinical Fundamentals', desc: 'Evaluates basic diagnostic criteria, definitions, and high-yield physiology.', tag: 'Assessment • +100 XP', url: 'https://forms.google.com', questions: 10, solved: false },
-  { id: 'q2', title: 'Quiz 02: Advanced Pathology & Pharmacology', desc: 'Diagnostic case vignettes challenging problem solving and drug interactions.', tag: 'Assessment • +100 XP', url: 'https://forms.google.com', questions: 15, solved: false }
+// 1. QUESTION BANK & NATIVE MCQ ENGINE
+let currentQuizCategoryFilter = 'all';
+let currentQuizSearchQuery = '';
+
+let customQuizzes = safeGet('hub_quizzes_custom_v3', [
+  {
+    id: 'quiz_cardio_1',
+    title: 'Cardiology: High-Yield Arrhythmias & ECG Interpretation',
+    desc: 'Interactive clinical vignettes evaluating Atrial Fibrillation, AV Blocks, and Myocardial Infarction.',
+    tag: 'Cardiology • +100 XP',
+    category: 'Cardiology',
+    questionsCount: 3,
+    solved: false,
+    isNative: true,
+    questions: [
+      {
+        id: 1,
+        question: "A 64-year-old male presents to the ED with acute palpitations and fatigue. His ECG reveals an 'irregularly irregular' rhythm with absent P waves and a narrow QRS complex. Blood pressure is 128/78 mmHg. Which of the following is the most appropriate initial therapy for rate control?",
+        options: [
+          "A) Oral or IV Beta-blocker (e.g. Metoprolol) or Non-DHP Calcium Channel Blocker (Diltiazem)",
+          "B) Immediate Synchronized Electrical Cardioversion at 200J",
+          "C) Intravenous Adenosine 6 mg rapid push",
+          "D) Intravenous Atropine 0.5 mg"
+        ],
+        correctIndex: 0,
+        explanation: "In hemodynamically stable Atrial Fibrillation with rapid ventricular response, initial therapy is rate control using Beta-blockers (Metoprolol/Esmolol) or non-dihydropyridine calcium channel blockers (Diltiazem/Verapamil). Electrical cardioversion is reserved for unstable patients (hypotension, altered mental status, chest pain)."
+      },
+      {
+        id: 2,
+        question: "A 72-year-old female presents with recurrent syncopal episodes while gardening. Physical exam reveals a harsh, late-peaking crescendo-decrescendo systolic ejection murmur at the right 2nd intercostal space that radiates to the carotid arteries. What is the most likely underlying diagnosis?",
+        options: [
+          "A) Mitral Regurgitation",
+          "B) Severe Calcific Aortic Stenosis",
+          "C) Aortic Regurgitation",
+          "D) Hypertrophic Cardiomyopathy"
+        ],
+        correctIndex: 1,
+        explanation: "A harsh crescendo-decrescendo systolic murmur at the right upper sternal border radiating to the carotids with a delayed, weak carotid pulse (pulsus parvus et tardus) and syncope is the classic presentation of severe Aortic Stenosis."
+      },
+      {
+        id: 3,
+        question: "A 58-year-old male presents with severe crushing retrosternal chest pain radiating to his left jaw. ECG reveals 3 mm ST-segment elevations in leads II, III, and aVF with reciprocal ST depressions in lead aVL. Which coronary artery is most likely occluded?",
+        options: [
+          "A) Left Anterior Descending Artery (LAD)",
+          "B) Left Circumflex Artery (LCx)",
+          "C) Right Coronary Artery (RCA)",
+          "D) Left Main Coronary Artery (LMCA)"
+        ],
+        correctIndex: 2,
+        explanation: "ST elevations in the inferior leads (II, III, aVF) indicate an acute Inferior STEMI, which is most commonly caused by acute thrombotic occlusion of the Right Coronary Artery (RCA) in 85-90% of individuals."
+      }
+    ]
+  },
+  {
+    id: 'quiz_renal_1',
+    title: 'Nephrology: Acid-Base & Renal Pathology Board Review',
+    desc: 'Case studies testing Anion Gap Metabolic Acidosis, Glomerulonephritis, and AKI.',
+    tag: 'Nephrology • +100 XP',
+    category: 'Nephrology',
+    questionsCount: 2,
+    solved: false,
+    isNative: true,
+    questions: [
+      {
+        id: 1,
+        question: "An unresponsive 24-year-old patient is brought to the emergency department. Arterial Blood Gas reveals: pH 7.18, PaCO2 24 mmHg, HCO3- 9 mEq/L. Serum electrolytes: Na+ 140 mEq/L, K+ 4.8 mEq/L, Cl- 98 mEq/L, Glucose 480 mg/dL. Urine is strongly positive for ketones. What is the primary acid-base disturbance?",
+        options: [
+          "A) Normal Anion Gap Metabolic Acidosis",
+          "B) High Anion Gap Metabolic Acidosis (Anion Gap = 33) secondary to Diabetic Ketoacidosis",
+          "C) Primary Respiratory Acidosis with metabolic compensation",
+          "D) Mixed Metabolic Alkalosis and Respiratory Alkalosis"
+        ],
+        correctIndex: 1,
+        explanation: "Anion Gap = Na+ - (Cl- + HCO3-) = 140 - (98 + 9) = 33 mEq/L (Normal is 8-12). An elevated anion gap (>12) with low pH and low bicarbonate in the presence of hyperglycemia and ketonuria establishes High Anion Gap Metabolic Acidosis due to DKA (MUDPILES mnemonic)."
+      },
+      {
+        id: 2,
+        question: "A 9-year-old boy presents with cola-colored urine, periorbital edema, and blood pressure of 145/95 mmHg two weeks after recovering from a bacterial skin infection (impetigo). Urinalysis shows dysmorphic red blood cells and RBC casts. What is the classic immunofluorescence microscopy finding?",
+        options: [
+          "A) Linear IgG deposition along the glomerular basement membrane",
+          "B) Granular 'starry-sky' / lumpy-bumpy subepithelial humps of IgG, IgM, and C3",
+          "C) Normal glomeruli on light microscopy with podocyte effacement on electron microscopy",
+          "D) Mesangial IgA immune complex deposition"
+        ],
+        correctIndex: 1,
+        explanation: "Post-streptococcal glomerulonephritis (PSGN) typically occurs 1-4 weeks after streptococcal pharyngitis or impetigo, presenting with nephritic syndrome (RBC casts, hypertension, edema) and granular 'lumpy-bumpy' subepithelial immune complex deposits of IgG and C3 on immunofluorescence."
+      }
+    ]
+  }
 ]);
 
 function renderQuizzes() {
@@ -899,56 +1115,379 @@ function renderQuizzes() {
   if (!container) return;
   container.innerHTML = '';
   let solvedCount = 0;
-  customQuizzes.forEach(q => {
+
+  const filtered = customQuizzes.filter(q => {
+    const matchesCat = (currentQuizCategoryFilter === 'all') || (q.category && q.category.toLowerCase().includes(currentQuizCategoryFilter.toLowerCase())) || (q.tag && q.tag.toLowerCase().includes(currentQuizCategoryFilter.toLowerCase()));
+    const matchesSearch = !currentQuizSearchQuery || (q.title && q.title.toLowerCase().includes(currentQuizSearchQuery)) || (q.desc && q.desc.toLowerCase().includes(currentQuizSearchQuery));
+    return matchesCat && matchesSearch;
+  });
+
+  filtered.forEach(q => {
     if (q.solved) solvedCount++;
     const card = document.createElement('div');
     card.className = 'qbank-card ' + (q.solved ? 'solved' : '');
+    const qCount = q.questions ? q.questions.length : (q.questionsCount || 10);
     card.innerHTML = `
       <div>
-        <span class="status-badge ${q.solved ? 'status-done' : 'status-pending'}">${q.solved ? '✓ Completed' : 'Not Solved'}</span>
+        <span class="status-badge ${q.solved ? 'status-done' : 'status-pending'}">${q.solved ? '✓ Solved (+100 XP)' : 'Interactive Exam'}</span>
         <h3 style="font-size:17px; margin: 10px 0 6px 0;">${escapeHTML(q.title)}</h3>
         <p style="font-size:13px; color:var(--muted-foreground); margin-bottom: 16px;">${escapeHTML(q.desc)}</p>
       </div>
       <div>
-        <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:12px;">📝 ${q.questions} Questions • ${escapeHTML(q.tag)}</div>
-        <a href="${escapeHTML(q.url)}" target="_blank" class="btn btn-primary" onclick="solveQuiz('${q.id}')">🚀 Start Exam ↗</a>
+        <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:12px;">📝 ${qCount} Questions • ${escapeHTML(q.tag || 'Assessment')}</div>
+        <button class="btn btn-primary" onclick="startNativeQuiz('${q.id}')">🚀 Start Interactive Exam</button>
       </div>
-      <button class="btn-del-item" title="Delete Quiz" onclick="deleteAdminQuiz('${q.id}')">✕</button>
+      <button class="btn-del-item" title="Delete Exam" onclick="deleteAdminQuiz('${q.id}')">✕</button>
     `;
     container.appendChild(card);
   });
   setElText('statQuizzes', `${solvedCount} / ${customQuizzes.length}`);
 }
+
+function filterQuizzes() {
+  currentQuizSearchQuery = (document.getElementById('qbankSearchInput')?.value || '').toLowerCase().trim();
+  renderQuizzes();
+}
+
+function filterQuizCategory(cat, btn) {
+  currentQuizCategoryFilter = cat;
+  document.querySelectorAll('#view-qbank .day-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderQuizzes();
+}
+
 function solveQuiz(id) {
   customQuizzes = customQuizzes.map(q => q.id === id ? Object.assign({}, q, { solved: true }) : q);
-  safeSet('hub_quizzes_custom_v2', customQuizzes);
-  addXP(100); renderQuizzes();
+  safeSet('hub_quizzes_custom_v3', customQuizzes);
+  renderQuizzes();
 }
+
+function deleteAdminQuiz(id) {
+  if (!confirm('Delete this quiz?')) return;
+  customQuizzes = customQuizzes.filter(q => q.id !== id);
+  safeSet('hub_quizzes_custom_v3', customQuizzes);
+  renderQuizzes();
+}
+
+// NATIVE IN-APP QUIZ RUNNER
+let activeExam = null;
+let activeExamIndex = 0;
+let userExamAnswers = {};
+
+function startNativeQuiz(quizId) {
+  const quiz = customQuizzes.find(q => q.id === quizId);
+  if (!quiz) return;
+  if (!quiz.questions || quiz.questions.length === 0) {
+    if (quiz.url) window.open(quiz.url, '_blank');
+    solveQuiz(quizId);
+    return;
+  }
+  activeExam = quiz;
+  activeExamIndex = 0;
+  userExamAnswers = {};
+  
+  setElText('examRunnerTitle', quiz.title);
+  setElText('examRunnerCategory', quiz.tag || 'Interactive Assessment');
+  document.getElementById('examRunnerQuestionContainer').style.display = 'block';
+  document.getElementById('examRunnerFooterNav').style.display = 'flex';
+  document.getElementById('examRunnerResultsContainer').style.display = 'none';
+  
+  renderExamQuestion();
+  document.getElementById('inAppQuizModal').style.display = 'flex';
+}
+
+function closeInAppQuizModal() {
+  document.getElementById('inAppQuizModal').style.display = 'none';
+}
+
+function renderExamQuestion() {
+  if (!activeExam || !activeExam.questions) return;
+  const q = activeExam.questions[activeExamIndex];
+  const total = activeExam.questions.length;
+  
+  setElText('examRunnerProgressText', `Question ${activeExamIndex + 1} of ${total}`);
+  const pct = Math.round(((activeExamIndex + 1) / total) * 100);
+  const bar = document.getElementById('examRunnerProgressBar');
+  if (bar) bar.style.width = pct + '%';
+  
+  setElText('examQuestionStem', `${activeExamIndex + 1}. ${q.question}`);
+  
+  const optContainer = document.getElementById('examOptionList');
+  optContainer.innerHTML = '';
+  
+  const selectedChoice = userExamAnswers[activeExamIndex];
+  
+  q.options.forEach((optText, idx) => {
+    const card = document.createElement('div');
+    const isSelected = selectedChoice === idx;
+    card.className = 'mcq-option-card ' + (isSelected ? 'selected' : '');
+    const letter = ['A', 'B', 'C', 'D', 'E', 'F'][idx] || (idx + 1);
+    card.innerHTML = `
+      <div class="mcq-option-radio">${isSelected ? '●' : letter}</div>
+      <div style="flex:1;">${escapeHTML(optText)}</div>
+    `;
+    card.onclick = () => selectExamOption(idx);
+    optContainer.appendChild(card);
+  });
+  
+  document.getElementById('btnExamPrev').style.visibility = activeExamIndex === 0 ? 'hidden' : 'visible';
+  if (activeExamIndex === total - 1) {
+    document.getElementById('btnExamNext').style.display = 'none';
+    document.getElementById('btnExamSubmit').style.display = 'inline-flex';
+  } else {
+    document.getElementById('btnExamNext').style.display = 'inline-flex';
+    document.getElementById('btnExamSubmit').style.display = 'none';
+  }
+}
+
+function selectExamOption(optionIdx) {
+  userExamAnswers[activeExamIndex] = optionIdx;
+  renderExamQuestion();
+}
+
+function navExamQuestion(delta) {
+  if (!activeExam) return;
+  const nextIdx = activeExamIndex + delta;
+  if (nextIdx >= 0 && nextIdx < activeExam.questions.length) {
+    activeExamIndex = nextIdx;
+    renderExamQuestion();
+  }
+}
+
+function submitInAppExam() {
+  if (!activeExam) return;
+  let correctCount = 0;
+  const total = activeExam.questions.length;
+  
+  const reviewContainer = document.getElementById('examDetailedReview');
+  reviewContainer.innerHTML = '';
+  
+  activeExam.questions.forEach((q, qIdx) => {
+    const userChoice = userExamAnswers[qIdx];
+    const isCorrect = userChoice === q.correctIndex;
+    if (isCorrect) correctCount++;
+    
+    const reviewItem = document.createElement('div');
+    reviewItem.style.cssText = `background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;`;
+    
+    const userChoiceText = userChoice !== undefined ? q.options[userChoice] : 'No answer selected';
+    const correctChoiceText = q.options[q.correctIndex] || 'Correct choice';
+    
+    reviewItem.innerHTML = `
+      <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: ${isCorrect ? '#16a34a' : '#ef4444'};">
+        ${isCorrect ? '✓ Correct' : '✕ Incorrect'} — Question ${qIdx + 1}
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; margin-bottom: 8px;">${escapeHTML(q.question)}</div>
+      <div style="font-size: 13px; margin-bottom: 4px;"><strong>Your Answer:</strong> <span style="color:${isCorrect ? '#16a34a' : '#ef4444'}">${escapeHTML(userChoiceText)}</span></div>
+      ${!isCorrect ? `<div style="font-size: 13px; color: #16a34a; margin-bottom: 6px;"><strong>Correct Answer:</strong> ${escapeHTML(correctChoiceText)}</div>` : ''}
+      <div class="mcq-explanation-box">💡 <strong>Clinical Explanation:</strong> ${escapeHTML(q.explanation || 'High yield medical pearl.')}</div>
+    `;
+    reviewContainer.appendChild(reviewItem);
+  });
+  
+  const scorePct = Math.round((correctCount / total) * 100);
+  setElText('examResultScoreText', `You scored ${correctCount} / ${total} (${scorePct}%)`);
+  setElText('examResultEmoji', scorePct >= 70 ? '🎉' : '📚');
+  setElText('examResultHeading', scorePct >= 70 ? 'Congratulations! Exam Passed!' : 'Exam Completed — Review Below!');
+  
+  document.getElementById('examRunnerQuestionContainer').style.display = 'none';
+  document.getElementById('examRunnerFooterNav').style.display = 'none';
+  document.getElementById('examRunnerResultsContainer').style.display = 'block';
+  
+  solveQuiz(activeExam.id);
+  addXP(100);
+}
+
+// ADMIN MCQ FILE & TEXT AUTO-EXTRACTOR
+let extractedMcqList = [];
+
+function openAdminMcqExtractorModal() {
+  extractedMcqList = [];
+  document.getElementById('mcqTextInput').value = '';
+  document.getElementById('newMcqTitle').value = '';
+  document.getElementById('newMcqCat').value = '';
+  document.getElementById('mcqFileInput').value = '';
+  setElText('mcqExtractStatus', '0 Questions detected');
+  document.getElementById('adminMcqExtractorModal').style.display = 'flex';
+}
+function closeAdminMcqExtractorModal() {
+  document.getElementById('adminMcqExtractorModal').style.display = 'none';
+}
+
+function handleMcqFileUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    document.getElementById('mcqTextInput').value = evt.target.result;
+    extractMcqFromText();
+  };
+  reader.readAsText(file);
+}
+
+function parseMcqText(rawText) {
+  const questions = [];
+  const blocks = rawText.split(/(?=\n\s*(?:(?:Q\s*)?\d+[\.\:\)]|\bQuestion\s+\d+[\.\:\)]))/i);
+  
+  blocks.forEach(block => {
+    const trimmed = block.trim();
+    if (!trimmed) return;
+    const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 2) return;
+    
+    let stem = lines[0].replace(/^(?:(?:Q\s*)?\d+[\.\:\)]|\bQuestion\s+\d+[\.\:\)])\s*/i, '').trim();
+    let options = [];
+    let correctIndex = 0;
+    let explanation = '';
+    
+    lines.forEach((line) => {
+      const optMatch = line.match(/^([A-Da-d])[\)\.\:\-]\s*(.+)$/);
+      if (optMatch) {
+        options.push(line);
+      }
+      const ansMatch = line.match(/^(?:Answer|Ans|Correct|Key)[\:\s]+([A-Da-d1-4])/i);
+      if (ansMatch) {
+        const char = ansMatch[1].toUpperCase();
+        if (char === 'A' || char === '1') correctIndex = 0;
+        else if (char === 'B' || char === '2') correctIndex = 1;
+        else if (char === 'C' || char === '3') correctIndex = 2;
+        else if (char === 'D' || char === '4') correctIndex = 3;
+      }
+      const expMatch = line.match(/^(?:Explanation|Rationale|Pearl|Note)[\:\s]+(.+)$/i);
+      if (expMatch) {
+        explanation = expMatch[1].trim();
+      }
+    });
+    
+    if (options.length === 0 && lines.length >= 5) {
+      options = lines.slice(1, 5);
+    }
+    
+    if (stem && options.length >= 2) {
+      questions.push({
+        id: Date.now() + Math.random(),
+        question: stem,
+        options: options,
+        correctIndex: correctIndex,
+        explanation: explanation || 'High-yield clinical correlation.'
+      });
+    }
+  });
+  return questions;
+}
+
+function extractMcqFromText() {
+  const text = document.getElementById('mcqTextInput').value;
+  if (!text.trim()) return alert('Please enter or upload some MCQ text first!');
+  extractedMcqList = parseMcqText(text);
+  setElText('mcqExtractStatus', `✅ ${extractedMcqList.length} Questions successfully extracted!`);
+}
+
+function publishExtractedExam() {
+  if (extractedMcqList.length === 0) extractMcqFromText();
+  if (extractedMcqList.length === 0) {
+    return alert('No questions detected! Please format your MCQs with A) B) C) D) and Answer: A.');
+  }
+  const title = document.getElementById('newMcqTitle').value.trim() || `Diagnostic Exam (${extractedMcqList.length} MCQs)`;
+  const cat = document.getElementById('newMcqCat').value.trim() || 'Clinical Review';
+  
+  const newQuiz = {
+    id: 'quiz_' + Date.now(),
+    title: title,
+    desc: `${extractedMcqList.length} Interactive Board Exam Questions with instantaneous scoring and explanations.`,
+    tag: `${cat} • +100 XP`,
+    category: cat,
+    questionsCount: extractedMcqList.length,
+    solved: false,
+    isNative: true,
+    questions: extractedMcqList
+  };
+  
+  customQuizzes.unshift(newQuiz);
+  safeSet('hub_quizzes_custom_v3', customQuizzes);
+  closeAdminMcqExtractorModal();
+  renderQuizzes();
+  alert(`🎉 Published "${title}" with ${extractedMcqList.length} interactive MCQs live!`);
+}
+
 function openAdminContentModal() { document.getElementById('adminContentModal').style.display = 'flex'; }
 function closeAdminContentModal() { document.getElementById('adminContentModal').style.display = 'none'; }
 function saveNewAdminContent() {
   const title = document.getElementById('newContentTitle').value.trim(), desc = document.getElementById('newContentDesc').value.trim(), url = document.getElementById('newContentUrl').value.trim(), qCount = parseInt(document.getElementById('newContentQuestions').value) || 10, type = document.getElementById('newContentType').value;
   if (!title) return alert('Enter a title!');
-  customQuizzes.push({ id: 'quiz_' + Date.now(), title, desc: desc || 'Medical Resource', tag: type === 'quiz' ? `Assessment • +100 XP` : `PDF File • +50 XP`, url: url || 'https://forms.google.com', questions: qCount, solved: false });
-  safeSet('hub_quizzes_custom_v2', customQuizzes); closeAdminContentModal(); renderQuizzes();
-}
-function deleteAdminQuiz(id) {
-  if (!confirm('Delete this quiz?')) return;
-  customQuizzes = customQuizzes.filter(q => q.id !== id);
-  safeSet('hub_quizzes_custom_v2', customQuizzes); renderQuizzes();
+  customQuizzes.push({ id: 'quiz_' + Date.now(), title, desc: desc || 'Medical Resource', tag: type === 'quiz' ? `Assessment • +100 XP` : `PDF File • +50 XP`, url: url || 'https://forms.google.com', questionsCount: qCount, solved: false, isNative: false });
+  safeSet('hub_quizzes_custom_v3', customQuizzes); closeAdminContentModal(); renderQuizzes();
 }
 
-// 2. LECTURES
-let customVideos = safeGet('hub_videos_custom_v1', [
-  { id: 'v1', title: 'Cellular Injury, Necrosis & Apoptosis', tag: 'Pathology • 25 Mins', desc: 'Comprehensive breakdown of reversible vs irreversible cell injury.', url: 'https://www.youtube-nocookie.com/embed/pC7sC_Fqf1Q' },
-  { id: 'v2', title: 'Autonomic Nervous System: Receptors & Drugs', tag: 'Pharmacology • 35 Mins', desc: 'Alpha & Beta receptors, cholinergic pathways, and drug mechanisms.', url: 'https://www.youtube-nocookie.com/embed/k4Jb1VfI1hM' },
-  { id: 'v3', title: 'Cardiac Cycle & Heart Sounds', tag: 'Cardiology • 30 Mins', desc: 'Wiggers diagram, systole, diastole, and heart sound generation.', url: 'https://www.youtube-nocookie.com/embed/IS9TD9fHFv0' }
-]);
+// 2. LECTURES & FULL NINJA NERD PLAYLIST SUITE
+let currentVideoCategoryFilter = 'all';
+let currentVideoSearchQuery = '';
+
+const ninjaNerdOfficialPlaylists = [
+  {
+    id: 'nn_cardio',
+    title: 'Ninja Nerd: Cardiology & ECG Masterclass (Full Playlist)',
+    tag: 'Cardiology • Complete Playlist',
+    category: 'Cardiology',
+    desc: 'Full series covering ECG interpretation, cardiac cycle, arrhythmias, murmurs, and heart failure.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJjyCkyAeoZzYw1e9KzGqC1o'
+  },
+  {
+    id: 'nn_neuro',
+    title: 'Ninja Nerd: Neurology & Neuroanatomy Complete Series',
+    tag: 'Neurology • Complete Playlist',
+    category: 'Neurology',
+    desc: 'Cranial nerves, motor & sensory pathways, stroke syndromes, basal ganglia, and neurological exams.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJgXbO0L3wEwhvH5L8z9_9k'
+  },
+  {
+    id: 'nn_renal',
+    title: 'Ninja Nerd: Nephrology, GFR & Acid-Base Balance Series',
+    tag: 'Nephrology • Complete Playlist',
+    category: 'Nephrology',
+    desc: 'Renal tubular transport, RAAS, RTA types 1-4, acid-base disorders, and dialysis indications.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJj7lS2q5_5ZJ1c9eN8u7y6X'
+  },
+  {
+    id: 'nn_pulm',
+    title: 'Ninja Nerd: Pulmonology & Respiratory Physiology Series',
+    tag: 'Pulmonology • Complete Playlist',
+    category: 'Pulmonology',
+    desc: 'V/Q mismatch, obstructive vs restrictive lung diseases, ARDS, and arterial blood gas interpretation.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJi4v8vQ8d4c3f5u3a8b2w7Z'
+  },
+  {
+    id: 'nn_pharma',
+    title: 'Ninja Nerd: High-Yield Clinical Pharmacology Series',
+    tag: 'Pharmacology • Complete Playlist',
+    category: 'Pharmacology',
+    desc: 'Autonomic drugs, antibiotics, antiarrhythmics, anticoagulants, antihypertensives, and toxicity.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJh8i8Y_7a6q3e9d8e5f2g1h'
+  },
+  {
+    id: 'nn_path',
+    title: 'Ninja Nerd: General Pathology & Cellular Injury Series',
+    tag: 'Pathology • Complete Playlist',
+    category: 'Pathology',
+    desc: 'Cellular adaptations, necrosis vs apoptosis, acute & chronic inflammation, and neoplasia.',
+    url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLTF9h-T1TcJg8d5b4c3e2f1a9e8d7c6b5'
+  }
+];
+
+let customVideos = safeGet('hub_videos_custom_v2', ninjaNerdOfficialPlaylists);
+
 function renderVideos() {
   const container = document.getElementById('videoGridContainer');
   if (!container) return;
   container.innerHTML = '';
-  customVideos.forEach(v => {
+  
+  const filtered = customVideos.filter(v => {
+    const matchesCat = (currentVideoCategoryFilter === 'all') || (v.category && v.category.toLowerCase().includes(currentVideoCategoryFilter.toLowerCase())) || (v.tag && v.tag.toLowerCase().includes(currentVideoCategoryFilter.toLowerCase()));
+    const matchesSearch = !currentVideoSearchQuery || (v.title && v.title.toLowerCase().includes(currentVideoSearchQuery)) || (v.desc && v.desc.toLowerCase().includes(currentVideoSearchQuery));
+    return matchesCat && matchesSearch;
+  });
+
+  filtered.forEach(v => {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.innerHTML = `
@@ -959,28 +1498,67 @@ function renderVideos() {
           <h4 class="video-title">${escapeHTML(v.title)}</h4>
           <p class="video-desc">${escapeHTML(v.desc)}</p>
         </div>
-        <button class="btn btn-outline" onclick="addXP(50); alert('🎉 Video completed! +50 XP.');">Mark as Completed ✓</button>
+        <button class="btn btn-outline" onclick="addXP(50); alert('🎉 Video / Playlist session completed! +50 XP.');">Mark as Completed ✓</button>
       </div>
       <button class="btn-del-item" title="Delete Lecture" onclick="deleteAdminVideo('${v.id}')">✕</button>
     `;
     container.appendChild(card);
   });
 }
+
+function filterVideos() {
+  currentVideoSearchQuery = (document.getElementById('videoSearchInput')?.value || '').toLowerCase().trim();
+  renderVideos();
+}
+
+function filterVideoCategory(cat, btn) {
+  currentVideoCategoryFilter = cat;
+  document.querySelectorAll('#view-videos .day-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderVideos();
+}
+
+function loadNinjaNerdPresets() {
+  ninjaNerdOfficialPlaylists.forEach(preset => {
+    if (!customVideos.some(v => v.id === preset.id)) {
+      customVideos.push(preset);
+    }
+  });
+  safeSet('hub_videos_custom_v2', customVideos);
+  renderVideos();
+  alert('⚡ All Ninja Nerd official playlists loaded and ready to play!');
+}
+
+function parseYouTubeEmbedUrl(inputUrl) {
+  let url = inputUrl.trim();
+  const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+  if (playlistMatch) {
+    return `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistMatch[1]}`;
+  }
+  if (url.includes('youtube.com/watch?v=')) {
+    return url.replace('watch?v=', 'embed/');
+  }
+  if (url.includes('youtu.be/')) {
+    return url.replace('youtu.be/', 'www.youtube-nocookie.com/embed/');
+  }
+  return url;
+}
+
 function openAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'flex'; }
 function closeAdminVideoModal() { document.getElementById('adminVideoModal').style.display = 'none'; }
 function saveNewAdminVideo() {
   const title = document.getElementById('newVidTitle').value.trim(), tag = document.getElementById('newVidTag').value.trim(), desc = document.getElementById('newVidDesc').value.trim();
   let url = document.getElementById('newVidUrl').value.trim();
   if (!title || !url) return alert('Fill title and video URL!');
-  if (url.includes('youtube.com/watch?v=')) url = url.replace('watch?v=', 'embed/');
-  else if (url.includes('youtu.be/')) url = url.replace('youtu.be/', 'www.youtube-nocookie.com/embed/');
-  customVideos.push({ id: 'vid_' + Date.now(), title, tag: tag || 'Lecture', desc: desc || 'Medical lecture.', url });
-  safeSet('hub_videos_custom_v1', customVideos); closeAdminVideoModal(); renderVideos();
+  const embedUrl = parseYouTubeEmbedUrl(url);
+  customVideos.unshift({ id: 'vid_' + Date.now(), title, tag: tag || 'Lecture', category: tag, desc: desc || 'Clinical playlist lecture.', url: embedUrl });
+  safeSet('hub_videos_custom_v2', customVideos); closeAdminVideoModal(); renderVideos();
+  alert('🎉 Video / Playlist Published Live!');
 }
 function deleteAdminVideo(id) {
-  if (!confirm('Delete this video?')) return;
+  if (!confirm('Delete this video/playlist?')) return;
   customVideos = customVideos.filter(v => v.id !== id);
-  safeSet('hub_videos_custom_v1', customVideos); renderVideos();
+  safeSet('hub_videos_custom_v2', customVideos); renderVideos();
 }
 
 // 3. STETHOSCOPE AUSCULTATION SIMULATOR
@@ -1438,7 +2016,6 @@ function setCustomFocusTime() {
   updatePomodoroDisplay();
   alert(`✅ Custom study timer set to ${val} minutes!`);
 }
-
 function updatePomodoroDisplay() {
   const mins = String(Math.floor(pomodoroSecondsLeft / 60)).padStart(2, '0'), secs = String(pomodoroSecondsLeft % 60).padStart(2, '0');
   setElText('pomodoroDisplay', `${mins}:${secs}`);
