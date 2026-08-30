@@ -3898,4 +3898,9 @@ function saveAdminCountdown() {
   const dateInput = document.getElementById('adminTargetDate').value, titleInput = document.getElementById('adminAnnounceTitle').value, descInput = document.getElementById('adminAnnounceDesc').value;
   if (dateInput) { targetExamTimestamp = new Date(dateInput).getTime(); safeSet('hub_exam_target_ts', targetExamTimestamp); }
   if (titleInput) { safeSet('hub_ann_title', titleInput); setElText('displayAnnounceTitle', titleInput); }
-  if (descI
+  if (descInput) { safeSet('hub_ann_desc', descInput); setElText('displayAnnounceDesc', descInput); }
+  closeAdminModal(); updateCountdownTimer();
+}
+</script>
+</body>
+</html>'''
