@@ -1,4 +1,4 @@
-code = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -35,38 +35,63 @@ code = r'''<!DOCTYPE html>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 
 <style>
+  
   :root {
     --primary: #155dfc;
-    --primary-hover: #1447e6;
+    --primary-hover: #1048ca;
     --primary-tint: rgba(21, 93, 252, 0.08);
-    --foreground: #101828;
+    --primary-glow: rgba(21, 93, 252, 0.22);
+    --secondary: #6366f1;
+    --foreground: #0f172a;
     --muted-foreground: #64748b;
     --background: #f8fafc;
     --card-bg: #ffffff;
+    --card-hover: #fcfdfe;
     --sidebar-bg: #ffffff;
     --border: #e2e8f0;
     --border-hover: #cbd5e1;
     --success: #16a34a;
     --danger: #ef4444;
     --warning: #f59e0b;
-    --radius-lg: 16px;
+    --radius-xl: 18px;
+    --radius-lg: 14px;
     --radius-md: 10px;
+    --radius-sm: 6px;
     --radius-full: 9999px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
   }
 
   [data-theme="dark"] {
-    --foreground: #f1f5f9;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-tint: rgba(59, 130, 246, 0.14);
+    --primary-glow: rgba(59, 130, 246, 0.3);
+    --foreground: #f8fafc;
     --muted-foreground: #94a3b8;
     --background: #090d16;
     --card-bg: #111827;
-    --sidebar-bg: #0f172a;
+    --card-hover: #151f32;
+    --sidebar-bg: #0d1322;
     --border: #1e293b;
     --border-hover: #334155;
-    --primary-tint: rgba(21, 93, 252, 0.2);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease; }
-  body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
+  body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+
+  /* SIDEBAR CATEGORY GROUP HEADERS */
+  .nav-group-header {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted-foreground);
+    padding: 10px 12px 4px 12px;
+    opacity: 0.8;
+  }
+
 
   /* OWNER ONLY SYSTEM VISIBILITY */
   body:not(.is-admin-mode) .admin-only {
@@ -1820,36 +1845,67 @@ function renderSidebarNavigation() {
   const menuContainer = document.getElementById('sidebarNavMenu');
   if (!menuContainer) return;
 
-  // Preserve manage section buttons container at bottom
-  let adminControls = menuContainer.querySelector('.admin-sidebar-controls');
-  if (!adminControls) {
-    adminControls = document.createElement('div');
-    adminControls.className = 'admin-sidebar-controls admin-only';
-    adminControls.style.cssText = 'display:flex; flex-direction:column; gap:5px; margin-top:12px;';
-    adminControls.innerHTML = `
-      <div class="nav-item" onclick="openManageSectionsModal()" style="background: var(--background); border: 1px solid var(--border); justify-content: center; font-weight: 600;">
-        <span>⚙️</span> Manage Sections
-      </div>
-      <div class="nav-item" onclick="openCreateSectionModal()" style="border: 1.5px dashed var(--primary); color: var(--primary); justify-content: center; font-weight: 700;">
-        <span>➕</span> Add New Section
-      </div>
-    `;
-  }
-
   menuContainer.innerHTML = '';
 
-  hubSectionsList.forEach((sec, idx) => {
-    if (sec.visible === false) return;
+  const groups = {
+    'LEARN': ['overview', 'videos', 'planner'],
+    'PRACTICE': ['qbank'],
+    'REVIEW': ['flashcards', 'mnemonics', 'cheatsheet'],
+    'CLINICAL LAB': ['stethoscope', 'antibiotics', 'oral', 'whiteboard'],
+    'PRODUCTIVITY': ['focus'],
+    'PROGRESS': ['analytics']
+  };
 
-    const nav = document.createElement('div');
-    nav.className = 'nav-item';
-    nav.id = 'nav-' + sec.id;
-    nav.setAttribute('onclick', `goToTab('${sec.id}')`);
-    nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
-    menuContainer.appendChild(nav);
+  const groupIcons = {
+    'LEARN': '📚',
+    'PRACTICE': '🎯',
+    'REVIEW': '🗂️',
+    'CLINICAL LAB': '🩺',
+    'PRODUCTIVITY': '⏳',
+    'PROGRESS': '📈'
+  };
+
+  // Render grouped built-in sections
+  Object.keys(groups).forEach(groupName => {
+    const sectionIds = groups[groupName];
+    const visibleSectionsInGroup = hubSectionsList.filter(s => sectionIds.includes(s.id) && s.visible !== false);
+
+    if (visibleSectionsInGroup.length > 0) {
+      const header = document.createElement('div');
+      header.className = 'nav-group-header';
+      header.textContent = `${groupIcons[groupName]} ${groupName}`;
+      menuContainer.appendChild(header);
+
+      visibleSectionsInGroup.forEach(sec => {
+        const nav = document.createElement('div');
+        nav.className = 'nav-item';
+        nav.id = 'nav-' + sec.id;
+        nav.setAttribute('onclick', `goToTab('${sec.id}')`);
+        nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
+        menuContainer.appendChild(nav);
+      });
+    }
   });
 
-  // Add Telemetry for Admin
+  // Render Custom Sections under CUSTOM category
+  const customSecs = hubSectionsList.filter(s => !s.isBuiltin && s.visible !== false);
+  if (customSecs.length > 0) {
+    const customHeader = document.createElement('div');
+    customHeader.className = 'nav-group-header';
+    customHeader.textContent = '📁 CUSTOM SECTIONS';
+    menuContainer.appendChild(customHeader);
+
+    customSecs.forEach(sec => {
+      const nav = document.createElement('div');
+      nav.className = 'nav-item';
+      nav.id = 'nav-' + sec.id;
+      nav.setAttribute('onclick', `goToTab('${sec.id}')`);
+      nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
+      menuContainer.appendChild(nav);
+    });
+  }
+
+  // Add Telemetry for Owner
   const telemetryNav = document.createElement('div');
   telemetryNav.className = 'nav-item admin-only';
   telemetryNav.id = 'nav-students_admin';
@@ -1857,6 +1913,18 @@ function renderSidebarNavigation() {
   telemetryNav.innerHTML = '<span>🔒</span> Student Telemetry';
   menuContainer.appendChild(telemetryNav);
 
+  // Admin Sidebar Actions
+  const adminControls = document.createElement('div');
+  adminControls.className = 'admin-sidebar-controls admin-only';
+  adminControls.style.cssText = 'display:flex; flex-direction:column; gap:6px; margin-top:14px; padding-top:10px; border-top:1px dashed var(--border);';
+  adminControls.innerHTML = `
+    <div class="nav-item" onclick="openManageSectionsModal()" style="background: var(--background); border: 1px solid var(--border); justify-content: center; font-weight: 600;">
+      <span>⚙️</span> Manage Sections
+    </div>
+    <div class="nav-item" onclick="openCreateSectionModal()" style="border: 1.5px dashed var(--primary); color: var(--primary); justify-content: center; font-weight: 700;">
+      <span>➕</span> Add New Section
+    </div>
+  `;
   menuContainer.appendChild(adminControls);
 }
 
@@ -4358,4 +4426,4 @@ function saveAdminCountdown() {
 }
 </script>
 </body>
-</html>'''
+</html>
