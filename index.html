@@ -557,6 +557,165 @@
     .nav-item { white-space: nowrap; }
     .main-content { padding: 20px 14px; }
   }
+
+  /* UNIVERSAL SECTION & CARD GRID FIXES (PREVENTS OVERLAPPING) */
+  .view-panel {
+    display: none;
+    width: 100%;
+    min-width: 0;
+    clear: both;
+    position: relative;
+  }
+  .view-panel.active {
+    display: block;
+    animation: fadeIn 0.15s ease-in;
+  }
+
+  .section-deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .section-deck-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .section-deck-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .deck-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .deck-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--primary-tint);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .deck-title {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .deck-desc {
+    font-size: 12.5px;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 14px;
+    word-break: break-word;
+  }
+
+  .deck-meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .star-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    color: #94a3b8;
+    transition: transform 0.15s ease, color 0.15s ease;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .star-btn:hover {
+    transform: scale(1.2);
+    color: #f59e0b;
+  }
+  .star-btn.starred {
+    color: #f59e0b !important;
+  }
+
+  /* PERSISTENT BOTTOM FLASHCARD PROGRESS BAR */
+  .persistent-progress-footer {
+    position: sticky;
+    bottom: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 20px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
+    margin-top: 24px;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+  }
+  .persistent-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .filter-pill-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .filter-pill {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 12.5px;
+    font-weight: 600;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-pill:hover {
+    border-color: var(--primary);
+    color: var(--foreground);
+  }
+  .filter-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
 </style>
 </head>
 <body>
@@ -631,6 +790,24 @@
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-primary" onclick="saveNewSubSection()">Save Sub-Section 🚀</button>
       <button class="btn btn-outline" onclick="closeAddSubSectionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MANAGE FLASHCARD SECTIONS MODAL (ADMIN ONLY) -->
+<div class="modal-overlay" id="manageFlashcardSectionsModal">
+  <div class="auth-card" style="max-width: 580px; text-align: left; max-height: 90vh; overflow-y: auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="font-size: 18px;">🗂️ Organize Flashcard Subjects & Decks</h3>
+      <button class="btn btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="openAddFlashcardSectionPrompt()">➕ Add Subject Deck</button>
+    </div>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Rename, reorder (Move Up/Down), or remove flashcard subject collections.</p>
+    
+    <div id="flashcardSectionsListContainer" style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;"></div>
+
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-outline" onclick="closeManageFlashcardSectionsModal()">Close</button>
     </div>
   </div>
 </div>
@@ -1348,39 +1525,103 @@
       </div>
     </div>
 
-    <!-- 10. FLASHCARDS -->
+    
+    <!-- 10. FLASHCARDS HIERARCHICAL MANAGEMENT SYSTEM -->
     <div id="view-flashcards" class="view-panel">
-      <div class="panel-header" style="text-align: center;">
-        <div style="width:100%;">
-          <h2 class="panel-title">High-Yield Flashcard Deck</h2>
-          <p class="panel-subtitle">Click card to flip! (+15 XP per card mastered)</p>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; width:100%; margin-top:8px;">
-          <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Flashcards from File / PDF (Admin)</button>
-          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
-          <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px; color:#ef4444;" onclick="clearFlashcardDeck()">🗑️ Clear Deck</button>
-        </div>
-      </div>
-
-      <div class="flashcard-wrapper">
-        <div class="flashcard" id="activeFlashcard" onclick="flipFlashcard()">
-          <div class="flashcard-face flashcard-front">
-            <span class="flashcard-badge" id="fcCategory">Pharmacology</span>
-            <div class="flashcard-text" id="fcQuestion">Loading Flashcard...</div>
-            <span class="flashcard-hint">👆 Click anywhere to reveal answer</span>
+      
+      <!-- SUB-VIEW A: SUBJECT / DECK SELECTION SCREEN -->
+      <div id="fcSubjectDeckSelectionView">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">🗂️ Flashcards Mastery & Subject Decks</h2>
+            <p class="panel-subtitle">Select a medical subject deck or practice starred high-yield cards. (+15 XP per card mastered)</p>
           </div>
-          <div class="flashcard-face flashcard-back">
-            <span class="flashcard-badge" style="background:#dcfce7; color:#15803d;">Key Answer</span>
-            <div class="flashcard-text" id="fcAnswer">Answer...</div>
-            <span class="flashcard-hint">👆 Click to flip back</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openManageFlashcardSectionsModal()">⚙️ Organize Subject Decks</button>
+            <button class="btn btn-primary admin-only" style="width: auto; padding: 8px 16px;" onclick="openAdminFlashcardExtractorModal()">📝 + Extract Cards from File / PDF</button>
+            <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px;" onclick="openUniversalAddModal('flashcard')">⚙️ + Add Single Card</button>
           </div>
         </div>
-        <button class="btn-del-item admin-only" title="Delete Flashcard" onclick="deleteFlashcard()">✕</button>
+
+        <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+          <input type="text" id="fcDeckSearchInput" class="search-input-box" style="margin:0; flex:1;" placeholder="🔍 Search flashcard subjects, topics, or keywords..." oninput="filterFlashcardDecks()">
+          <div class="filter-pill-bar" style="margin:0;">
+            <button class="filter-pill active" id="btnFcFilterAllDecks" onclick="filterFcDecksByCategory('all', this)">All Subjects</button>
+            <button class="filter-pill" onclick="filterFcDecksByCategory('starred', this)">⭐ Starred Only</button>
+          </div>
+        </div>
+
+        <!-- SUBJECT DECKS GRID -->
+        <div class="section-deck-grid" id="fcSubjectDeckGrid"></div>
       </div>
 
-      <div class="flashcard-controls">
-        <button class="btn btn-outline" style="width: auto; padding: 10px 22px;" onclick="prevCard()">← Prev</button>
-        <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="nextCard()">Next Card (+15 XP) →</button>
+      <!-- SUB-VIEW B: ACTIVE FLASHCARD STUDY & REVIEW DECK -->
+      <div id="fcActiveStudyDeckView" style="display:none;">
+        <div class="panel-header">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-outline" style="width:auto; padding:7px 14px; font-size:12.5px;" onclick="returnToFlashcardDecks()">← Back to All Subjects</button>
+            <div>
+              <h2 class="panel-title" id="fcActiveDeckTitle">Anatomy Deck</h2>
+              <p class="panel-subtitle" id="fcActiveDeckSubtitle">Reviewing cards with active spaced-repetition.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-outline admin-only" style="width: auto; padding: 8px 14px; color:#ef4444;" onclick="clearActiveFlashcardDeck()">🗑️ Clear This Deck</button>
+          </div>
+        </div>
+
+        <!-- FILTER PILLS INSIDE DECK -->
+        <div class="filter-pill-bar">
+          <button class="filter-pill active" id="btnFcCardFilterAll" onclick="setFlashcardCardFilter('all', this)">All Cards</button>
+          <button class="filter-pill" id="btnFcCardFilterStar" onclick="setFlashcardCardFilter('starred', this)">⭐ Favorites (<span id="fcStarredCountBadge">0</span>)</button>
+          <button class="filter-pill" id="btnFcCardFilterCompleted" onclick="setFlashcardCardFilter('completed', this)">✓ Completed</button>
+          <button class="filter-pill" id="btnFcCardFilterUncompleted" onclick="setFlashcardCardFilter('uncompleted', this)">○ Uncompleted</button>
+        </div>
+
+        <!-- INTERACTIVE FLASHCARD CONTAINER -->
+        <div class="flashcard-wrapper">
+          <div class="flashcard" id="activeFlashcard" onclick="flipFlashcard()">
+            <!-- FRONT FACE -->
+            <div class="flashcard-face flashcard-front">
+              <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                <span class="flashcard-badge" id="fcCategory">Pharmacology</span>
+                <button class="star-btn" id="fcCardStarBtn" onclick="event.stopPropagation(); toggleCurrentCardStar();" title="Favorite / Star Card">☆</button>
+              </div>
+              <div class="flashcard-text" id="fcQuestion">Loading Flashcard...</div>
+              <span class="flashcard-hint">👆 Click anywhere to reveal answer</span>
+            </div>
+
+            <!-- BACK FACE -->
+            <div class="flashcard-face flashcard-back">
+              <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                <span class="flashcard-badge" style="background:#dcfce7; color:#15803d;">Verified Answer</span>
+                <span id="fcCardCompletionBadge" style="font-size:11px; font-weight:700; color:#16a34a;">✓ Mastered</span>
+              </div>
+              <div class="flashcard-text" id="fcAnswer">Answer...</div>
+              <span class="flashcard-hint">👆 Click to flip back</span>
+            </div>
+          </div>
+          <button class="btn-del-item admin-only" title="Delete Flashcard" onclick="deleteCurrentFlashcard()">✕</button>
+        </div>
+
+        <!-- CONTROLS & COMPLETION BUTTONS -->
+        <div class="flashcard-controls" style="margin-top:14px;">
+          <button class="btn btn-outline" style="width: auto; padding: 10px 20px;" onclick="prevCard()">← Prev</button>
+          <button class="btn btn-outline" style="width: auto; padding: 10px 20px;" id="btnToggleCardCompleted" onclick="toggleCurrentCardCompleted()">✓ Mark Completed (+15 XP)</button>
+          <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="nextCard()">Next Card →</button>
+        </div>
+
+        <!-- PERSISTENT BOTTOM PROGRESS BAR -->
+        <div class="persistent-progress-footer">
+          <div class="persistent-progress-meta">
+            <span id="fcProgressFooterLabel">Deck Progress: 0%</span>
+            <span id="fcProgressFooterNumbers">0 / 0 cards completed</span>
+          </div>
+          <div class="progress-bar-bg" style="margin: 0;">
+            <div class="progress-bar-fill" id="fcPersistentProgressBar" style="width: 0%;"></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1668,7 +1909,7 @@ function signInWithEmailManual() {
   
   verifyOwnerOnSignIn();
   
-  renderSidebarNavigation(); renderCustomSections(); renderQbankCategoryTabs(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry();
+  renderSidebarNavigation(); renderCustomSections(); renderQbankCategoryTabs(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcardDecks(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry();
 }
 
 
@@ -1822,7 +2063,7 @@ function checkFullAccess() {
     if (userBtnContainer && userBtnContainer.children.length === 0) Clerk.mountUserButton(userBtnContainer);
 
     verifyOwnerOnSignIn();
-    renderSidebarNavigation(); renderCustomSections(); renderQbankCategoryTabs(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcard(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
+    renderSidebarNavigation(); renderCustomSections(); renderQbankCategoryTabs(); renderQuizzes(); renderVideoTabs(); renderVideos(); renderSteth(); renderAbx(); renderMnemonics(); renderOralQuestion(); renderFlashcardDecks(); renderDirectory(); renderPlanner(); renderQA(); renderRank(); updateCountdownTimer(); initWhiteboard(); renderWrongQuestionsStatus(); renderFocusSoundButtons(); renderAnalyticsRings(); renderStudentTelemetry(); applyAdminModeUI(); applySectionsVisibility();
   } else {
     document.getElementById('authOverlay').style.display = 'flex';
     document.getElementById('mainDashboard').style.display = 'none';
@@ -3629,186 +3870,430 @@ function deleteAdminVideo(id) {
   renderVideos();
 }
 
-// 5. FLASHCARDS & FILE AUTO-EXTRACTOR (CLEAN QUESTION STEM FRONT & RIGHT ANSWER ONLY BACK)
-let customFlashcards = safeGet('hub_fc_custom_v2', [
-  { cat: "Pharmacology", q: "What is the primary mechanism of action of ACE inhibitors (e.g., Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
-  { cat: "Pathology", q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' appearance, pathognomonic for Hodgkin Lymphoma." },
-  { cat: "Cardiology", q: "Which heart sound is associated with heart failure and rapid ventricular filling?", a: "S3 Gallop (Ventricular Gallop)." }
-]);
-let currentCardIndex = 0;
-let extractedFcList = [];
 
-function renderFlashcard() {
-  if (customFlashcards.length === 0) {
-    setElText('fcCategory', 'Empty Deck');
-    setElText('fcQuestion', 'No flashcards in deck. Click "+ Extract Flashcards from File / PDF" to auto-import questions!');
-    setElText('fcAnswer', 'No answer');
-    setElText('statFlashcards', '0%');
-    renderAnalyticsRings();
-    return;
+// ==================== HIERARCHICAL FLASHCARDS & STAR / PROGRESS SYSTEM ====================
+
+// 1. FLASHCARD SUBJECT DECKS & COLLECTIONS
+let flashcardDecks = safeGet('hub_fc_decks_v2', [
+  {
+    id: 'deck_anatomy',
+    title: 'Anatomy & Histology',
+    icon: '🫀',
+    desc: 'Coronary circulation, cardiac valves, cranial nerves, and musculoskeletal systems.',
+    cards: [
+      { id: 'fc_a1', q: "What coronary artery supplies the Sinoatrial (SA) node in 60% of individuals?", a: "Right Coronary Artery (RCA) via the SA nodal branch." },
+      { id: 'fc_a2', q: "Which anatomical landmark divides the upper and lower gastrointestinal tracts?", a: "Ligament of Treitz (Suspensory muscle of the duodenum)." },
+      { id: 'fc_a3', q: "What nerve is susceptible to injury during thyroid surgery near the inferior thyroid artery?", a: "Recurrent Laryngeal Nerve (causes vocal cord paralysis/hoarseness)." }
+    ]
+  },
+  {
+    id: 'deck_physiology',
+    title: 'Medical Physiology',
+    icon: '🧠',
+    desc: 'Action potentials, cardiac output, renal clearances, and respiratory gas exchange.',
+    cards: [
+      { id: 'fc_p1', q: "What physiological mechanism causes the plateau phase (Phase 2) of cardiac ventricular action potentials?", a: "Opening of voltage-gated L-type Ca2+ channels balanced by outward K+ efflux." },
+      { id: 'fc_p2', q: "Which segment of the renal tubule is impermeable to water regardless of ADH level?", a: "Thick Ascending Limb of the Loop of Henle (diluting segment)." }
+    ]
+  },
+  {
+    id: 'deck_pharmacology',
+    title: 'Clinical Pharmacology',
+    icon: '💊',
+    desc: 'Autonomic agents, antimicrobial spectrums, antiarrhythmics, and toxicities.',
+    cards: [
+      { id: 'fc_ph1', q: "What is the primary mechanism of action of ACE inhibitors (e.g. Lisinopril)?", a: "Inhibits conversion of Angiotensin I to Angiotensin II, decreasing aldosterone & causing vasodilation." },
+      { id: 'fc_ph2', q: "What is the antidote for Beta-blocker toxicity refractory to atropine?", a: "Intravenous Glucagon (stimulates adenylate cyclase independently of beta receptors)." }
+    ]
+  },
+  {
+    id: 'deck_pathology',
+    title: 'General & Systemic Pathology',
+    icon: '🔬',
+    desc: 'Cellular necrosis, oncogenesis, vasculitides, and characteristic histopathology.',
+    cards: [
+      { id: 'fc_pa1', q: "What is the classic histological hallmark of Reed-Sternberg cells?", a: "Binucleated 'owl-eye' inclusion-like nucleoli, pathognomonic for Hodgkin Lymphoma." },
+      { id: 'fc_pa2', q: "What type of necrosis is classically seen in myocardial infarction and renal infarction?", a: "Coagulative necrosis (preserves cellular architecture with ghost cells)." }
+    ]
+  },
+  {
+    id: 'deck_biochemistry',
+    title: 'Biochemistry & Genetics',
+    icon: '🧪',
+    desc: 'Metabolic pathways, enzyme kinetics, vitamin deficiencies, and storage diseases.',
+    cards: [
+      { id: 'fc_b1', q: "What rate-limiting enzyme regulates glycolysis and is inhibited by ATP and Citrate?", a: "Phosphofructokinase-1 (PFK-1)." },
+      { id: 'fc_b2', q: "Deficiency of which enzyme causes Galactosemia with cataract development?", a: "Galactokinase (mild) or Galactose-1-Phosphate Uridyltransferase (severe)." }
+    ]
   }
-  if (currentCardIndex >= customFlashcards.length) currentCardIndex = 0;
-  const card = customFlashcards[currentCardIndex];
-  const fc = document.getElementById('activeFlashcard');
-  if (fc) fc.classList.remove('flipped');
-  setElText('fcCategory', `${card.cat || 'Medical Concept'} (${currentCardIndex + 1}/${customFlashcards.length})`);
-  setElText('fcQuestion', card.q);
-  setElText('fcAnswer', card.a);
-  setElText('statFlashcards', Math.round(((currentCardIndex + 1) / customFlashcards.length) * 100) + '%');
+]);
+
+// USER-SPECIFIC PROGRESS & FAVORITES STORES
+let userCardProgress = safeGet('hub_fc_user_progress_v2', {}); // { [cardId]: { completed: boolean, starred: boolean } }
+let userQuestionStars = safeGet('hub_qbank_user_stars_v2', {}); // { [questionKey]: boolean }
+
+let activeFcDeckId = null;
+let activeFcFilteredCards = [];
+let activeFcCardIndex = 0;
+let currentFcFilter = 'all'; // 'all', 'starred', 'completed', 'uncompleted'
+
+// RENDER FLASHCARD SUBJECT DECKS (MAIN GRID)
+function renderFlashcardDecks() {
+  const container = document.getElementById('fcSubjectDeckGrid');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const searchInput = (document.getElementById('fcDeckSearchInput')?.value || '').toLowerCase().trim();
+
+  flashcardDecks.forEach((deck, idx) => {
+    if (searchInput && !deck.title.toLowerCase().includes(searchInput) && !deck.desc.toLowerCase().includes(searchInput)) {
+      return;
+    }
+
+    const totalCards = deck.cards ? deck.cards.length : 0;
+    let completedCards = 0;
+    let starredCards = 0;
+
+    if (deck.cards) {
+      deck.cards.forEach(c => {
+        const prog = userCardProgress[c.id];
+        if (prog && prog.completed) completedCards++;
+        if (prog && prog.starred) starredCards++;
+      });
+    }
+
+    const pct = totalCards ? Math.round((completedCards / totalCards) * 100) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'section-deck-card';
+    card.innerHTML = `
+      <div>
+        <div class="deck-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="deck-icon-badge">${escapeHTML(deck.icon || '🗂️')}</div>
+            <div>
+              <h3 class="deck-title">${escapeHTML(deck.title)}</h3>
+              <div style="font-size:11.5px; color:var(--muted-foreground);">${totalCards} Flashcard${totalCards === 1 ? '' : 's'} • ⭐ ${starredCards} Starred</div>
+            </div>
+          </div>
+          <button class="btn-del-item admin-only" style="position:static;" onclick="deleteFlashcardDeck('${deck.id}')">✕</button>
+        </div>
+
+        <p class="deck-desc">${escapeHTML(deck.desc || 'High-yield clinical deck.')}</p>
+      </div>
+
+      <div>
+        <div class="deck-meta-bar">
+          <span>Mastery Progress</span>
+          <span style="color:var(--primary); font-weight:700;">${pct}% (${completedCards}/${totalCards})</span>
+        </div>
+        <div class="progress-bar-bg" style="margin-bottom:14px;">
+          <div class="progress-bar-fill" style="width: ${pct}%;"></div>
+        </div>
+
+        <button class="btn btn-primary" onclick="openFlashcardStudyDeck('${deck.id}')">Review Subject Deck →</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  if (container.children.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state-card" style="grid-column: 1/-1;">
+        <div class="empty-state-icon">🗂️</div>
+        <div class="empty-state-title">No Flashcard Decks Found</div>
+        <div class="empty-state-desc">Click "+ Extract Cards from File / PDF" or "+ Add Subject Deck" to build your custom medical review collection.</div>
+        <button class="btn btn-primary admin-only" style="width:auto; padding:8px 20px;" onclick="openManageFlashcardSectionsModal()">➕ Add Subject Deck</button>
+      </div>
+    `;
+  }
+}
+
+function filterFlashcardDecks() { renderFlashcardDecks(); }
+function filterFcDecksByCategory(cat, btn) {
+  document.querySelectorAll('#fcSubjectDeckSelectionView .filter-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderFlashcardDecks();
+}
+
+// OPEN A SUBJECT DECK FOR STUDY
+function openFlashcardStudyDeck(deckId) {
+  const deck = flashcardDecks.find(d => d.id === deckId);
+  if (!deck) return;
+
+  activeFcDeckId = deckId;
+  currentFcFilter = 'all';
+  activeFcCardIndex = 0;
+
+  setElText('fcActiveDeckTitle', `${deck.icon || '🗂️'} ${deck.title}`);
+  setElText('fcActiveDeckSubtitle', `${deck.cards ? deck.cards.length : 0} Total Cards • Active Spaced-Repetition Review`);
+
+  document.getElementById('fcSubjectDeckSelectionView').style.display = 'none';
+  document.getElementById('fcActiveStudyDeckView').style.display = 'block';
+
+  document.querySelectorAll('#fcActiveStudyDeckView .filter-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('btnFcCardFilterAll')?.classList.add('active');
+
+  applyCardFilterAndRender();
+}
+
+function returnToFlashcardDecks() {
+  document.getElementById('fcActiveStudyDeckView').style.display = 'none';
+  document.getElementById('fcSubjectDeckSelectionView').style.display = 'block';
+  renderFlashcardDecks();
   renderAnalyticsRings();
 }
+
+function applyCardFilterAndRender() {
+  const deck = flashcardDecks.find(d => d.id === activeFcDeckId);
+  if (!deck || !deck.cards) { activeFcFilteredCards = []; return; }
+
+  let starredCount = 0;
+  deck.cards.forEach(c => {
+    if (userCardProgress[c.id] && userCardProgress[c.id].starred) starredCount++;
+  });
+  setElText('fcStarredCountBadge', starredCount);
+
+  if (currentFcFilter === 'starred') {
+    activeFcFilteredCards = deck.cards.filter(c => userCardProgress[c.id] && userCardProgress[c.id].starred);
+  } else if (currentFcFilter === 'completed') {
+    activeFcFilteredCards = deck.cards.filter(c => userCardProgress[c.id] && userCardProgress[c.id].completed);
+  } else if (currentFcFilter === 'uncompleted') {
+    activeFcFilteredCards = deck.cards.filter(c => !(userCardProgress[c.id] && userCardProgress[c.id].completed));
+  } else {
+    activeFcFilteredCards = deck.cards.slice();
+  }
+
+  if (activeFcCardIndex >= activeFcFilteredCards.length) activeFcCardIndex = 0;
+  renderActiveStudyCard();
+  updatePersistentProgressFooter();
+}
+
+function setFlashcardCardFilter(filterType, btn) {
+  currentFcFilter = filterType;
+  document.querySelectorAll('#fcActiveStudyDeckView .filter-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  activeFcCardIndex = 0;
+  applyCardFilterAndRender();
+}
+
+function renderActiveStudyCard() {
+  const fc = document.getElementById('activeFlashcard');
+  if (fc) fc.classList.remove('flipped');
+
+  if (activeFcFilteredCards.length === 0) {
+    setElText('fcCategory', 'Empty Filter');
+    setElText('fcQuestion', 'No cards match this filter. Switch filter to "All Cards" or star some cards!');
+    setElText('fcAnswer', 'No answers in this filter.');
+    document.getElementById('fcCardStarBtn').textContent = '☆';
+    document.getElementById('fcCardStarBtn').classList.remove('starred');
+    return;
+  }
+
+  const card = activeFcFilteredCards[activeFcCardIndex];
+  const deck = flashcardDecks.find(d => d.id === activeFcDeckId);
+  const prog = userCardProgress[card.id] || {};
+
+  setElText('fcCategory', `${deck ? deck.title : 'Medical'} (${activeFcCardIndex + 1}/${activeFcFilteredCards.length})`);
+  setElText('fcQuestion', card.q);
+  setElText('fcAnswer', card.a);
+
+  // Star button state
+  const starBtn = document.getElementById('fcCardStarBtn');
+  if (starBtn) {
+    starBtn.textContent = prog.starred ? '⭐' : '☆';
+    starBtn.classList.toggle('starred', !!prog.starred);
+  }
+
+  // Completion button state
+  const compBtn = document.getElementById('btnToggleCardCompleted');
+  if (compBtn) {
+    compBtn.textContent = prog.completed ? '✓ Mastered (Click to Reset)' : '✓ Mark Completed (+15 XP)';
+    compBtn.style.color = prog.completed ? '#16a34a' : 'var(--foreground)';
+  }
+
+  const compBadge = document.getElementById('fcCardCompletionBadge');
+  if (compBadge) {
+    compBadge.style.display = prog.completed ? 'inline' : 'none';
+  }
+}
+
 function flipFlashcard() { document.getElementById('activeFlashcard')?.classList.toggle('flipped'); }
-function nextCard() { addXP(15); currentCardIndex = (currentCardIndex + 1) % customFlashcards.length; renderFlashcard(); }
-function prevCard() { currentCardIndex = (currentCardIndex - 1 + customFlashcards.length) % customFlashcards.length; renderFlashcard(); }
-function deleteFlashcard() {
-  if (customFlashcards.length === 0) return;
+
+function nextCard() {
+  if (activeFcFilteredCards.length === 0) return;
+  activeFcCardIndex = (activeFcCardIndex + 1) % activeFcFilteredCards.length;
+  renderActiveStudyCard();
+}
+
+function prevCard() {
+  if (activeFcFilteredCards.length === 0) return;
+  activeFcCardIndex = (activeFcCardIndex - 1 + activeFcFilteredCards.length) % activeFcFilteredCards.length;
+  renderActiveStudyCard();
+}
+
+function toggleCurrentCardStar() {
+  if (activeFcFilteredCards.length === 0) return;
+  const card = activeFcFilteredCards[activeFcCardIndex];
+  if (!userCardProgress[card.id]) userCardProgress[card.id] = {};
+  userCardProgress[card.id].starred = !userCardProgress[card.id].starred;
+
+  safeSet('hub_fc_user_progress_v2', userCardProgress);
+  applyCardFilterAndRender();
+}
+
+function toggleCurrentCardCompleted() {
+  if (activeFcFilteredCards.length === 0) return;
+  const card = activeFcFilteredCards[activeFcCardIndex];
+  if (!userCardProgress[card.id]) userCardProgress[card.id] = {};
+  userCardProgress[card.id].completed = !userCardProgress[card.id].completed;
+
+  if (userCardProgress[card.id].completed) addXP(15);
+
+  safeSet('hub_fc_user_progress_v2', userCardProgress);
+  applyCardFilterAndRender();
+  updatePersistentProgressFooter();
+}
+
+function updatePersistentProgressFooter() {
+  const deck = flashcardDecks.find(d => d.id === activeFcDeckId);
+  if (!deck || !deck.cards) return;
+
+  const total = deck.cards.length;
+  let completed = 0;
+  deck.cards.forEach(c => {
+    if (userCardProgress[c.id] && userCardProgress[c.id].completed) completed++;
+  });
+
+  const pct = total ? Math.round((completed / total) * 100) : 0;
+  const remaining = total - completed;
+
+  setElText('fcProgressFooterLabel', `Subject Mastery: ${pct}%`);
+  setElText('fcProgressFooterNumbers', `${completed} / ${total} completed • ${remaining} remaining`);
+
+  const bar = document.getElementById('fcPersistentProgressBar');
+  if (bar) bar.style.width = pct + '%';
+}
+
+function deleteCurrentFlashcard() {
+  if (activeFcFilteredCards.length === 0) return;
   if (!confirm('Delete this flashcard?')) return;
-  customFlashcards = customFlashcards.filter((fc, idx) => idx !== currentCardIndex);
-  safeSet('hub_fc_custom_v2', customFlashcards);
-  renderFlashcard();
-}
-function clearFlashcardDeck() {
-  if (!confirm('Are you sure you want to clear the entire flashcard deck?')) return;
-  customFlashcards = [];
-  safeSet('hub_fc_custom_v2', customFlashcards);
-  renderFlashcard();
-}
-
-function openAdminFlashcardExtractorModal() {
-  extractedFcList = [];
-  document.getElementById('fcTextInput').value = '';
-  document.getElementById('newFcCat').value = '';
-  document.getElementById('fcFileInput').value = '';
-  setElText('fcExtractStatus', '0 Flashcards detected');
-  initFcDropZone();
-  document.getElementById('adminFlashcardExtractorModal').style.display = 'flex';
-}
-function closeAdminFlashcardExtractorModal() { document.getElementById('adminFlashcardExtractorModal').style.display = 'none'; }
-
-function initFcDropZone() {
-  const dropZone = document.getElementById('fcDropZone');
-  if (!dropZone) return;
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); }, false);
-  });
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover'); }, false);
-  });
-  dropZone.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if (files && files.length > 0) processFcUploadedFile(files[0]);
-  }, false);
-}
-
-function handleFcFileUpload(e) {
-  const file = e.target.files[0];
-  if (file) processFcUploadedFile(file);
-}
-
-async function processFcUploadedFile(file) {
-  if (!file) return;
-  const isPdf = file.name.toLowerCase().endsWith('.pdf');
-  const isDocx = file.name.toLowerCase().endsWith('.docx');
-
-  if (isPdf) {
-    setElText('fcExtractStatus', '⏳ Reading PDF...');
-    const reader = new FileReader();
-    reader.onload = async function(evt) {
-      try {
-        const text = await extractTextFromPDF(evt.target.result);
-        document.getElementById('fcTextInput').value = text;
-        extractFlashcardsFromText();
-      } catch (err) {
-        setElText('fcExtractStatus', '❌ Error extracting PDF');
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  } else if (isDocx) {
-    setElText('fcExtractStatus', '⏳ Reading Word Doc...');
-    const reader = new FileReader();
-    reader.onload = async function(evt) {
-      try {
-        const text = await extractTextFromDocx(evt.target.result);
-        document.getElementById('fcTextInput').value = text;
-        extractFlashcardsFromText();
-      } catch (err) {
-        reader.readAsText(file);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  } else {
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      document.getElementById('fcTextInput').value = evt.target.result;
-      extractFlashcardsFromText();
-    };
-    reader.readAsText(file);
+  const card = activeFcFilteredCards[activeFcCardIndex];
+  const deck = flashcardDecks.find(d => d.id === activeFcDeckId);
+  if (deck && deck.cards) {
+    deck.cards = deck.cards.filter(c => c.id !== card.id);
+    safeSet('hub_fc_decks_v2', flashcardDecks);
+    applyCardFilterAndRender();
   }
 }
 
-function extractFlashcardsFromText() {
-  const rawText = document.getElementById('fcTextInput').value;
-  if (!rawText.trim()) return alert('Paste text or drop a file first!');
-  const cat = document.getElementById('newFcCat').value.trim() || 'Medical Deck';
-  
-  extractedFcList = [];
+function clearActiveFlashcardDeck() {
+  const deck = flashcardDecks.find(d => d.id === activeFcDeckId);
+  if (!deck) return;
+  if (!confirm(`Clear all flashcards in "${deck.title}"?`)) return;
+  deck.cards = [];
+  safeSet('hub_fc_decks_v2', flashcardDecks);
+  applyCardFilterAndRender();
+}
 
-  // First, parse as MCQs to extract stem and the EXACT correct answer
-  const parsedMCQs = parseMcqText(rawText);
-  
-  if (parsedMCQs.length > 0) {
-    parsedMCQs.forEach(mcq => {
-      const rightOptionText = mcq.options[mcq.correctIndex] || mcq.options[0] || 'Correct answer';
-      const cleanStem = mcq.question.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
-      extractedFcList.push({
-        cat: cat,
-        q: cleanStem,
-        a: `✓ ${rightOptionText}` + (mcq.explanation ? `\n\n💡 Pearl: ${mcq.explanation}` : '')
-      });
-    });
-  } else {
-    // If not standard MCQ, split on lines or Q&A patterns
-    let text = rawText;
-    const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-    arabicDigits.forEach((digit, i) => { text = text.replace(new RegExp(digit, 'g'), i); });
-    text = text.replace(/(?:\s+|\n|^)(?:(?:Q|Question|س|سؤال)\s*)?(\d+)[\.\:\)\-]\s+/gi, '\n\n__FC_Q_START__ $1. ');
-    text = text.replace(/(?:\s+|\n|^)(?:Answer|Ans|Correct|Key|الإجابة|الاجابة|الجواب|الحل|إجابة|اجابة)[\:\s]+/gi, '\n__FC_A_START__ ');
+// FLASHCARD SECTIONS / DECKS ORGANIZER MODAL
+function openManageFlashcardSectionsModal() {
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
+  const container = document.getElementById('flashcardSectionsListContainer');
+  if (!container) return;
+  container.innerHTML = '';
 
-    const blocks = text.split(/__FC_Q_START__/);
-    blocks.forEach(block => {
-      const trimmed = block.trim();
-      if (!trimmed || trimmed.length < 4) return;
-      let q = '', a = '';
-      if (trimmed.includes('__FC_A_START__')) {
-        const parts = trimmed.split('__FC_A_START__');
-        q = parts[0].trim(); a = parts[1].trim();
-      } else {
-        const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
-        if (lines.length >= 2) {
-          q = lines[0]; a = lines.slice(1).join('\n');
-        } else {
-          q = trimmed; a = "High-yield medical concept.";
-        }
-      }
-      q = q.replace(/^(?:\s*(?:(?:Q\s*|س\s*|سؤال\s*)?\d+[\.\:\)\-\s]*|\bQuestion\s+\d+[\.\:\)\-\s]*))+/i, '').trim();
-      if (q) extractedFcList.push({ cat, q, a });
-    });
+  flashcardDecks.forEach((deck, idx) => {
+    const cardCount = deck.cards ? deck.cards.length : 0;
+    const item = document.createElement('div');
+    item.style.cssText = `display:flex; justify-content:space-between; align-items:center; background:var(--background); border:1px solid var(--border); padding:9px 14px; border-radius:var(--radius-md); gap:8px; flex-wrap:wrap;`;
+    item.innerHTML = `
+      <div>
+        <strong>${escapeHTML(deck.icon || '🗂️')} ${escapeHTML(deck.title)}</strong>
+        <div style="font-size:11.5px; color:var(--muted-foreground);">${cardCount} Flashcards assigned</div>
+      </div>
+      <div style="display:flex; gap:5px; align-items:center;">
+        <button class="btn btn-outline" style="width:auto; padding:4px 8px; font-size:11.5px;" onclick="moveFlashcardDeckOrder(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>⬆</button>
+        <button class="btn btn-outline" style="width:auto; padding:4px 8px; font-size:11.5px;" onclick="moveFlashcardDeckOrder(${idx}, 1)" ${idx === flashcardDecks.length - 1 ? 'disabled' : ''}>⬇</button>
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px;" onclick="renameFlashcardDeck(${idx})">✏️ Rename</button>
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:11.5px; color:#ef4444;" onclick="deleteFlashcardDeckByIndex(${idx})">🗑️ Delete</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+
+  document.getElementById('manageFlashcardSectionsModal').style.display = 'flex';
+}
+
+function closeManageFlashcardSectionsModal() {
+  document.getElementById('manageFlashcardSectionsModal').style.display = 'none';
+}
+
+function openAddFlashcardSectionPrompt() {
+  const title = prompt("Enter Subject / Deck Title (e.g. Immunology, Dermatology, Surgery):");
+  if (!title || !title.trim()) return;
+  const icon = prompt("Enter Emoji icon for deck:", "🫀") || "🗂️";
+  const desc = prompt("Enter description:") || "Clinical review flashcard collection.";
+
+  flashcardDecks.push({
+    id: 'deck_' + Date.now(),
+    title: title.trim(),
+    icon: icon.trim(),
+    desc: desc.trim(),
+    cards: []
+  });
+
+  safeSet('hub_fc_decks_v2', flashcardDecks);
+  renderFlashcardDecks();
+  openManageFlashcardSectionsModal();
+}
+
+function moveFlashcardDeckOrder(idx, direction) {
+  const target = idx + direction;
+  if (target < 0 || target >= flashcardDecks.length) return;
+  const temp = flashcardDecks[idx];
+  flashcardDecks[idx] = flashcardDecks[target];
+  flashcardDecks[target] = temp;
+  safeSet('hub_fc_decks_v2', flashcardDecks);
+  renderFlashcardDecks();
+  openManageFlashcardSectionsModal();
+}
+
+function renameFlashcardDeck(idx) {
+  const deck = flashcardDecks[idx];
+  const newName = prompt(`Enter new title for "${deck.title}":`, deck.title);
+  if (newName && newName.trim()) {
+    deck.title = newName.trim();
+    safeSet('hub_fc_decks_v2', flashcardDecks);
+    renderFlashcardDecks();
+    openManageFlashcardSectionsModal();
   }
-
-  setElText('fcExtractStatus', `✅ ${extractedFcList.length} Flashcards successfully extracted!`);
 }
 
-function publishExtractedFlashcards() {
-  if (extractedFcList.length === 0) extractFlashcardsFromText();
-  if (extractedFcList.length === 0) return alert('No flashcards detected!');
-
-  customFlashcards.unshift(...extractedFcList);
-  safeSet('hub_fc_custom_v2', customFlashcards);
-  closeAdminFlashcardExtractorModal();
-  renderFlashcard();
-  alert(`🎉 Successfully added ${extractedFcList.length} flashcards into your deck!`);
+function deleteFlashcardDeckByIndex(idx) {
+  if (!confirm(`Delete deck "${flashcardDecks[idx].title}" and all its flashcards?`)) return;
+  flashcardDecks.splice(idx, 1);
+  safeSet('hub_fc_decks_v2', flashcardDecks);
+  renderFlashcardDecks();
+  openManageFlashcardSectionsModal();
 }
+
+function deleteFlashcardDeck(deckId) {
+  const idx = flashcardDecks.findIndex(d => d.id === deckId);
+  if (idx !== -1) deleteFlashcardDeckByIndex(idx);
+}
+
+// 2. STAR / FAVORITE SYSTEM FOR QUESTION BANK
+function toggleQuestionStar(questionKey) {
+  userQuestionStars[questionKey] = !userQuestionStars[questionKey];
+  safeSet('hub_qbank_user_stars_v2', userQuestionStars);
+  renderQuizzes();
+}
+
+function isQuestionStarred(questionKey) {
+  return !!userQuestionStars[questionKey];
+}
+
 
 // 6. CLINICAL CANVAS PRO (WHITEBOARD WITH TEXT, STICKIES, SHAPES, PHOTOS)
 let wbCanvas = null, wbCtx = null, wbMode = 'draw', isWbDrawing = false, wbColor = '#155dfc', wbWidth = 3;
@@ -4474,7 +4959,7 @@ function saveUniversalAdd() {
     const cat = document.getElementById('fcCatInput').value.trim() || 'General', q = document.getElementById('fcQ').value.trim(), a = document.getElementById('fcA').value.trim();
     if (!q || !a) return alert('Fill question & answer!');
     customFlashcards.push({ cat, q, a });
-    safeSet('hub_fc_custom_v2', customFlashcards); renderFlashcard();
+    safeSet('hub_fc_custom_v2', customFlashcards); renderFlashcardDecks();
   } else if (type === 'directory') {
     const param = document.getElementById('dirParam').value.trim(), range = document.getElementById('dirRange').value.trim(), cat = document.getElementById('dirCat').value.trim() || 'General', pearl = document.getElementById('dirPearl').value.trim();
     if (!param || !range) return alert('Fill parameter name & range!');
