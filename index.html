@@ -82,38 +82,53 @@
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
 
   
-  /* COLLAPSIBLE SIDEBAR ACCORDION STYLING */
+  
+  /* FIX SIDEBAR NAVIGATION & CATEGORY ACCORDION CLIPPING */
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 240px);
+    padding-right: 2px;
+  }
   .nav-accordion-group {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     border-radius: var(--radius-md);
-    overflow: hidden;
+    overflow: visible;
   }
   .nav-accordion-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 9px 12px;
+    padding: 10px 12px;
+    min-height: 38px;
+    line-height: 1.4;
     border-radius: var(--radius-md);
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     color: var(--muted-foreground);
     cursor: pointer;
     user-select: none;
     transition: background 0.15s ease, color 0.15s ease;
+    box-sizing: border-box;
   }
   .nav-accordion-header:hover {
-    background: var(--background);
+    background: var(--border);
     color: var(--foreground);
   }
   .nav-accordion-header.active-category {
     color: var(--primary);
   }
   .nav-accordion-chevron {
-    font-size: 10px;
+    font-size: 9px;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0.7;
+    margin-left: auto;
+    padding-left: 6px;
   }
   .nav-accordion-header.expanded .nav-accordion-chevron {
     transform: rotate(90deg);
@@ -128,10 +143,125 @@
     padding-left: 6px;
   }
   .nav-accordion-body.expanded {
-    max-height: 600px;
+    max-height: 800px;
     padding-top: 2px;
     padding-bottom: 4px;
+    overflow: visible;
   }
+
+  .nav-inline-edit-btn {
+    opacity: 0;
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 4px;
+    color: var(--muted-foreground);
+    transition: opacity 0.15s ease, color 0.15s ease;
+    margin-right: 4px;
+  }
+  .nav-item:hover .nav-inline-edit-btn,
+  .nav-accordion-header:hover .nav-inline-edit-btn {
+    opacity: 1;
+  }
+  .nav-inline-edit-btn:hover {
+    color: var(--primary);
+    transform: scale(1.15);
+  }
+
+  /* CARD SIZE & SHAPE CUSTOMIZER TOOLBAR */
+  .card-layout-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--muted-foreground);
+  }
+  .layout-btn-pill {
+    background: none;
+    border: 1px solid transparent;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .layout-btn-pill:hover {
+    background: var(--background);
+    color: var(--foreground);
+  }
+  .layout-btn-pill.active {
+    background: var(--primary-tint);
+    color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* DYNAMIC CARD SIZES & SHAPES */
+  body.card-size-compact .qbank-card,
+  body.card-size-compact .video-card,
+  body.card-size-compact .steth-card,
+  body.card-size-compact .section-deck-card,
+  body.card-size-compact .custom-card {
+    padding: 14px;
+    font-size: 12px;
+  }
+  body.card-size-compact .deck-icon-badge {
+    width: 34px; height: 34px; font-size: 18px;
+  }
+
+  body.card-size-large .qbank-card,
+  body.card-size-large .video-card,
+  body.card-size-large .steth-card,
+  body.card-size-large .section-deck-card,
+  body.card-size-large .custom-card {
+    padding: 28px;
+  }
+
+  body.card-shape-sharp .qbank-card,
+  body.card-shape-sharp .video-card,
+  body.card-shape-sharp .steth-card,
+  body.card-shape-sharp .section-deck-card,
+  body.card-shape-sharp .custom-card,
+  body.card-shape-sharp .stat-card,
+  body.card-shape-sharp .flashcard {
+    border-radius: 3px !important;
+  }
+
+  body.card-shape-soft .qbank-card,
+  body.card-shape-soft .video-card,
+  body.card-shape-soft .steth-card,
+  body.card-shape-soft .section-deck-card,
+  body.card-shape-soft .custom-card,
+  body.card-shape-soft .stat-card,
+  body.card-shape-soft .flashcard {
+    border-radius: 8px !important;
+  }
+
+  body.card-shape-pill .qbank-card,
+  body.card-shape-pill .video-card,
+  body.card-shape-pill .steth-card,
+  body.card-shape-pill .section-deck-card,
+  body.card-shape-pill .custom-card,
+  body.card-shape-pill .stat-card,
+  body.card-shape-pill .flashcard {
+    border-radius: 24px !important;
+  }
+
+  body.card-layout-list .section-deck-grid,
+  body.card-layout-list .qbank-grid,
+  body.card-layout-list .video-grid,
+  body.card-layout-list .steth-grid,
+  body.card-layout-list .custom-section-grid {
+    grid-template-columns: 1fr !important;
+  }
+
 
   /* REFINED NAV ITEMS */
   .nav-item {
@@ -812,6 +942,70 @@
   </div>
 </div>
 
+
+<!-- MOVE / REASSIGN SECTION TO ANOTHER CATEGORY MODAL (OWNER ONLY) -->
+<div class="modal-overlay" id="reassignSectionModal">
+  <div class="auth-card" style="max-width: 480px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">⚙️ Manage Section Category & Placement</h3>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 14px;">Move this section to a different category, rename, or delete it.</p>
+    
+    <input type="hidden" id="reassignSectionId">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Section Title:</label>
+    <input type="text" id="reassignSectionTitle" class="search-input-box" style="margin-top: 4px; margin-bottom: 10px;">
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Parent Category in Sidebar:</label>
+    <select id="reassignTargetCategory" class="search-input-box" style="margin-top: 4px; margin-bottom: 18px;">
+      <option value="learn">📚 LEARN</option>
+      <option value="practice">🎯 PRACTICE</option>
+      <option value="review">🗂️ REVIEW</option>
+      <option value="clinical">🩺 CLINICAL LAB</option>
+      <option value="productivity">⏳ PRODUCTIVITY</option>
+      <option value="progress">📈 PROGRESS</option>
+      <option value="custom">📁 CUSTOM SECTIONS</option>
+    </select>
+
+    <div style="display: flex; justify-content:space-between; align-items:center; gap: 8px;">
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary" onclick="saveReassignedSection()">Save Changes ✓</button>
+        <button class="btn btn-outline" onclick="closeReassignSectionModal()">Cancel</button>
+      </div>
+      <button class="btn btn-outline" style="width:auto; color:#ef4444;" id="btnDeleteReassignSec" onclick="deleteReassignedSection()">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- CARD SIZE, SHAPE & LAYOUT CUSTOMIZER MODAL -->
+<div class="modal-overlay" id="cardLayoutModal">
+  <div class="auth-card" style="max-width: 460px; text-align: left;">
+    <h3 style="font-size: 18px; margin-bottom: 6px;">📐 Card Size, Shape & Grid Layout</h3>
+    <p style="font-size: 12.5px; color: var(--muted-foreground); margin-bottom: 16px;">Customize how cards and square modules look across all sections of your platform.</p>
+    
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Card Module Size:</label>
+    <div style="display:flex; gap:6px; margin-top:4px; margin-bottom:14px;">
+      <button class="layout-btn-pill" id="btnSizeCompact" onclick="setCardSizePreference('compact')">Compact (Small)</button>
+      <button class="layout-btn-pill" id="btnSizeNormal" onclick="setCardSizePreference('normal')">Medium (Standard)</button>
+      <button class="layout-btn-pill" id="btnSizeLarge" onclick="setCardSizePreference('large')">Large (Wide)</button>
+    </div>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Card Corner Shape:</label>
+    <div style="display:flex; gap:6px; margin-top:4px; margin-bottom:14px;">
+      <button class="layout-btn-pill" id="btnShapeSharp" onclick="setCardShapePreference('sharp')">Sharp (Square 3px)</button>
+      <button class="layout-btn-pill" id="btnShapeSoft" onclick="setCardShapePreference('soft')">Soft Rounded (8px)</button>
+      <button class="layout-btn-pill" id="btnShapeRound" onclick="setCardShapePreference('round')">Modern Rounded (16px)</button>
+      <button class="layout-btn-pill" id="btnShapePill" onclick="setCardShapePreference('pill')">Pill / Ultra (24px)</button>
+    </div>
+
+    <label style="font-size: 12px; color: var(--muted-foreground); font-weight: 600;">Grid vs List View:</label>
+    <div style="display:flex; gap:6px; margin-top:4px; margin-bottom:18px;">
+      <button class="layout-btn-pill" id="btnViewGrid" onclick="setCardViewPreference('grid')">⊞ Multi-Column Grid</button>
+      <button class="layout-btn-pill" id="btnViewList" onclick="setCardViewPreference('list')">☰ Single-Column List</button>
+    </div>
+
+    <button class="btn btn-primary" onclick="closeCardLayoutModal()">Done & Apply ✓</button>
+  </div>
+</div>
+
 <!-- MANAGE ALL SECTIONS MODAL (ADMIN ONLY) -->
 <div class="modal-overlay" id="manageSectionsModal">
   <div class="auth-card" style="max-width: 620px; text-align: left; max-height: 90vh; overflow-y: auto;">
@@ -1188,6 +1382,7 @@
           <div class="color-dot" style="background:#8b5cf6;" onclick="setAccentColor('#8b5cf6', '#7c3aed')"></div>
           <div class="color-dot" style="background:#f59e0b;" onclick="setAccentColor('#f59e0b', '#d97706')"></div>
         </div>
+        <button class="layout-btn-pill" style="padding: 2px 7px; font-size: 11px;" onclick="openCardLayoutModal()" title="Customize Card Size & Shape">📐 Layout</button>
         <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">☀️</button>
       </div>
 
@@ -2267,18 +2462,111 @@ function ensureCategoryExpandedForTab(tabId) {
   }
 }
 
+
+// ==================== SIDEBAR INLINE OWNER MANAGER & CARD CUSTOMIZER ====================
+
+// SECTION CATEGORY MAPPING (ALLOWS MOVING SECTIONS ACROSS CATEGORIES)
+let sectionCategoryMap = safeGet('hub_section_cat_map_v2', {
+  'overview': 'learn',
+  'videos': 'learn',
+  'planner': 'learn',
+  'qbank': 'practice',
+  'flashcards': 'review',
+  'mnemonics': 'review',
+  'cheatsheet': 'review',
+  'stethoscope': 'clinical',
+  'antibiotics': 'clinical',
+  'oral': 'clinical',
+  'whiteboard': 'clinical',
+  'focus': 'productivity',
+  'analytics': 'progress'
+});
+
+function openReassignSectionModal(secId, secTitle, event) {
+  if (event) event.stopPropagation();
+  if (!isOwnerAdmin) return alert('🔒 Owner only action.');
+
+  document.getElementById('reassignSectionId').value = secId;
+  document.getElementById('reassignSectionTitle').value = secTitle || secId;
+
+  const currentCat = sectionCategoryMap[secId] || (secId.startsWith('sec_') ? 'custom' : 'learn');
+  const select = document.getElementById('reassignTargetCategory');
+  if (select) select.value = currentCat;
+
+  const secObj = hubSectionsList.find(s => s.id === secId);
+  const delBtn = document.getElementById('btnDeleteReassignSec');
+  if (delBtn) delBtn.style.display = (secObj && secObj.isBuiltin) ? 'none' : 'inline-block';
+
+  document.getElementById('reassignSectionModal').style.display = 'flex';
+}
+
+function closeReassignSectionModal() {
+  document.getElementById('reassignSectionModal').style.display = 'none';
+}
+
+function saveReassignedSection() {
+  const secId = document.getElementById('reassignSectionId').value;
+  const newTitle = document.getElementById('reassignSectionTitle').value.trim();
+  const targetCat = document.getElementById('reassignTargetCategory').value;
+
+  if (newTitle) {
+    const secObj = hubSectionsList.find(s => s.id === secId);
+    if (secObj) secObj.title = newTitle;
+    const customObj = customSections.find(c => c.id === secId);
+    if (customObj) customObj.title = newTitle;
+  }
+
+  sectionCategoryMap[secId] = targetCat;
+  safeSet('hub_section_cat_map_v2', sectionCategoryMap);
+  safeSet('hub_all_sections_order_v2', hubSectionsList);
+  safeSet('hub_custom_sections_v3', customSections);
+
+  closeReassignSectionModal();
+  renderSidebarNavigation();
+  renderCustomSections();
+  alert('🎉 Section moved & updated successfully in sidebar!');
+}
+
+function deleteReassignedSection() {
+  const secId = document.getElementById('reassignSectionId').value;
+  const secObj = hubSectionsList.find(s => s.id === secId);
+  if (secObj && secObj.isBuiltin) return alert('Built-in sections cannot be deleted.');
+
+  if (!confirm(`Delete section "${secObj ? secObj.title : secId}"?`)) return;
+
+  hubSectionsList = hubSectionsList.filter(s => s.id !== secId);
+  customSections = customSections.filter(c => c.id !== secId);
+  delete sectionCategoryMap[secId];
+
+  safeSet('hub_all_sections_order_v2', hubSectionsList);
+  safeSet('hub_custom_sections_v3', customSections);
+  safeSet('hub_section_cat_map_v2', sectionCategoryMap);
+
+  closeReassignSectionModal();
+  renderSidebarNavigation();
+  renderCustomSections();
+  goToTab('overview');
+}
+
+// RENDER SIDEBAR NAVIGATION WITH NO CLIPPING + INLINE OWNER GEAR ICONS
 function renderSidebarNavigation() {
   const menuContainer = document.getElementById('sidebarNavMenu');
   if (!menuContainer) return;
   menuContainer.innerHTML = '';
 
-  // Render each standard category group
   Object.keys(categoryDefinitions).forEach(catKey => {
     const cat = categoryDefinitions[catKey];
-    const visibleSections = hubSectionsList.filter(s => cat.sections.includes(s.id) && s.visible !== false);
+    
+    // Find all sections mapped to this category
+    const sectionsInCat = hubSectionsList.filter(s => {
+      const assignedCat = sectionCategoryMap[s.id] || (s.isBuiltin ? (categoryDefinitions[catKey].sections.includes(s.id) ? catKey : null) : 'custom');
+      return assignedCat === catKey && s.visible !== false;
+    });
+
+    const isCustomCat = catKey === 'custom';
     const hasTelemetry = catKey === 'progress';
 
-    if (visibleSections.length > 0 || hasTelemetry) {
+    if (sectionsInCat.length > 0 || isCustomCat || hasTelemetry) {
       const isExpanded = !!categoryExpandState[catKey];
 
       const groupWrapper = document.createElement('div');
@@ -2286,8 +2574,14 @@ function renderSidebarNavigation() {
 
       groupWrapper.innerHTML = `
         <div class="nav-accordion-header ${isExpanded ? 'expanded' : ''}" id="cat-header-${catKey}" onclick="toggleSidebarCategory('${catKey}')">
-          <span>${escapeHTML(cat.icon)} ${escapeHTML(cat.title)}</span>
-          <span class="nav-accordion-chevron">▶</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>${escapeHTML(cat.icon)}</span>
+            <span>${escapeHTML(cat.title)}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <button class="nav-inline-edit-btn admin-only" onclick="openManageSectionsModal(); event.stopPropagation();" title="Manage Category Sections">⚙️</button>
+            <span class="nav-accordion-chevron">▶</span>
+          </div>
         </div>
         <div class="nav-accordion-body ${isExpanded ? 'expanded' : ''}" id="cat-body-${catKey}"></div>
       `;
@@ -2295,12 +2589,18 @@ function renderSidebarNavigation() {
       menuContainer.appendChild(groupWrapper);
       const body = groupWrapper.querySelector('.nav-accordion-body');
 
-      visibleSections.forEach(sec => {
+      sectionsInCat.forEach(sec => {
         const nav = document.createElement('div');
         nav.className = `nav-item ${currentActiveTabId === sec.id ? 'active' : ''}`;
         nav.id = 'nav-' + sec.id;
         nav.setAttribute('onclick', `goToTab('${sec.id}')`);
-        nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
+        nav.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+            <span>${escapeHTML(sec.icon)}</span>
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHTML(sec.title)}</span>
+          </div>
+          <button class="nav-inline-edit-btn admin-only" onclick="openReassignSectionModal('${sec.id}', '${escapeHTML(sec.title)}', event)" title="Move to another category or edit">⚙️</button>
+        `;
         body.appendChild(nav);
       });
 
@@ -2309,39 +2609,13 @@ function renderSidebarNavigation() {
         telemetryNav.className = `nav-item admin-only ${currentActiveTabId === 'students_admin' ? 'active' : ''}`;
         telemetryNav.id = 'nav-students_admin';
         telemetryNav.setAttribute('onclick', "goToTab('students_admin')");
-        telemetryNav.innerHTML = '<span>🔒</span> Student Telemetry';
+        telemetryNav.innerHTML = '<span>🔒</span> <span>Student Telemetry</span>';
         body.appendChild(telemetryNav);
       }
     }
   });
 
-  // Render Custom Sections under Collapsible CUSTOM category
-  const customSecs = hubSectionsList.filter(s => !s.isBuiltin && s.visible !== false);
-  if (customSecs.length > 0) {
-    const isCustomExpanded = !!categoryExpandState['custom'];
-    const customGroup = document.createElement('div');
-    customGroup.className = 'nav-accordion-group';
-    customGroup.innerHTML = `
-      <div class="nav-accordion-header ${isCustomExpanded ? 'expanded' : ''}" id="cat-header-custom" onclick="toggleSidebarCategory('custom')">
-        <span>📁 CUSTOM SECTIONS</span>
-        <span class="nav-accordion-chevron">▶</span>
-      </div>
-      <div class="nav-accordion-body ${isCustomExpanded ? 'expanded' : ''}" id="cat-body-custom"></div>
-    `;
-    menuContainer.appendChild(customGroup);
-    const customBody = customGroup.querySelector('.nav-accordion-body');
-
-    customSecs.forEach(sec => {
-      const nav = document.createElement('div');
-      nav.className = `nav-item ${currentActiveTabId === sec.id ? 'active' : ''}`;
-      nav.id = 'nav-' + sec.id;
-      nav.setAttribute('onclick', `goToTab('${sec.id}')`);
-      nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
-      customBody.appendChild(nav);
-    });
-  }
-
-  // Admin Sidebar Actions
+  // Admin Sidebar Actions at Bottom
   const adminControls = document.createElement('div');
   adminControls.className = 'admin-sidebar-controls admin-only';
   adminControls.style.cssText = 'display:flex; flex-direction:column; gap:6px; margin-top:14px; padding-top:10px; border-top:1px dashed var(--border);';
@@ -2355,6 +2629,56 @@ function renderSidebarNavigation() {
   `;
   menuContainer.appendChild(adminControls);
 }
+
+// ==================== CARD SIZE, SHAPE & LAYOUT CONTROLLER ====================
+let userCardSize = safeGet('hub_card_size', 'normal');
+let userCardShape = safeGet('hub_card_shape', 'round');
+let userCardView = safeGet('hub_card_view', 'grid');
+
+function applyCardLayoutPreferences() {
+  document.body.classList.remove('card-size-compact', 'card-size-normal', 'card-size-large');
+  if (userCardSize !== 'normal') document.body.classList.add('card-size-' + userCardSize);
+
+  document.body.classList.remove('card-shape-sharp', 'card-shape-soft', 'card-shape-round', 'card-shape-pill');
+  if (userCardShape !== 'round') document.body.classList.add('card-shape-' + userCardShape);
+
+  document.body.classList.remove('card-layout-grid', 'card-layout-list');
+  if (userCardView === 'list') document.body.classList.add('card-layout-list');
+
+  // Update button active pills in modal
+  document.querySelectorAll('#cardLayoutModal .layout-btn-pill').forEach(b => b.classList.remove('active'));
+  document.getElementById('btnSize' + userCardSize.charAt(0).toUpperCase() + userCardSize.slice(1))?.classList.add('active');
+  document.getElementById('btnShape' + userCardShape.charAt(0).toUpperCase() + userCardShape.slice(1))?.classList.add('active');
+  document.getElementById('btnView' + userCardView.charAt(0).toUpperCase() + userCardView.slice(1))?.classList.add('active');
+}
+
+function openCardLayoutModal() {
+  applyCardLayoutPreferences();
+  document.getElementById('cardLayoutModal').style.display = 'flex';
+}
+function closeCardLayoutModal() {
+  document.getElementById('cardLayoutModal').style.display = 'none';
+}
+
+function setCardSizePreference(size) {
+  userCardSize = size;
+  safeSet('hub_card_size', size);
+  applyCardLayoutPreferences();
+}
+function setCardShapePreference(shape) {
+  userCardShape = shape;
+  safeSet('hub_card_shape', shape);
+  applyCardLayoutPreferences();
+}
+function setCardViewPreference(view) {
+  userCardView = view;
+  safeSet('hub_card_view', view);
+  applyCardLayoutPreferences();
+}
+
+// Initial application of card layout preferences
+applyCardLayoutPreferences();
+
 
 
 function openManageSectionsModal() {
