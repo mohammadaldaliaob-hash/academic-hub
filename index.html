@@ -81,16 +81,100 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
   body { background-color: var(--background); color: var(--foreground); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
 
-  /* SIDEBAR CATEGORY GROUP HEADERS */
-  .nav-group-header {
-    font-size: 10px;
+  
+  /* COLLAPSIBLE SIDEBAR ACCORDION STYLING */
+  .nav-accordion-group {
+    margin-bottom: 4px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .nav-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    border-radius: var(--radius-md);
+    font-size: 11.5px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
     color: var(--muted-foreground);
-    padding: 10px 12px 4px 12px;
-    opacity: 0.8;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, color 0.15s ease;
   }
+  .nav-accordion-header:hover {
+    background: var(--background);
+    color: var(--foreground);
+  }
+  .nav-accordion-header.active-category {
+    color: var(--primary);
+  }
+  .nav-accordion-chevron {
+    font-size: 10px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.7;
+  }
+  .nav-accordion-header.expanded .nav-accordion-chevron {
+    transform: rotate(90deg);
+  }
+  .nav-accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 6px;
+  }
+  .nav-accordion-body.expanded {
+    max-height: 600px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+  }
+
+  /* REFINED NAV ITEMS */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+  .nav-item:hover {
+    background-color: var(--background);
+    color: var(--foreground);
+    transform: translateX(2px);
+  }
+  .nav-item.active {
+    background-color: var(--primary-tint);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* EMPTY STATES POLISHED STYLING */
+  .empty-state-card {
+    background: var(--card-bg);
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .empty-state-icon { font-size: 38px; opacity: 0.85; }
+  .empty-state-title { font-size: 16px; font-weight: 700; color: var(--foreground); }
+  .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 420px; line-height: 1.5; }
+
 
 
   /* OWNER ONLY SYSTEM VISIBILITY */
@@ -1766,11 +1850,20 @@ function goToTab(tabId) {
     alert('🔒 Access Denied: Student Telemetry is strictly restricted to site owner.');
     return;
   }
+  currentActiveTabId = tabId;
   stopStethoscopeAudio();
+  
   document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const panel = document.getElementById('view-' + tabId); if (panel) panel.classList.add('active');
-  const nav = document.querySelector(`.nav-item[onclick*="${tabId}"]`); if (nav) nav.classList.add('active');
+  
+  const panel = document.getElementById('view-' + tabId);
+  if (panel) panel.classList.add('active');
+  
+  const nav = document.getElementById('nav-' + tabId) || document.querySelector(`.nav-item[onclick*="${tabId}"]`);
+  if (nav) nav.classList.add('active');
+  
+  ensureCategoryExpandedForTab(tabId);
+
   if (tabId === 'whiteboard') setTimeout(resizeWhiteboard, 50);
   if (tabId === 'analytics') renderAnalyticsRings();
   if (tabId === 'students_admin') renderStudentTelemetry();
@@ -1841,77 +1934,171 @@ function syncSectionsList() {
 }
 syncSectionsList();
 
+
+// ==================== COLLAPSIBLE SIDEBAR NAVIGATION ENGINE ====================
+const categoryDefinitions = {
+  'learn': {
+    id: 'learn',
+    title: 'LEARN',
+    icon: '📚',
+    sections: ['overview', 'videos', 'planner']
+  },
+  'practice': {
+    id: 'practice',
+    title: 'PRACTICE',
+    icon: '🎯',
+    sections: ['qbank']
+  },
+  'review': {
+    id: 'review',
+    title: 'REVIEW',
+    icon: '🗂️',
+    sections: ['flashcards', 'mnemonics', 'cheatsheet']
+  },
+  'clinical': {
+    id: 'clinical',
+    title: 'CLINICAL LAB',
+    icon: '🩺',
+    sections: ['stethoscope', 'antibiotics', 'oral', 'whiteboard']
+  },
+  'productivity': {
+    id: 'productivity',
+    title: 'PRODUCTIVITY',
+    icon: '⏳',
+    sections: ['focus']
+  },
+  'progress': {
+    id: 'progress',
+    title: 'PROGRESS',
+    icon: '📈',
+    sections: ['analytics', 'students_admin']
+  }
+};
+
+let categoryExpandState = safeGet('hub_cat_expand_state_v1', {
+  'learn': true,
+  'practice': true,
+  'review': true,
+  'clinical': true,
+  'productivity': true,
+  'progress': true,
+  'custom': true
+});
+
+let currentActiveTabId = 'overview';
+
+function toggleSidebarCategory(catKey) {
+  categoryExpandState[catKey] = !categoryExpandState[catKey];
+  safeSet('hub_cat_expand_state_v1', categoryExpandState);
+  
+  const header = document.getElementById(`cat-header-${catKey}`);
+  const body = document.getElementById(`cat-body-${catKey}`);
+  if (header && body) {
+    const isExpanded = !!categoryExpandState[catKey];
+    header.classList.toggle('expanded', isExpanded);
+    body.classList.toggle('expanded', isExpanded);
+  }
+}
+
+function ensureCategoryExpandedForTab(tabId) {
+  let targetCat = null;
+  for (const catKey in categoryDefinitions) {
+    if (categoryDefinitions[catKey].sections.includes(tabId)) {
+      targetCat = catKey;
+      break;
+    }
+  }
+  if (!targetCat) {
+    if (tabId.startsWith('custom_') || customSections.some(c => c.id === tabId)) {
+      targetCat = 'custom';
+    }
+  }
+
+  if (targetCat && !categoryExpandState[targetCat]) {
+    categoryExpandState[targetCat] = true;
+    safeSet('hub_cat_expand_state_v1', categoryExpandState);
+    const header = document.getElementById(`cat-header-${targetCat}`);
+    const body = document.getElementById(`cat-body-${targetCat}`);
+    if (header && body) {
+      header.classList.add('expanded');
+      body.classList.add('expanded');
+    }
+  }
+}
+
 function renderSidebarNavigation() {
   const menuContainer = document.getElementById('sidebarNavMenu');
   if (!menuContainer) return;
-
   menuContainer.innerHTML = '';
 
-  const groups = {
-    'LEARN': ['overview', 'videos', 'planner'],
-    'PRACTICE': ['qbank'],
-    'REVIEW': ['flashcards', 'mnemonics', 'cheatsheet'],
-    'CLINICAL LAB': ['stethoscope', 'antibiotics', 'oral', 'whiteboard'],
-    'PRODUCTIVITY': ['focus'],
-    'PROGRESS': ['analytics']
-  };
+  // Render each standard category group
+  Object.keys(categoryDefinitions).forEach(catKey => {
+    const cat = categoryDefinitions[catKey];
+    const visibleSections = hubSectionsList.filter(s => cat.sections.includes(s.id) && s.visible !== false);
+    const hasTelemetry = catKey === 'progress';
 
-  const groupIcons = {
-    'LEARN': '📚',
-    'PRACTICE': '🎯',
-    'REVIEW': '🗂️',
-    'CLINICAL LAB': '🩺',
-    'PRODUCTIVITY': '⏳',
-    'PROGRESS': '📈'
-  };
+    if (visibleSections.length > 0 || hasTelemetry) {
+      const isExpanded = !!categoryExpandState[catKey];
 
-  // Render grouped built-in sections
-  Object.keys(groups).forEach(groupName => {
-    const sectionIds = groups[groupName];
-    const visibleSectionsInGroup = hubSectionsList.filter(s => sectionIds.includes(s.id) && s.visible !== false);
+      const groupWrapper = document.createElement('div');
+      groupWrapper.className = 'nav-accordion-group';
 
-    if (visibleSectionsInGroup.length > 0) {
-      const header = document.createElement('div');
-      header.className = 'nav-group-header';
-      header.textContent = `${groupIcons[groupName]} ${groupName}`;
-      menuContainer.appendChild(header);
+      groupWrapper.innerHTML = `
+        <div class="nav-accordion-header ${isExpanded ? 'expanded' : ''}" id="cat-header-${catKey}" onclick="toggleSidebarCategory('${catKey}')">
+          <span>${escapeHTML(cat.icon)} ${escapeHTML(cat.title)}</span>
+          <span class="nav-accordion-chevron">▶</span>
+        </div>
+        <div class="nav-accordion-body ${isExpanded ? 'expanded' : ''}" id="cat-body-${catKey}"></div>
+      `;
 
-      visibleSectionsInGroup.forEach(sec => {
+      menuContainer.appendChild(groupWrapper);
+      const body = groupWrapper.querySelector('.nav-accordion-body');
+
+      visibleSections.forEach(sec => {
         const nav = document.createElement('div');
-        nav.className = 'nav-item';
+        nav.className = `nav-item ${currentActiveTabId === sec.id ? 'active' : ''}`;
         nav.id = 'nav-' + sec.id;
         nav.setAttribute('onclick', `goToTab('${sec.id}')`);
         nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
-        menuContainer.appendChild(nav);
+        body.appendChild(nav);
       });
+
+      if (hasTelemetry) {
+        const telemetryNav = document.createElement('div');
+        telemetryNav.className = `nav-item admin-only ${currentActiveTabId === 'students_admin' ? 'active' : ''}`;
+        telemetryNav.id = 'nav-students_admin';
+        telemetryNav.setAttribute('onclick', "goToTab('students_admin')");
+        telemetryNav.innerHTML = '<span>🔒</span> Student Telemetry';
+        body.appendChild(telemetryNav);
+      }
     }
   });
 
-  // Render Custom Sections under CUSTOM category
+  // Render Custom Sections under Collapsible CUSTOM category
   const customSecs = hubSectionsList.filter(s => !s.isBuiltin && s.visible !== false);
   if (customSecs.length > 0) {
-    const customHeader = document.createElement('div');
-    customHeader.className = 'nav-group-header';
-    customHeader.textContent = '📁 CUSTOM SECTIONS';
-    menuContainer.appendChild(customHeader);
+    const isCustomExpanded = !!categoryExpandState['custom'];
+    const customGroup = document.createElement('div');
+    customGroup.className = 'nav-accordion-group';
+    customGroup.innerHTML = `
+      <div class="nav-accordion-header ${isCustomExpanded ? 'expanded' : ''}" id="cat-header-custom" onclick="toggleSidebarCategory('custom')">
+        <span>📁 CUSTOM SECTIONS</span>
+        <span class="nav-accordion-chevron">▶</span>
+      </div>
+      <div class="nav-accordion-body ${isCustomExpanded ? 'expanded' : ''}" id="cat-body-custom"></div>
+    `;
+    menuContainer.appendChild(customGroup);
+    const customBody = customGroup.querySelector('.nav-accordion-body');
 
     customSecs.forEach(sec => {
       const nav = document.createElement('div');
-      nav.className = 'nav-item';
+      nav.className = `nav-item ${currentActiveTabId === sec.id ? 'active' : ''}`;
       nav.id = 'nav-' + sec.id;
       nav.setAttribute('onclick', `goToTab('${sec.id}')`);
       nav.innerHTML = `<span>${escapeHTML(sec.icon)}</span> ${escapeHTML(sec.title)}`;
-      menuContainer.appendChild(nav);
+      customBody.appendChild(nav);
     });
   }
-
-  // Add Telemetry for Owner
-  const telemetryNav = document.createElement('div');
-  telemetryNav.className = 'nav-item admin-only';
-  telemetryNav.id = 'nav-students_admin';
-  telemetryNav.setAttribute('onclick', "goToTab('students_admin')");
-  telemetryNav.innerHTML = '<span>🔒</span> Student Telemetry';
-  menuContainer.appendChild(telemetryNav);
 
   // Admin Sidebar Actions
   const adminControls = document.createElement('div');
@@ -1927,6 +2114,7 @@ function renderSidebarNavigation() {
   `;
   menuContainer.appendChild(adminControls);
 }
+
 
 function openManageSectionsModal() {
   if (!isOwnerAdmin) return alert('🔒 Owner only action.');
